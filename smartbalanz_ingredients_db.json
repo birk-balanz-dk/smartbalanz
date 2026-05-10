@@ -1,0 +1,1250 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "created": "2026-05-02",
+    "author": "SmartBalanz",
+    "description": "Råvaredatabase med GI-værdier og SmartBalanz-modifikatorer",
+    "gi_sources": [
+      "Sydney University GI Database",
+      "DTU Fødevareinstituttet",
+      "Atkinson et al."
+    ],
+    "notes": "GI-værdier er vejledende. Modifikatorer angiver procentvis GI-reduktion ved specifik tilberedning."
+  },
+  "kategorier": {
+    "stivelse": "Stivelsesholdige råvarer — primær GI-fokus",
+    "protein": "Kød, fisk, æg — GI ~0, ingen optimering nødvendig",
+    "fedt": "Naturlige fedtstoffer — GI ~0, GI-sænkende effekt",
+    "grøntsager": "Ikke-stivelsesholdige grøntsager — lavt GI",
+    "bælgfrugter": "Linser, kikærter, bønner — lavt GI, høj fiber",
+    "mejeriprodukter": "Ost, fløde, yoghurt — lavt til middel GI",
+    "frugt": "Varierende GI — kontekstafhængigt",
+    "nødder_frø": "Lavt GI — god snack og GI-sænker",
+    "krydderier_saucer": "Minimal GI-effekt — smag og modifikatorer"
+  },
+  "råvarer": [
+    {
+      "id": "sti_001",
+      "navn": "Kartofler (kogte)",
+      "kategori": "stivelse",
+      "gi_konventionel": 78,
+      "gi_optimeret": 38,
+      "kulhydrater_100g": 17,
+      "protein_100g": 2,
+      "fedt_100g": 0.1,
+      "kalorier_100g": 77,
+      "smartbalanz_tags": [
+        "resistent_stivelse_potentiale",
+        "good_carb_ved_optimering"
+      ],
+      "modifikatorer": {
+        "afkøling": {
+          "gi_reduktion_pct": 51,
+          "gi_efter": 38,
+          "beskrivelse": "Afkøl kogte kartofler natten over — resistent stivelse dannes",
+          "praktisk_tip": "Lav kartoffelsalat dagen før. GI falder fra 78 til ~38."
+        },
+        "fedt_tilsat": {
+          "gi_reduktion_pct": 15,
+          "gi_efter": 66,
+          "beskrivelse": "Smør eller olie forsinker mavens tømning",
+          "praktisk_tip": "Smør på de varme kartofler — simpel GI-sænker"
+        },
+        "syre_tilsat": {
+          "gi_reduktion_pct": 20,
+          "gi_efter": 62,
+          "beskrivelse": "Eddike eller citronsaft reducerer glukoseoptagelse",
+          "praktisk_tip": "Æblecidereddike i kartoffelsalaten — klassisk dansk og smart"
+        },
+        "afkøling_plus_fedt_plus_syre": {
+          "gi_reduktion_pct": 55,
+          "gi_efter": 35,
+          "beskrivelse": "Kombination af alle tre tricks — maksimal effekt",
+          "praktisk_tip": "Den klassiske danske kartoffelsalat er faktisk metabolisk intelligent"
+        }
+      },
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Kartoflen er ikonen. Ikke fjenden. Tilbered den smartere."
+    },
+    {
+      "id": "sti_002",
+      "navn": "Ris (hvide, kogte)",
+      "kategori": "stivelse",
+      "gi_konventionel": 72,
+      "gi_optimeret": 45,
+      "kulhydrater_100g": 28,
+      "protein_100g": 2.7,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 130,
+      "smartbalanz_tags": [
+        "god_substitution_tilgængelig"
+      ],
+      "modifikatorer": {
+        "afkøling": {
+          "gi_reduktion_pct": 35,
+          "gi_efter": 47,
+          "beskrivelse": "Afkøling danner resistent stivelse",
+          "praktisk_tip": "Kog ris dagen før — perfekt til stegt ris dagen efter"
+        },
+        "fedt_tilsat": {
+          "gi_reduktion_pct": 12,
+          "gi_efter": 63,
+          "beskrivelse": "Kokosolie eller smør i kogevandet",
+          "praktisk_tip": "En teskefuld kokosolie i risen — gammel indisk teknik, virker"
+        }
+      },
+      "substitutioner": [
+        {
+          "råvare": "Basmatris",
+          "gi": 52,
+          "note": "Lavere GI end hvide ris — god kompromis"
+        },
+        {
+          "råvare": "Quinoa",
+          "gi": 53,
+          "note": "Mere protein, bedre næringsværdi"
+        },
+        {
+          "råvare": "Blomkålsris",
+          "gi": 15,
+          "note": "Maksimal GI-reduktion — keto-venlig"
+        }
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Basmati er default-anbefalingen. Hvide ris altid afkølet eller med fedt."
+    },
+    {
+      "id": "sti_003",
+      "navn": "Basmatiris",
+      "kategori": "stivelse",
+      "gi_konventionel": 52,
+      "gi_optimeret": 38,
+      "kulhydrater_100g": 25,
+      "protein_100g": 3.5,
+      "fedt_100g": 0.4,
+      "kalorier_100g": 121,
+      "smartbalanz_tags": [
+        "good_carb",
+        "anbefalet_ristype"
+      ],
+      "modifikatorer": {
+        "afkøling": {
+          "gi_reduktion_pct": 27,
+          "gi_efter": 38,
+          "beskrivelse": "Afkøling virker også på basmati",
+          "praktisk_tip": "Bedste kombination: basmati + afkølet"
+        }
+      },
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "SmartBalanz standard-ris. Altid bedre end hvide ris."
+    },
+    {
+      "id": "sti_004",
+      "navn": "Pasta (hvid, kogt)",
+      "kategori": "stivelse",
+      "gi_konventionel": 71,
+      "gi_optimeret": 45,
+      "kulhydrater_100g": 25,
+      "protein_100g": 5,
+      "fedt_100g": 1,
+      "kalorier_100g": 131,
+      "smartbalanz_tags": [
+        "undgå",
+        "forarbejdet"
+      ],
+      "modifikatorer": {
+        "al_dente": {
+          "gi_reduktion_pct": 15,
+          "gi_efter": 60,
+          "beskrivelse": "Al dente reducerer stivelsesnedbrydning",
+          "praktisk_tip": "Underkog altid pasta — 2 min mindre end pakken siger"
+        },
+        "afkøling": {
+          "gi_reduktion_pct": 30,
+          "gi_efter": 50,
+          "beskrivelse": "Kold pasta har markant lavere GI",
+          "praktisk_tip": "Pastasalat er smartere end varm pasta"
+        }
+      },
+      "substitutioner": [
+        {
+          "råvare": "Quinoa",
+          "gi": 53,
+          "note": "Bedre næringsværdi, lignende tekstur i salater"
+        },
+        {
+          "råvare": "Linsenudler",
+          "gi": 35,
+          "note": "Samme form, halvt GI"
+        },
+        {
+          "råvare": "Squashnudler",
+          "gi": 15,
+          "note": "Maksimal reduktion — keto-venlig"
+        },
+        {
+          "råvare": "Fuldkornspasta",
+          "gi": 50,
+          "note": "Acceptabelt kompromis — mere fiber"
+        }
+      ],
+      "bandlyst": true,
+      "before_after_kandidat": true,
+      "noter": "Bandlyst som standard. Altid erstat med bedre alternativ."
+    },
+    {
+      "id": "sti_005",
+      "navn": "Fuldkornspasta",
+      "kategori": "stivelse",
+      "gi_konventionel": 50,
+      "gi_optimeret": 40,
+      "kulhydrater_100g": 27,
+      "protein_100g": 6,
+      "fedt_100g": 1.5,
+      "kalorier_100g": 140,
+      "smartbalanz_tags": [
+        "acceptabelt_kompromis",
+        "mere_fiber"
+      ],
+      "modifikatorer": {
+        "al_dente": {
+          "gi_reduktion_pct": 20,
+          "gi_efter": 40,
+          "beskrivelse": "Al dente er afgørende ved fuldkornspasta",
+          "praktisk_tip": "Stop kogningen 3 min tidligt — stadig lidt bid i det"
+        }
+      },
+      "substitutioner": [
+        {
+          "råvare": "Quinoa",
+          "gi": 53,
+          "note": "Sammenlignelig GI men langt bedre næringsværdi"
+        },
+        {
+          "råvare": "Linsenudler",
+          "gi": 35,
+          "note": "Klart bedre valg"
+        }
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Acceptabelt kompromis — ikke ideelt, men langt bedre end hvid pasta."
+    },
+    {
+      "id": "sti_006",
+      "navn": "Quinoa",
+      "kategori": "stivelse",
+      "gi_konventionel": 53,
+      "gi_optimeret": 40,
+      "kulhydrater_100g": 22,
+      "protein_100g": 8,
+      "fedt_100g": 3.5,
+      "kalorier_100g": 143,
+      "smartbalanz_tags": [
+        "good_carb",
+        "høj_protein",
+        "anbefalet_substitution"
+      ],
+      "modifikatorer": {
+        "afkøling": {
+          "gi_reduktion_pct": 25,
+          "gi_efter": 40,
+          "beskrivelse": "Afkølet quinoa i salater — lavere GI og mere resistent stivelse",
+          "praktisk_tip": "Kog stor portion, brug kold i salater næste dag"
+        }
+      },
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "SmartBalanz foretrukne stivelse. Erstatter ris og pasta i de fleste retter."
+    },
+    {
+      "id": "sti_007",
+      "navn": "Couscous",
+      "kategori": "stivelse",
+      "gi_konventionel": 65,
+      "gi_optimeret": 45,
+      "kulhydrater_100g": 23,
+      "protein_100g": 3.8,
+      "fedt_100g": 0.2,
+      "kalorier_100g": 112,
+      "smartbalanz_tags": [
+        "middel_gi",
+        "substitution_anbefalet"
+      ],
+      "substitutioner": [
+        {
+          "råvare": "Quinoa",
+          "gi": 53,
+          "note": "Samme anvendelse, bedre profil"
+        },
+        {
+          "råvare": "Blomkålscouscous",
+          "gi": 15,
+          "note": "Riv blomkål groft — perfekt tekstur"
+        }
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Acceptabelt men quinoa er altid bedre."
+    },
+    {
+      "id": "sti_008",
+      "navn": "Rugbrød",
+      "kategori": "stivelse",
+      "gi_konventionel": 55,
+      "gi_optimeret": 40,
+      "kulhydrater_100g": 38,
+      "protein_100g": 8,
+      "fedt_100g": 3,
+      "kalorier_100g": 216,
+      "smartbalanz_tags": [
+        "good_carb",
+        "dansk_identitet",
+        "bevar"
+      ],
+      "modifikatorer": {
+        "fedt_plus_protein_først": {
+          "gi_reduktion_pct": 27,
+          "gi_efter": 40,
+          "beskrivelse": "Smør + protein topping sænker samlet GI markant",
+          "praktisk_tip": "Æg og smør på rugbrødet — ikke syltetøj alene"
+        },
+        "syre_tilsat": {
+          "gi_reduktion_pct": 15,
+          "gi_efter": 47,
+          "beskrivelse": "Syrnede pålæg (sild, remoulade) sænker GI",
+          "praktisk_tip": "Dansk klassiker — sild på rugbrød er metabolisk intelligent"
+        }
+      },
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Rugbrød er dansk identitet og skal bevares. Topping er nøglen."
+    },
+    {
+      "id": "sti_009",
+      "navn": "Hvedemel",
+      "kategori": "stivelse",
+      "gi_konventionel": 70,
+      "gi_optimeret": 45,
+      "kulhydrater_100g": 76,
+      "protein_100g": 10,
+      "fedt_100g": 1,
+      "kalorier_100g": 364,
+      "smartbalanz_tags": [
+        "høj_gi",
+        "substitution_anbefalet"
+      ],
+      "substitutioner": [
+        {
+          "råvare": "Mandelmel",
+          "gi": 25,
+          "note": "Keto-venlig — ændrer tekstur"
+        },
+        {
+          "råvare": "Havremel",
+          "gi": 55,
+          "note": "Bedre fiber, lettere substitution"
+        },
+        {
+          "råvare": "Ølandshvedemel stenkværnet",
+          "gi": 45,
+          "note": "Den ægte vare — signifikant bedre end hvidt hvedemel"
+        }
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Standard hvedemel er problematisk. Ølandshvede er helt anderledes produkt."
+    },
+    {
+      "id": "sti_010",
+      "navn": "Lasagneplader",
+      "kategori": "stivelse",
+      "gi_konventionel": 71,
+      "gi_optimeret": 35,
+      "kulhydrater_100g": 25,
+      "protein_100g": 5,
+      "fedt_100g": 1,
+      "kalorier_100g": 131,
+      "smartbalanz_tags": [
+        "høj_gi",
+        "substitution_anbefalet",
+        "bandlyst_som_standard"
+      ],
+      "substitutioner": [
+        {
+          "råvare": "Squashskiver",
+          "gi": 15,
+          "note": "Skær squash i tynde skiver — perfekt lasagne"
+        },
+        {
+          "råvare": "Aubergineskiver",
+          "gi": 15,
+          "note": "Klassisk melanzane-stil"
+        },
+        {
+          "råvare": "Fuldkornslasagneplader",
+          "gi": 55,
+          "note": "Acceptabelt kompromis"
+        }
+      ],
+      "bandlyst": true,
+      "before_after_kandidat": true,
+      "noter": "Squashlasagne er before/after eksemplet der virker visuelt stærkt."
+    },
+    {
+      "id": "sti_011",
+      "navn": "Nudler (hvide)",
+      "kategori": "stivelse",
+      "gi_konventionel": 70,
+      "gi_optimeret": 35,
+      "kulhydrater_100g": 25,
+      "protein_100g": 4,
+      "fedt_100g": 0.5,
+      "kalorier_100g": 122,
+      "smartbalanz_tags": [
+        "høj_gi",
+        "substitution_anbefalet"
+      ],
+      "substitutioner": [
+        {
+          "råvare": "Glasnudler (bønne)",
+          "gi": 39,
+          "note": "Næsten samme udseende, halvt GI"
+        },
+        {
+          "råvare": "Shirataki nudler",
+          "gi": 0,
+          "note": "Keto-venlig — næsten ingen kulhydrater"
+        },
+        {
+          "råvare": "Squashnudler",
+          "gi": 15,
+          "note": "Spiraliseret squash — frisk og let"
+        }
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Fuldkornsnudler er bedre men stadig forarbejdet. Glasnudler er det nemme skift."
+    },
+    {
+      "id": "sti_012",
+      "navn": "Blomkål",
+      "kategori": "grøntsager",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 5,
+      "protein_100g": 2,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 25,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "super_substitution",
+        "anbefalet"
+      ],
+      "anvendelser_som_substitution": [
+        "Blomkålsris — erstatter hvide ris",
+        "Blomkålscouscous — riv groft",
+        "Blomkålsmos — erstat halvdelen af kartofler",
+        "Blomkålsrisotto — erstatter arborio ris"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Den mest alsidige GI-sænker i SmartBalanz-køkkenet."
+    },
+    {
+      "id": "bæl_001",
+      "navn": "Røde linser",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 26,
+      "gi_optimeret": 26,
+      "kulhydrater_100g": 20,
+      "protein_100g": 9,
+      "fedt_100g": 0.4,
+      "kalorier_100g": 116,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "høj_protein",
+        "good_carb",
+        "gi_sænker_i_retter"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Linser i en ret sænker det samlede GI markant. Tilsæt altid linser til ris-retter."
+    },
+    {
+      "id": "bæl_002",
+      "navn": "Grønne linser",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 30,
+      "gi_optimeret": 30,
+      "kulhydrater_100g": 20,
+      "protein_100g": 9,
+      "fedt_100g": 0.4,
+      "kalorier_100g": 116,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "høj_protein",
+        "good_carb"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Holder formen bedre end røde linser — god i salater."
+    },
+    {
+      "id": "bæl_003",
+      "navn": "Kikærter",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 28,
+      "gi_optimeret": 28,
+      "kulhydrater_100g": 27,
+      "protein_100g": 9,
+      "fedt_100g": 2.6,
+      "kalorier_100g": 164,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "høj_protein",
+        "god_mæthed"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Fantastisk mæthed. Tilsæt til salater for at sænke samlet GI."
+    },
+    {
+      "id": "bæl_004",
+      "navn": "Sorte bønner",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 30,
+      "gi_optimeret": 30,
+      "kulhydrater_100g": 24,
+      "protein_100g": 9,
+      "fedt_100g": 0.5,
+      "kalorier_100g": 132,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "høj_fiber",
+        "good_carb"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Mexicanske retter med sorte bønner er allerede metabolisk intelligente."
+    },
+    {
+      "id": "bæl_005",
+      "navn": "Hvide bønner",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 31,
+      "gi_optimeret": 31,
+      "kulhydrater_100g": 21,
+      "protein_100g": 7,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 114,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "god_fiber"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God i supper og gryderetter."
+    },
+    {
+      "id": "bæl_006",
+      "navn": "Kidney bønner",
+      "kategori": "bælgfrugter",
+      "gi_konventionel": 29,
+      "gi_optimeret": 29,
+      "kulhydrater_100g": 22,
+      "protein_100g": 8,
+      "fedt_100g": 0.5,
+      "kalorier_100g": 127,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "chili_klassiker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Chili con carne med kidney bønner er faktisk god metabolisk ret."
+    },
+    {
+      "id": "pro_001",
+      "navn": "Æg",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0.7,
+      "protein_100g": 13,
+      "fedt_100g": 11,
+      "kalorier_100g": 155,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "gi_sænker",
+        "nul_gi"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Æg sænker GI for hele måltidet. Altid med rugbrød."
+    },
+    {
+      "id": "pro_002",
+      "navn": "Kyllingebryst",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 31,
+      "fedt_100g": 3.6,
+      "kalorier_100g": 165,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "nul_gi"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Neutral GI. Vigtigt som GI-sænker i retter med stivelse."
+    },
+    {
+      "id": "pro_003",
+      "navn": "Hakket oksekød",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 26,
+      "fedt_100g": 15,
+      "kalorier_100g": 250,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "nul_gi"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God GI-sænker i gryderetter med ris og linser."
+    },
+    {
+      "id": "pro_004",
+      "navn": "Laks",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 25,
+      "fedt_100g": 13,
+      "kalorier_100g": 208,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "omega3",
+        "hjerne_venlig"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Omega-3 er direkte hjerne-venlig. Prioriter laks i madplanen."
+    },
+    {
+      "id": "pro_005",
+      "navn": "Torsk",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 18,
+      "fedt_100g": 0.7,
+      "kalorier_100g": 82,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "nul_gi",
+        "dansk_klassiker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Dansk klassiker. Lav fedt men godt protein."
+    },
+    {
+      "id": "pro_006",
+      "navn": "Svinekød",
+      "kategori": "protein",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 27,
+      "fedt_100g": 14,
+      "kalorier_100g": 242,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "nul_gi",
+        "dansk_klassiker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Flæskesteg, koteletter, svinekød generelt er GI-neutral."
+    },
+    {
+      "id": "fed_001",
+      "navn": "Smør",
+      "kategori": "fedt",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0.1,
+      "protein_100g": 0.9,
+      "fedt_100g": 81,
+      "kalorier_100g": 717,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "gi_sænker",
+        "anbefalet",
+        "naturligt_fedt"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "SmartBalanz standard-fedt. Sænker GI for hele måltidet. Brug rigeligt."
+    },
+    {
+      "id": "fed_002",
+      "navn": "Kokosolie",
+      "kategori": "fedt",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 0,
+      "fedt_100g": 100,
+      "kalorier_100g": 862,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "mct_kilde",
+        "gi_sænker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "MCT-kilde. En teskefuld i risen sænker GI. Varmestabilt."
+    },
+    {
+      "id": "fed_003",
+      "navn": "Olivenolie",
+      "kategori": "fedt",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0,
+      "protein_100g": 0,
+      "fedt_100g": 100,
+      "kalorier_100g": 884,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "hjerne_venlig",
+        "antiinflammatorisk"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God til kolde retter og dressinger. Ikke ideel til høj varme."
+    },
+    {
+      "id": "fed_004",
+      "navn": "Fløde (38%)",
+      "kategori": "fedt",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 2.7,
+      "protein_100g": 2,
+      "fedt_100g": 38,
+      "kalorier_100g": 345,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "naturligt_fedt",
+        "sovs_base"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Flødesovs er metabolisk intelligent. Jævn aldrig med mel — kog ind i stedet."
+    },
+    {
+      "id": "mej_001",
+      "navn": "Græsk yoghurt (10%)",
+      "kategori": "mejeriprodukter",
+      "gi_konventionel": 12,
+      "gi_optimeret": 12,
+      "kulhydrater_100g": 4,
+      "protein_100g": 9,
+      "fedt_100g": 10,
+      "kalorier_100g": 143,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "probiotisk",
+        "hjerne_venlig",
+        "anbefalet"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "SmartBalanz standard-mejeri. Fermenteret, højt fedt, lavt GI."
+    },
+    {
+      "id": "mej_002",
+      "navn": "Feta",
+      "kategori": "mejeriprodukter",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 4,
+      "protein_100g": 14,
+      "fedt_100g": 21,
+      "kalorier_100g": 264,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "fermenteret",
+        "god_smag"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Fermenteret. God GI-sænker i salater og gryderetter."
+    },
+    {
+      "id": "mej_003",
+      "navn": "Parmesan",
+      "kategori": "mejeriprodukter",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 3.2,
+      "protein_100g": 38,
+      "fedt_100g": 29,
+      "kalorier_100g": 431,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "høj_protein"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Høj protein, lavt GI. God topping der sænker samlet GI."
+    },
+    {
+      "id": "mej_004",
+      "navn": "Kokosmælk (fuld fedt)",
+      "kategori": "mejeriprodukter",
+      "gi_konventionel": 40,
+      "gi_optimeret": 40,
+      "kulhydrater_100g": 6,
+      "protein_100g": 2,
+      "fedt_100g": 24,
+      "kalorier_100g": 230,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "mct_kilde",
+        "god_i_karry"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "MCT-fedt sænker GI for hele retten. Altid fuld fedt — ikke light."
+    },
+    {
+      "id": "grø_001",
+      "navn": "Gulerødder",
+      "kategori": "grøntsager",
+      "gi_konventionel": 35,
+      "gi_optimeret": 35,
+      "kulhydrater_100g": 10,
+      "protein_100g": 0.9,
+      "fedt_100g": 0.2,
+      "kalorier_100g": 41,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "good_carb"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Rå gulerødder har lavere GI end kogte. God snack."
+    },
+    {
+      "id": "grø_002",
+      "navn": "Spinat",
+      "kategori": "grøntsager",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 3.6,
+      "protein_100g": 2.9,
+      "fedt_100g": 0.4,
+      "kalorier_100g": 23,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "magnesium_rig"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Tilsæt altid spinat — næringsdensitet uden GI-effekt."
+    },
+    {
+      "id": "grø_003",
+      "navn": "Broccoli",
+      "kategori": "grøntsager",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 7,
+      "protein_100g": 2.8,
+      "fedt_100g": 0.4,
+      "kalorier_100g": 34,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "antiinflammatorisk"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God volumen, lavt GI. Al dente — ikke overkogt."
+    },
+    {
+      "id": "grø_004",
+      "navn": "Løg",
+      "kategori": "grøntsager",
+      "gi_konventionel": 10,
+      "gi_optimeret": 10,
+      "kulhydrater_100g": 9,
+      "protein_100g": 1.1,
+      "fedt_100g": 0.1,
+      "kalorier_100g": 40,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "prebiotisk"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Prebiotisk fiber — nærer tarmfloraen. Brug rigeligt."
+    },
+    {
+      "id": "grø_005",
+      "navn": "Hvidløg",
+      "kategori": "grøntsager",
+      "gi_konventionel": 10,
+      "gi_optimeret": 10,
+      "kulhydrater_100g": 33,
+      "protein_100g": 6,
+      "fedt_100g": 0.5,
+      "kalorier_100g": 149,
+      "smartbalanz_tags": [
+        "antiinflammatorisk",
+        "prebiotisk"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Bruges i småmængder — stærk antiinflammatorisk effekt."
+    },
+    {
+      "id": "grø_006",
+      "navn": "Peberfrugt",
+      "kategori": "grøntsager",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 6,
+      "protein_100g": 1,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 31,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "c_vitamin_rig"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Rød peberfrugt indeholder mere C-vitamin end appelsin."
+    },
+    {
+      "id": "grø_007",
+      "navn": "Selleri",
+      "kategori": "grøntsager",
+      "gi_konventionel": 35,
+      "gi_optimeret": 35,
+      "kulhydrater_100g": 9,
+      "protein_100g": 1.5,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 42,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "god_base_i_supper"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God basis i supper og gryderetter."
+    },
+    {
+      "id": "grø_008",
+      "navn": "Grønkål",
+      "kategori": "grøntsager",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 9,
+      "protein_100g": 4.3,
+      "fedt_100g": 0.9,
+      "kalorier_100g": 49,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "superfood",
+        "omega3_plante"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Dansk superfood. Højt næringsstofindhold, lavt GI."
+    },
+    {
+      "id": "grø_009",
+      "navn": "Avocado",
+      "kategori": "grøntsager",
+      "gi_konventionel": 10,
+      "gi_optimeret": 10,
+      "kulhydrater_100g": 9,
+      "protein_100g": 2,
+      "fedt_100g": 15,
+      "kalorier_100g": 160,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "gi_sænker",
+        "hjerne_venlig"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Fedt sænker GI for hele måltidet. Tilsæt til alle retter."
+    },
+    {
+      "id": "grø_010",
+      "navn": "Rødbede",
+      "kategori": "grøntsager",
+      "gi_konventionel": 64,
+      "gi_optimeret": 50,
+      "kulhydrater_100g": 10,
+      "protein_100g": 1.6,
+      "fedt_100g": 0.2,
+      "kalorier_100g": 43,
+      "smartbalanz_tags": [
+        "middel_gi",
+        "fedt_og_syre_hjælper"
+      ],
+      "modifikatorer": {
+        "syre_plus_fedt": {
+          "gi_reduktion_pct": 22,
+          "gi_efter": 50,
+          "beskrivelse": "Eddike og olie i rødbederetter sænker GI markant",
+          "praktisk_tip": "Rødbeder i eddike — klassisk dansk og smart"
+        }
+      },
+      "bandlyst": false,
+      "before_after_kandidat": true,
+      "noter": "Ikke bandlyst — bare kombiner altid med fedt og syre."
+    },
+    {
+      "id": "fru_001",
+      "navn": "Æbler",
+      "kategori": "frugt",
+      "gi_konventionel": 36,
+      "gi_optimeret": 36,
+      "kulhydrater_100g": 14,
+      "protein_100g": 0.3,
+      "fedt_100g": 0.2,
+      "kalorier_100g": 52,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "god_fiber",
+        "dansk_klassiker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God frugt med lavt GI. Pektin-fiber sænker samlet GI i måltidet."
+    },
+    {
+      "id": "fru_002",
+      "navn": "Citron",
+      "kategori": "frugt",
+      "gi_konventionel": 20,
+      "gi_optimeret": 20,
+      "kulhydrater_100g": 9,
+      "protein_100g": 1.1,
+      "fedt_100g": 0.3,
+      "kalorier_100g": 29,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "syre_modifikator"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Citronsaft er en af de mest effektive GI-sænkere. Brug rigeligt."
+    },
+    {
+      "id": "nød_001",
+      "navn": "Valnødder",
+      "kategori": "nødder_frø",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 14,
+      "protein_100g": 15,
+      "fedt_100g": 65,
+      "kalorier_100g": 654,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "omega3",
+        "hjerne_venlig",
+        "gi_sænker"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Omega-3 plantebaseret. Hjerne-venlig snack. Tilsæt til salater."
+    },
+    {
+      "id": "nød_002",
+      "navn": "Mandler",
+      "kategori": "nødder_frø",
+      "gi_konventionel": 15,
+      "gi_optimeret": 15,
+      "kulhydrater_100g": 22,
+      "protein_100g": 21,
+      "fedt_100g": 49,
+      "kalorier_100g": 579,
+      "smartbalanz_tags": [
+        "keto_venlig",
+        "gi_sænker",
+        "høj_protein"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God snack. Mandelmel er bedste substitution for hvedemel i bagning."
+    },
+    {
+      "id": "nød_003",
+      "navn": "Sesamfrø",
+      "kategori": "nødder_frø",
+      "gi_konventionel": 35,
+      "gi_optimeret": 35,
+      "kulhydrater_100g": 23,
+      "protein_100g": 18,
+      "fedt_100g": 48,
+      "kalorier_100g": 573,
+      "smartbalanz_tags": [
+        "lavt_gi",
+        "calcium_rig"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "God i wok og asiatiske retter."
+    },
+    {
+      "id": "kry_001",
+      "navn": "Æblecidereddike",
+      "kategori": "krydderier_saucer",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 0.9,
+      "protein_100g": 0,
+      "fedt_100g": 0,
+      "kalorier_100g": 22,
+      "smartbalanz_tags": [
+        "gi_sænker",
+        "syre_modifikator",
+        "tarmvenlig"
+      ],
+      "gi_sænknings_effekt": "15-20% reduktion i blodsukkerspike ved måltidet",
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Den mest kraftfulde syre-modifikator. Brug i dressinger og marinader."
+    },
+    {
+      "id": "kry_002",
+      "navn": "Ingefær",
+      "kategori": "krydderier_saucer",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 18,
+      "protein_100g": 1.8,
+      "fedt_100g": 0.8,
+      "kalorier_100g": 80,
+      "smartbalanz_tags": [
+        "antiinflammatorisk",
+        "insulinsensitivitet"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Forbedrer insulinsensitivitet. Brug i karry og supper."
+    },
+    {
+      "id": "kry_003",
+      "navn": "Karry",
+      "kategori": "krydderier_saucer",
+      "gi_konventionel": 0,
+      "gi_optimeret": 0,
+      "kulhydrater_100g": 55,
+      "protein_100g": 14,
+      "fedt_100g": 10,
+      "kalorier_100g": 325,
+      "smartbalanz_tags": [
+        "antiinflammatorisk",
+        "kurkumin"
+      ],
+      "bandlyst": false,
+      "before_after_kandidat": false,
+      "noter": "Kurkumin i karry er potent antiinflammatorisk. Bruges i gram — ingen GI-effekt."
+    }
+  ],
+  "gi_beregning_regler": {
+    "beskrivelse": "Regler for beregning af samlet GI for en opskrift",
+    "metode": "Vægtet gennemsnit baseret på kulhydratindhold per ingrediens",
+    "modifikator_stapelning": "Modifikatorer kan ikke stables lineært — max 60% total reduktion",
+    "protein_fedt_effekt": "Protein og fedt i retten reducerer samlet GI med 10-20%",
+    "rækkefølge_effekt": "Protein/grøntsager spist først reducerer GI med yderligere 10-15%",
+    "portion_note": "GI er uafhængig af portion — glykæmisk belastning (GL) tager portion med"
+  },
+  "smartbalanz_tricks_oversigt": [
+    {
+      "trick": "Afkøling",
+      "virkning": "Danner resistent stivelse",
+      "gi_reduktion": "25-51%",
+      "bedst_til": [
+        "kartofler",
+        "ris",
+        "pasta",
+        "quinoa"
+      ],
+      "praktisk": "Kog dagen før — spis kold eller genopvarm kort"
+    },
+    {
+      "trick": "Fedt tilsat",
+      "virkning": "Forsinker mavens tømning",
+      "gi_reduktion": "10-20%",
+      "bedst_til": [
+        "ris",
+        "kartofler",
+        "brød"
+      ],
+      "praktisk": "Smør, olie eller kokosolie i/på alle stivelsesretter"
+    },
+    {
+      "trick": "Syre tilsat",
+      "virkning": "Sænker glukoseoptagelse i tarmen",
+      "gi_reduktion": "15-25%",
+      "bedst_til": [
+        "kartofler",
+        "ris",
+        "salater",
+        "brød"
+      ],
+      "praktisk": "Æblecidereddike, citronsaft eller fermenterede råvarer"
+    },
+    {
+      "trick": "Al dente tilberedning",
+      "virkning": "Reducerer stivelsesnedbrydning",
+      "gi_reduktion": "10-20%",
+      "bedst_til": [
+        "pasta",
+        "ris",
+        "grøntsager"
+      ],
+      "praktisk": "Stop kogning 2-3 min tidligt — altid lidt bid i det"
+    },
+    {
+      "trick": "Rækkefølge",
+      "virkning": "Protein og fiber dæmper blodsukkerspike",
+      "gi_reduktion": "10-15%",
+      "bedst_til": [
+        "alle måltider"
+      ],
+      "praktisk": "Grøntsager og protein først — kulhydrater sidst på tallerkenen"
+    },
+    {
+      "trick": "Kombination",
+      "virkning": "Aldrig hurtige kulhydrater alene",
+      "gi_reduktion": "20-40%",
+      "bedst_til": [
+        "alle stivelsesretter"
+      ],
+      "praktisk": "Altid fedt + protein + kulhydrat i samme måltid"
+    }
+  ]
+}
