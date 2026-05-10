@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBalanz — Balance for Livet</title>
+<meta name="description" content="Du føler at noget er ud af spor. Træthed, stress og søvn. Vægt, indre balance eller glemsomhed — uden forklaring. SmartBalanz kortlægger det med dig.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --surface: #141210;
+    --surface2: #1c1a16;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0ebe2;
+    --muted: #7a7468;
+    --gold: #b8955a;
+    --gold-light: #d4b07a;
+    --gold-pale: rgba(184,149,90,0.08);
+    --green: #4a7a5a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+  }
+
+  nav.scrolled {
+    background: rgba(12,11,9,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    align-items: center;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--gold) !important;
+    color: var(--bg) !important;
+    padding: 0.5rem 1.25rem !important;
+    border-radius: 2px;
+    font-weight: 500 !important;
+    letter-spacing: 0.1em !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--bg) !important; }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    display: block;
+    width: 22px;
+    height: 1.5px;
+    background: var(--muted);
+    transition: all 0.3s;
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 99;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+  }
+
+  .mobile-menu.open { display: flex; }
+
+  .mobile-menu a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .mobile-menu a:hover { color: var(--gold); }
+
+  .mobile-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-size: 1.5rem;
+    color: var(--muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    line-height: 1;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(184,149,90,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(74,122,90,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+    max-width: 900px;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-body {
+    max-width: 580px;
+    margin: 0 auto 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.35s forwards;
+  }
+
+  .hero-body p {
+    font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .hero-body p:last-child { margin-bottom: 0; }
+
+  .hero-body strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.5s forwards;
+    margin-bottom: 5rem;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--bg);
+    border: none;
+    padding: 1rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(184,149,90,0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 1rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-scroll {
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  .scroll-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 200px;
+    margin: 0 auto 4rem;
+  }
+
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-divider span {
+    color: var(--gold);
+    font-size: 0.8rem;
+  }
+
+  /* SYMPTOMS SECTION */
+  .symptoms {
+    padding: 6rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 300;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 500px;
+    margin: 0 auto 4rem;
+  }
+
+  .symptoms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .symptom-item {
+    background: var(--surface);
+    padding: 2rem 1.5rem;
+    transition: background 0.2s;
+  }
+
+  .symptom-item:hover { background: var(--surface2); }
+
+  .symptom-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+
+  .symptom-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+
+  .symptom-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* TOOLS SECTION */
+  .tools {
+    padding: 6rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tools-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 4rem;
+  }
+
+  .tool-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2rem;
+    text-decoration: none;
+    display: block;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+  }
+
+  .tool-card:hover {
+    border-color: rgba(184,149,90,0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+  }
+
+  .tool-card:hover::before { transform: scaleX(1); }
+
+  .tool-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    color: rgba(184,149,90,0.2);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .tool-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .tool-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .tool-link {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tool-link::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .tool-card:hover .tool-link::after { transform: translateX(4px); }
+
+  /* PHILOSOPHY */
+  .philosophy {
+    padding: 8rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .philosophy-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2.2rem);
+    font-weight: 300;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--text);
+    margin-bottom: 2rem;
+    position: relative;
+    padding: 0 2rem;
+  }
+
+  .philosophy-quote::before {
+    content: '"';
+    position: absolute;
+    left: -0.5rem;
+    top: -0.5rem;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.2;
+    line-height: 1;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .philosophy-points {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+    text-align: left;
+  }
+
+  .philosophy-point {
+    padding: 1.5rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .philosophy-point-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .philosophy-point-text {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* QUIZ CTA */
+  .quiz-cta {
+    padding: 6rem 2rem;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .quiz-cta-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .quiz-score-preview {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0.5rem 1rem;
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,149,90,0.2);
+    border-radius: 2px;
+  }
+
+  .quiz-score-preview span {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .quiz-meta {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .quiz-meta-item {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .quiz-meta-item::before {
+    content: '·';
+    color: var(--gold);
+  }
+
+  /* ALEXANDER */
+  .alexander {
+    padding: 6rem 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .alexander-inner {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .alexander-left {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .alexander-initial {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 8rem;
+    font-weight: 300;
+    color: rgba(184,149,90,0.15);
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  .alexander-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+  }
+
+  .alexander-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.6;
+  }
+
+  .alexander-right p {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .alexander-right p strong {
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  .alexander-certs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .cert-badge {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+  }
+
+  .placeholder-note {
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,149,90,0.15);
+    border-radius: 3px;
+    font-size: 0.78rem;
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-tagline {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .philosophy-points { grid-template-columns: 1fr; }
+    .alexander-inner { grid-template-columns: 1fr; gap: 2rem; }
+    .alexander-left { position: static; }
+    .alexander-initial { font-size: 5rem; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { justify-content: center; }
+  }
+
+  @media (max-width: 480px) {
+    .hero-actions { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobile()">✕</button>
+  <a href="#" onclick="closeMobile()">Start</a>
+  <a href="smartbalanz_quiz_v2.html" onclick="closeMobile()">Quiz</a>
+  <a href="smartbalanz_madplan_4uger.html" onclick="closeMobile()">Madplan</a>
+  <a href="smartbalanz_tracker.html" onclick="closeMobile()">Tracker</a>
+  <a href="smartbalanz_runer_v3.html" onclick="closeMobile()">Runer</a>
+  <a href="#om" onclick="closeMobile()">Om Alexander</a>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">SmartBalanz</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Start</a></li>
+    <li><a href="smartbalanz_quiz_v2.html">Quiz</a></li>
+    <li><a href="smartbalanz_madplan_4uger.html">Madplan</a></li>
+    <li><a href="smartbalanz_tracker.html">Tracker</a></li>
+    <li><a href="smartbalanz_runer_v3.html">Runer</a></li>
+    <li><a href="#om">Om Alexander</a></li>
+    <li><a href="smartbalanz_quiz_v2.html" class="nav-cta">Tag testen</a></li>
+  </ul>
+  <div class="hamburger" onclick="openMobile()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">SmartBalanz — Balance for Livet</div>
+  <h1 class="hero-title">
+    Du føler at noget<br>er <em>ud af spor</em>
+  </h1>
+  <div class="hero-body">
+    <p>Træthed, stress og søvn. Vægt, indre balance eller glemsomhed <strong>— uden forklaring.</strong></p>
+    <p>Og vi ved at det ikke er nemt. Derfor kortlægger vi det med dig. Uden forbud. Uden at du mister dig selv og din identitet.</p>
+  </div>
+  <div class="hero-actions">
+    <a href="smartbalanz_quiz_v2.html" class="btn-primary">Tag din metaboliske kortlægning</a>
+    <a href="#vaerktoejer" class="btn-secondary">Se hvad vi tilbyder</a>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <div class="scroll-label">Scroll</div>
+  </div>
+</section>
+
+<!-- SYMPTOMS -->
+<section class="symptoms" id="symptomer">
+  <div class="section-divider"><span>✦</span></div>
+  <div class="section-eyebrow reveal">Kender du det?</div>
+  <h2 class="section-title reveal">Kroppen sender signaler.<br>Vi lærer dig at læse dem.</h2>
+  <p class="section-sub reveal">Det begynder stille. Næsten umærkeligt. Men kroppen ved det godt.</p>
+  <div class="symptoms-grid reveal">
+    <div class="symptom-item">
+      <span class="symptom-icon">🌫</span>
+      <div class="symptom-name">Brainfog</div>
+      <div class="symptom-desc">Tankerne er der — men de kommer ikke frem. Koncentrationen hakker.</div>
+    </div>
+    <div class="symptom-item">
+      <span class="symptom-icon">⚡</span>
+      <div class="symptom-name">Træthed</div>
+      <div class="symptom-desc">Ikke bare søvnmangel. En træthed der ikke går væk med hvile.</div>
+    </div>
+    <div class="symptom-item">
+      <span class="symptom-icon">🌙</span>
+      <div class="symptom-name">Søvn</div>
+      <div class="symptom-desc">Du sover — men vågner ikke udhvilet. Natten gør ikke sin opgave.</div>
+    </div>
+    <div class="symptom-item">
+      <span class="symptom-icon">⚖️</span>
+      <div class="symptom-name">Vægt</div>
+      <div class="symptom-desc">Ingenting har ændret sig — men vægten bevæger sig alligevel.</div>
+    </div>
+    <div class="symptom-item">
+      <span class="symptom-icon">🌀</span>
+      <div class="symptom-name">Stress</div>
+      <div class="symptom-desc">Et indre tempo der ikke vil falde til ro. Selv når du holder fri.</div>
+    </div>
+    <div class="symptom-item">
+      <span class="symptom-icon">🧩</span>
+      <div class="symptom-name">Glemsomhed</div>
+      <div class="symptom-desc">Navne. Aftaler. Ord midt i en sætning. Det var ikke sådan før.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOLS -->
+<section class="tools" id="vaerktoejer">
+  <div class="tools-inner">
+    <div class="section-eyebrow reveal">Dine værktøjer</div>
+    <h2 class="section-title reveal">Kortlægning i tre niveauer.<br>Ét formål: Klarhed.</h2>
+    <p class="section-sub reveal">Start hvor du er. Gå så dybt du vil. Ingen login. Dine data er dine.</p>
+    <div class="tools-grid">
+      <a href="smartbalanz_quiz_v2.html" class="tool-card reveal">
+        <div class="tool-number">01</div>
+        <div class="tool-name">Metabolisk Assessment</div>
+        <div class="tool-desc">56 spørgsmål der kortlægger dit energimønster, søvn, kost og stressniveau. Psykologisk sofistikeret — ingen kan se hvad vi leder efter. Du får et øjeblikkeligt snapshot og kan downloade dine data.</div>
+        <div class="tool-link">Start kortlægning</div>
+      </a>
+      <a href="smartbalanz_madplan_4uger.html" class="tool-card reveal">
+        <div class="tool-number">02</div>
+        <div class="tool-name">Nyt Nordisk Balanz Kost</div>
+        <div class="tool-desc">4 ugers roterende madplan baseret på Good Carbs — ikke Low Carbs. Vegetarisk base med GI-scores på hvert måltid. Morgenmad, frokost og aftensmad. 75g kulhydrat om dagen.</div>
+        <div class="tool-link">Se madplanen</div>
+      </a>
+      <a href="smartbalanz_tracker.html" class="tool-card reveal">
+        <div class="tool-number">03</div>
+        <div class="tool-name">Metabolisk Tracker</div>
+        <div class="tool-desc">Log glukose, ketoner, GKI, søvn, energi og klarhed. Data gemmes lokalt på din enhed — aldrig hos os. Export til JSON med ét klik. Din baseline. Din rejse.</div>
+        <div class="tool-link">Åbn tracker</div>
+      </a>
+      <a href="smartbalanz_runer_v3.html" class="tool-card reveal">
+        <div class="tool-number">04</div>
+        <div class="tool-name">Tre Rune Orakel</div>
+        <div class="tool-desc">Nordisk selvrefleksion baseret på Elder Futhark. Træk dine runesten fysisk — vælg dem digitalt. Nuværende situation · Handling · Neue Situation. Et spejl — ikke spådom.</div>
+        <div class="tool-link">Åbn oraklet</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy">
+  <div class="section-divider"><span>✦</span></div>
+  <div class="philosophy-quote reveal">
+    Hvis du vil forstå din metabolisme, kan du lige så godt starte her.
+  </div>
+  <div class="philosophy-points reveal">
+    <div class="philosophy-point">
+      <div class="philosophy-point-title">Ingen forbud</div>
+      <div class="philosophy-point-text">Du må beholde dine kartofler. Din sovs. Din mad. Vi justerer — vi amputerer ikke.</div>
+    </div>
+    <div class="philosophy-point">
+      <div class="philosophy-point-title">Forensisk tilgang</div>
+      <div class="philosophy-point-text">Vi kortlægger mønstre. Vi ser dynamikker. Vi finder hullerne i taget — og lukker dem et ad gangen.</div>
+    </div>
+    <div class="philosophy-point">
+      <div class="philosophy-point-title">Din identitet</div>
+      <div class="philosophy-point-text">Madkultur er identitet. Nordisk råvaretradition er ikke en diæt — det er en arv der tilfældigvis er metabolisk intelligent.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ CTA -->
+<section class="quiz-cta">
+  <div class="quiz-cta-inner reveal">
+    <div class="quiz-score-preview">
+      <span>✦</span>
+      <span>Hvor metabolisk stabilt er du?</span>
+    </div>
+    <h2 class="section-title" style="margin-bottom: 1rem;">Tag din kortlægning nu</h2>
+    <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem;">56 spørgsmål. 6 kategorier. Et øjeblikkeligt snapshot af din metaboliske stabilitet. Ingen login. Ingen data gemt hos os. Dine svar er dine.</p>
+    <a href="smartbalanz_quiz_v2.html" class="btn-primary">Start assessment — det tager ~12 minutter</a>
+    <div class="quiz-meta">
+      <div class="quiz-meta-item">Ingen login</div>
+      <div class="quiz-meta-item">Ingen data gemt</div>
+      <div class="quiz-meta-item">Download dine resultater</div>
+      <div class="quiz-meta-item">Gratis</div>
+    </div>
+  </div>
+</section>
+
+<!-- ALEXANDER -->
+<section class="alexander" id="om">
+  <div class="alexander-inner">
+    <div class="alexander-left reveal">
+      <div class="alexander-initial">A</div>
+      <div class="alexander-name">Alexander Birk</div>
+      <div class="alexander-title">Forensisk Analytiker<br>Metabolisk & Kognitiv Sundhed<br>Prævention & Helhedsforståelse</div>
+      <div class="alexander-certs">
+        <span class="cert-badge">Stanford — Food & Health</span>
+        <span class="cert-badge">Emory — Brain & Health</span>
+        <span class="cert-badge">AMU — Demens</span>
+      </div>
+    </div>
+    <div class="alexander-right reveal">
+      <p>Jeg er ikke læge. Ikke forsker. Ikke professor. Jeg har ingen hvid kittel i skabet og jeg vil ikke sælge dig noget.</p>
+      <p>Jeg er <strong>forensisk analytiker</strong> — jeg kortlægger mønstre andre ikke ser. Jeg har arbejdet midt i det danske plejesystem og mødt mennesker med MCI og demens. De møder har ledt mig ind i den moderne metaboliske forskning og gjort mig til brobygger mellem videnskab og virkelighed.</p>
+      <p>Mit eget selveksperiment kører live. Mine egne data — glukose, ketoner, GKI, søvn — er ikke perfekte. Men de bevæger sig i den rigtige retning. <strong>Det er det der tæller.</strong></p>
+      <p>SmartBalanz er ikke en klinik. Det er et kortlægningsværktøj. Og kortlægning begynder altid med de rigtige spørgsmål.</p>
+      <div class="placeholder-note">
+        📝 Fuld Om-side kommer snart — foredrag, konsultation og n=1 dokumentation.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">SmartBalanz</div>
+  <div class="footer-tagline">Hvis du vil forstå din metabolisme, kan du lige så godt starte her.</div>
+  <ul class="footer-links">
+    <li><a href="smartbalanz_quiz_v2.html">Quiz</a></li>
+    <li><a href="smartbalanz_madplan_4uger.html">Madplan</a></li>
+    <li><a href="smartbalanz_tracker.html">Tracker</a></li>
+    <li><a href="smartbalanz_runer_v3.html">Runer</a></li>
+    <li><a href="#om">Om</a></li>
+  </ul>
+</footer>
+
+<script>
+// NAV SCROLL
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// MOBILE MENU
+function openMobile() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobile() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

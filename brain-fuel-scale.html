@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hjernens Brændstofskala</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d26;
+    --border: #2a2d3a;
+    --text: #e8e4dc;
+    --muted: #6b6f7e;
+    --green: #4ade80;
+    --yellow: #fbbf24;
+    --orange: #f97316;
+    --red: #ef4444;
+    --accent: #7dd3fc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-weight: 300;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 700px;
+  }
+
+  /* GKI SCALE */
+  .scale-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .scale-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-bottom: 1.2rem;
+  }
+
+  .scale-bar {
+    position: relative;
+    height: 14px;
+    border-radius: 999px;
+    background: linear-gradient(to right,
+      var(--green) 0%,
+      var(--yellow) 35%,
+      var(--orange) 60%,
+      var(--red) 100%
+    );
+    margin-bottom: 0.6rem;
+  }
+
+  .scale-markers {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+
+  .zones {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .zone {
+    border-radius: 10px;
+    padding: 0.8rem 0.6rem;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .zone .gki-range {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .zone .zone-name {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.4rem;
+  }
+
+  .zone .zone-desc {
+    font-size: 0.68rem;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .zone.optimal { border-color: #4ade8060; background: #4ade8008; }
+  .zone.optimal .gki-range { color: var(--green); }
+  .zone.wellness { border-color: #fbbf2460; background: #fbbf2408; }
+  .zone.wellness .gki-range { color: var(--yellow); }
+  .zone.metabolic { border-color: #f9731660; background: #f9731608; }
+  .zone.metabolic .gki-range { color: var(--orange); }
+  .zone.risk { border-color: #ef444460; background: #ef444408; }
+  .zone.risk .gki-range { color: var(--red); }
+
+  /* CALCULATOR */
+  .calc-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .calc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-group label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-group input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .input-group input:focus {
+    border-color: var(--accent);
+  }
+
+  .result-box {
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.4s ease;
+  }
+
+  .result-gki {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    line-height: 1;
+    min-width: 80px;
+    transition: color 0.4s;
+  }
+
+  .result-info .result-zone {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 0.4rem;
+  }
+
+  .result-info .result-message {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* BRAIN CAPACITY */
+  .brain-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .brain-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .brain-subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .age-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .age-row {
+    display: grid;
+    grid-template-columns: 110px 1fr 60px;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .age-label {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .age-label strong {
+    display: block;
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+
+  .capacity-track {
+    height: 8px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .capacity-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s ease;
+  }
+
+  .capacity-pct {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    text-align: right;
+  }
+
+  /* FOOTER NOTE */
+  .footnote {
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .pointer {
+    position: absolute;
+    top: -6px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px white;
+    transform: translateX(-50%);
+    transition: left 0.6s ease;
+    cursor: default;
+  }
+
+  .pointer-label {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    white-space: nowrap;
+    color: white;
+    background: #333;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Hjernens Brændstofskala</h1>
+    <p>Glukose · Ketoner · GKI — hvad betyder dine tal egentlig?</p>
+  </div>
+
+  <!-- ZONE OVERVIEW -->
+  <div class="scale-wrapper">
+    <div class="scale-label">GKI — Glukose/Keton Indeks (mmol/L ÷ mmol/L)</div>
+    <div class="scale-bar">
+      <div class="pointer" id="scalePointer" style="left: 85%">
+        <div class="pointer-label" id="pointerLabel">Dit GKI</div>
+      </div>
+    </div>
+    <div class="scale-markers">
+      <span>1</span>
+      <span>3</span>
+      <span>6</span>
+      <span>9</span>
+      <span>15+</span>
+    </div>
+    <div class="zones">
+      <div class="zone optimal">
+        <div class="gki-range">1–3</div>
+        <div class="zone-name">Terapeutisk</div>
+        <div class="zone-desc">Alvorlig sygdom, kræft, fremskreden demens</div>
+      </div>
+      <div class="zone wellness">
+        <div class="gki-range">3–6</div>
+        <div class="zone-name">Metabolisk</div>
+        <div class="zone-desc">Diabetes, overvægt, insulin­resistens</div>
+      </div>
+      <div class="zone metabolic">
+        <div class="gki-range">6–9</div>
+        <div class="zone-name">Wellness</div>
+        <div class="zone-desc">Let ketose — forebyggelse & velvære</div>
+      </div>
+      <div class="zone risk">
+        <div class="gki-range">&gt;9</div>
+        <div class="zone-name">Standard</div>
+        <div class="zone-desc">Typisk vestlig kost — ingen ketose</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALCULATOR -->
+  <div class="calc-wrapper">
+    <div class="calc-title">Beregn dit GKI</div>
+    <div class="inputs">
+      <div class="input-group">
+        <label>Blodglukose (mmol/L)</label>
+        <input type="number" id="glucose" placeholder="f.eks. 6.0" step="0.1" min="1" max="20">
+      </div>
+      <div class="input-group">
+        <label>Ketoner (mmol/L)</label>
+        <input type="number" id="ketones" placeholder="f.eks. 0.4" step="0.1" min="0.1" max="8">
+      </div>
+    </div>
+    <div class="result-box" id="resultBox">
+      <div class="result-gki" id="resultGki">—</div>
+      <div class="result-info">
+        <div class="result-zone" id="resultZone">Indtast dine værdier</div>
+        <div class="result-message" id="resultMessage">Din hjerne lever primært på glukose. Ketoner er næsten fraværende.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRAIN CAPACITY BY AGE -->
+  <div class="brain-wrapper">
+    <div class="brain-title">Hjernens glukoseoptagelse med alderen</div>
+    <div class="brain-subtitle">Baseret på Cunnane PET-studier — relativ kapacitet sammenlignet med ung voksen</div>
+    <div class="age-groups">
+      <div class="age-row">
+        <div class="age-label"><strong>20–35 år</strong>Ung voksen</div>
+        <div class="capacity-track"><div class="capacity-fill" style="width:100%; background: var(--green);"></div></div>
+        <div class="capacity-pct" style="color:var(--green)">100%</div>
+      </div>
+      <div class="age-row">
+        <div class="age-label"><strong>40–55 år</strong>Middelalder</div>
+        <div class="capacity-track"><div class="capacity-fill" style="width:85%; background: var(--yellow);"></div></div>
+        <div class="capacity-pct" style="color:var(--yellow)">~85%</div>
+      </div>
+      <div class="age-row">
+        <div class="age-label"><strong>55–70 år</strong>Ældre voksen</div>
+        <div class="capacity-track"><div class="capacity-fill" style="width:75%; background: var(--orange);"></div></div>
+        <div class="capacity-pct" style="color:var(--orange)">~75%</div>
+      </div>
+      <div class="age-row">
+        <div class="age-label"><strong>MCI / tidlig demens</strong></div>
+        <div class="capacity-track"><div class="capacity-fill" style="width:60%; background: #f97316;"></div></div>
+        <div class="capacity-pct" style="color:#f97316">~60%</div>
+      </div>
+      <div class="age-row">
+        <div class="age-label"><strong>Fremskreden demens</strong></div>
+        <div class="capacity-track"><div class="capacity-fill" style="width:40%; background: var(--red);"></div></div>
+        <div class="capacity-pct" style="color:var(--red)">~40%</div>
+      </div>
+    </div>
+    <div style="margin-top:1.2rem; padding:1rem; background:var(--bg); border-radius:10px; border:1px solid var(--border);">
+      <p style="font-size:0.8rem; color:var(--accent); line-height:1.6;">
+        <strong>Nøglepointe:</strong> Ketoner optages normalt i hjernen selv ved MCI og demens — 
+        mens glukoseoptagelsen svigter. Det er derfor retningen mod lavere GKI er forebyggende, 
+        ikke terapeutisk ekstremisme.
+      </p>
+    </div>
+  </div>
+
+  <div class="footnote">
+    Baseret på forskning af Dr. Stephen Cunnane, Université de Sherbrooke &amp; Dr. Mary Newport.<br>
+    GKI = Glukose (mmol/L) ÷ Ketoner (mmol/L) · Måleredskab: Keto-Mojo eller tilsvarende
+  </div>
+</div>
+
+<script>
+  const glucoseInput = document.getElementById('glucose');
+  const ketonesInput = document.getElementById('ketones');
+  const resultGki = document.getElementById('resultGki');
+  const resultZone = document.getElementById('resultZone');
+  const resultMessage = document.getElementById('resultMessage');
+  const resultBox = document.getElementById('resultBox');
+  const scalePointer = document.getElementById('scalePointer');
+  const pointerLabel = document.getElementById('pointerLabel');
+
+  function getZone(gki) {
+    if (gki <= 3) return {
+      name: 'Terapeutisk ketose',
+      message: 'Din hjerne får betydelig energi fra ketoner. Dette niveau kræver tæt opfølgning og er typisk forbeholdt behandling af alvorlig sygdom.',
+      color: '#4ade80',
+      bg: '#4ade8010',
+      border: '#4ade8040',
+      pct: Math.max(2, (gki / 15) * 100)
+    };
+    if (gki <= 6) return {
+      name: 'Metabolisk zone',
+      message: 'God metabolisk fleksibilitet. Hjernen bruger en blanding af glukose og ketoner. Relevant ved diabetes, overvægt og insulinresistens.',
+      color: '#fbbf24',
+      bg: '#fbbf2410',
+      border: '#fbbf2440',
+      pct: Math.max(5, (gki / 15) * 100)
+    };
+    if (gki <= 9) return {
+      name: 'Wellness zone ✓',
+      message: 'Let ketose — et realistisk og bæredygtigt mål for forebyggelse. Her er du i god retning uden ekstrem kost.',
+      color: '#f97316',
+      bg: '#f9731610',
+      border: '#f9731640',
+      pct: (gki / 15) * 100
+    };
+    return {
+      name: 'Standard vestlig kost',
+      message: 'Hjernen kører primært på glukose. Ingen ketoner til rådighed som backup-brændstof. Bevæg dig i retning af GKI under 9.',
+      color: '#ef4444',
+      bg: '#ef444410',
+      border: '#ef444440',
+      pct: Math.min(98, (gki / 15) * 100)
+    };
+  }
+
+  function calculate() {
+    const g = parseFloat(glucoseInput.value);
+    const k = parseFloat(ketonesInput.value);
+
+    if (!g || !k || k === 0) return;
+
+    const gki = Math.round((g / k) * 10) / 10;
+    const zone = getZone(gki);
+
+    resultGki.textContent = gki.toFixed(1);
+    resultGki.style.color = zone.color;
+    resultZone.textContent = zone.name;
+    resultZone.style.color = zone.color;
+    resultMessage.textContent = zone.message;
+    resultBox.style.borderColor = zone.border;
+    resultBox.style.background = zone.bg;
+
+    // Move pointer on scale (clamped 2–96%)
+    const pct = Math.min(96, Math.max(2, (Math.min(gki, 15) / 15) * 100));
+    scalePointer.style.left = pct + '%';
+    pointerLabel.textContent = 'GKI ' + gki.toFixed(1);
+  }
+
+  glucoseInput.addEventListener('input', calculate);
+  ketonesInput.addEventListener('input', calculate);
+
+  // Preload Alex's values
+  glucoseInput.value = '6.0';
+  ketonesInput.value = '0.4';
+  calculate();
+</script>
+</body>
+</html>

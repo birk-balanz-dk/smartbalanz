@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBalanz — 4 Ugers Madplan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ef;
+    --surface: #ffffff;
+    --surface2: #f0ece4;
+    --border: rgba(0,0,0,0.08);
+    --text: #1a1814;
+    --muted: #8a8578;
+    --gold: #9a7a4a;
+    --gold-light: #c4a06e;
+    --gold-pale: #f0e8d8;
+    --green: #4a7a5a;
+    --green-pale: #e8f0ea;
+    --red: #8a3a2a;
+    --red-pale: #f5e8e4;
+    --snyde: #5a3a7a;
+    --snyde-pale: #ede8f5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* GRAIN */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--text);
+    color: var(--bg);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  }
+
+  .header-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    color: #f0e8d8;
+    margin-bottom: 0.5rem;
+  }
+
+  .header-sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+  }
+
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+
+  .header-meta-item {
+    text-align: center;
+  }
+
+  .header-meta-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+
+  .header-meta-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(240,232,216,0.5);
+    margin-top: 4px;
+  }
+
+  /* LEGEND */
+  .legend {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1.5rem 2rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* NAV */
+  .week-nav {
+    display: flex;
+    gap: 0;
+    justify-content: center;
+    padding: 1.5rem 2rem 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  }
+
+  .week-btn {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0.8rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .week-btn:hover { color: var(--text); }
+
+  .week-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+    font-weight: 500;
+  }
+
+  /* CONTAINER */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  /* WEEK HEADER */
+  .week-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .week-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    color: var(--text);
+  }
+
+  .week-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* BATCH COOKING */
+  .batch-box {
+    background: var(--gold-pale);
+    border: 1px solid rgba(154,122,74,0.2);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .batch-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .batch-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+
+  .batch-text {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  /* DAYS GRID */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* DAY CARD */
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+
+  .day-card:hover {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  }
+
+  .day-header {
+    padding: 1rem 1.25rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .day-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .day-date {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* MEALS */
+  .meals {
+    padding: 0;
+  }
+
+  .meal {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .meal:last-child { border-bottom: none; }
+
+  .meal-type {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  .meal-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+
+  .meal-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .gi-badge {
+    font-size: 0.62rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  .gi-low { background: var(--green-pale); color: var(--green); }
+  .gi-med { background: var(--gold-pale); color: var(--gold); }
+  .gi-note { background: var(--surface2); color: var(--muted); }
+
+  .carb-badge {
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .snyde-badge {
+    font-size: 0.62rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    background: var(--snyde-pale);
+    color: var(--snyde);
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
+  .meal-snyde {
+    margin-top: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--snyde);
+    font-style: italic;
+    line-height: 1.4;
+    padding: 0.4rem 0.6rem;
+    background: var(--snyde-pale);
+    border-radius: 3px;
+    border-left: 2px solid var(--snyde);
+  }
+
+  .meal-note {
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+    line-height: 1.4;
+  }
+
+  /* WEEKEND SPECIAL */
+  .day-card.weekend .day-header {
+    background: var(--surface2);
+  }
+
+  .day-card.snyde-day .day-header {
+    background: var(--snyde-pale);
+  }
+
+  .day-card.snyde-day .day-name {
+    color: var(--snyde);
+  }
+
+  /* WEEK SUMMARY */
+  .week-summary {
+    margin-top: 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .summary-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .summary-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+
+  /* HIDDEN WEEKS */
+  .week-content { display: none; }
+  .week-content.active { display: block; }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 3rem 2rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
+  }
+
+  footer span {
+    color: var(--gold);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 600px) {
+    .header-meta { gap: 1.5rem; }
+    .week-btn { padding: 0.8rem 1rem; font-size: 0.72rem; }
+    .container { padding: 1rem; }
+    .days-grid { grid-template-columns: 1fr; }
+  }
+
+  /* PRINT */
+  @media print {
+    .week-nav { position: static; }
+    .week-content { display: block !important; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-logo">SmartBalanz</div>
+  <div class="header-sub">Nyt Nordisk Balanz Kost — 4 Ugers Madplan</div>
+  <div class="header-meta">
+    <div class="header-meta-item">
+      <div class="header-meta-num">75g</div>
+      <div class="header-meta-label">Kulhydrat / dag</div>
+    </div>
+    <div class="header-meta-item">
+      <div class="header-meta-num">28</div>
+      <div class="header-meta-label">Dage</div>
+    </div>
+    <div class="header-meta-item">
+      <div class="header-meta-num">100%</div>
+      <div class="header-meta-label">Vegetarisk base</div>
+    </div>
+    <div class="header-meta-item">
+      <div class="header-meta-num">4×</div>
+      <div class="header-meta-label">Snyde-muligheder</div>
+    </div>
+  </div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#4a7a5a"></div> Lavt GI (under 40)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#9a7a4a"></div> Middel GI (40-55)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5a3a7a"></div> Snyde-mulighed (Alexander)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8a8578"></div> Batch-cooking anbefalet</div>
+</div>
+
+<div class="week-nav">
+  <button class="week-btn active" onclick="showWeek(1, this)">Uge 1</button>
+  <button class="week-btn" onclick="showWeek(2, this)">Uge 2</button>
+  <button class="week-btn" onclick="showWeek(3, this)">Uge 3</button>
+  <button class="week-btn" onclick="showWeek(4, this)">Uge 4</button>
+</div>
+
+<div class="container">
+
+  <!-- UGE 1 -->
+  <div class="week-content active" id="week-1">
+    <div class="week-header">
+      <div class="week-title">Uge 1</div>
+      <div class="week-subtitle">Forår · Maj 2026</div>
+    </div>
+    <div class="batch-box">
+      <div class="batch-icon">⚙️</div>
+      <div>
+        <div class="batch-title">Batch-cooking søndag</div>
+        <div class="batch-text">Kog 400g grønne linser + 300g kikærter. Hold i køleskab hele ugen. Lav stor portion blomkålsmos — bruges til frokost mandag. Hårdkog 6 æg til madpakker.</div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Mandag</div>
+          <div class="day-date">Dag 1</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og blåbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Laves aftenen før. Kanel + valnødder ovenpå. Kefir-syren sænker GI markant.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Blomkålsmos med hårdkogt æg og purløg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~10g kulhydrat</span>
+            </div>
+            <div class="meal-note">Rester fra søndagens batch. Koldt eller ved stuetemperatur.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Blomkålsret med æg og parmesan</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~12g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkål ovnbagt ved 220° til karamelliseret. Æg rørt i til sidst. Parmesan og persille over.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Tirsdag</div>
+          <div class="day-date">Dag 2</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt 10% med bær og valnødder</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~18g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kanel over. Hørfrø og sesamfrø. Frosne blåbær er fine.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Linsesalat med fetaost og æblecidereddike</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-linser fra søndag. Peberfrugt, agurk, dild. Dressing separat.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Linsesuppe med ingefær, gurkemeje og rygeost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Røde linser, løg, hvidløg, ingefær, gurkemeje, sort peber, kokosmælk. Rygeost rørt i ved servering.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Onsdag</div>
+          <div class="day-date">Dag 3</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Æggekage nordisk stil</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~3g kulhydrat</span>
+            </div>
+            <div class="meal-note">3 æg, purløg, svampe, smør. Rygeost ved siden af. Bruger minimalt kulhydrat-budget.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Kantine eller madpakke: Æg og grøntsagsboks</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~10</span>
+              <span class="carb-badge">~8g kulhydrat</span>
+            </div>
+            <div class="meal-note">2 hårdkogte æg, grøntsagsstave, fetaost, oliven, grov sennep.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Omelet med svampe, spinat og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~8</span>
+              <span class="carb-badge">~5g kulhydrat</span>
+            </div>
+            <div class="meal-note">4 æg, svampe sauteret i smør, frisk spinat, fetaost. Grøn salat ved siden af med olivenolie og citron.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Torsdag</div>
+          <div class="day-date">Dag 4</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og jordbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Mandler og kanel. Laves aftenen før.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Kikærtsalat med peberfrugt og dild</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-kikærter fra søndag. Olivenolie, citronsaft, dild, forårsløg.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Kikærtefad med tomater, peberfrugt og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~24g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kikærter, cherrytomater, peberfrugt, rødløg, fetaost. Ovnbagt 20 min. Frisk persille og olivenolie over.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Fredag</div>
+          <div class="day-date">Dag 5 · Fredagshygge</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt bowl med granola og bær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~35</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Hjemmelavet granola: havregryn, valnødder, kokosflager, kanel — bagt uden sukker.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rugbrød med rygeost, agurk og purløg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">1 skive surdejsrugbrød. Smør, rygeost, tynde agurk-skiver, purløg, citron.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Gratineret blomkål med fløde og lagret ost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~12g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkål i flødesauce med hvidløg og timian. Lagret danbo eller gouda revet over. Ovnbagt til gylden. Fredagens hyggemad.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card snyde-day">
+        <div class="day-header">
+          <div class="day-name">Lørdag</div>
+          <div class="day-date">Dag 6 · Snyde-dag 🎣</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Æggekage med bacon og svampe</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~4g kulhydrat</span>
+            </div>
+            <div class="meal-note">4 æg, bacon, svampe, smør. Weekendluksus uden GI-bekymringer.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rugbrød med hvad hjertet begærer</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~45</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Surdejsrugbrød, smør, god ost, evt. et glas vin. Det er lørdag.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Grønkålssalat med kikærter, avocado og citrontahini</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~25</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+              <span class="snyde-badge">Snyde-mulighed</span>
+            </div>
+            <div class="meal-snyde">🎣 Alexander: Læg røget makrel over din portion. Eva tager ekstra avocado og fetaost. Ingen ekstra tilberedning.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Søndag</div>
+          <div class="day-date">Dag 7 · Batch-dag</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Boghvede pandekager med bær og græsk yoghurt</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~45</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Boghvedemel, æg, kefir. Ingen hvedemel. Bær og yoghurt som topping. Søndagshygge.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Stor salat med rester fra ugen</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~15g kulhydrat</span>
+            </div>
+            <div class="meal-note">Ryd køleskabet. Grøntsager, kikærter, æg, ost. Olivenolie og citron.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Squashret med æg, fetaost og friske krydderurter</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~12</span>
+              <span class="carb-badge">~10g kulhydrat</span>
+            </div>
+            <div class="meal-note">Squash sauteret i smør med hvidløg. Æg rørt i. Fetaost, frisk basilikum, citron. Lav dobbelt — madpakke mandag.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="week-summary">
+      <div class="summary-card">
+        <div class="summary-num">~72g</div>
+        <div class="summary-label">Gns. kulhydrat/dag</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">~22</div>
+        <div class="summary-label">Gns. GI for ugen</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">1×</div>
+        <div class="summary-label">Snyde-mulighed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">0</div>
+        <div class="summary-label">Gram pasta</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UGE 2 -->
+  <div class="week-content" id="week-2">
+    <div class="week-header">
+      <div class="week-title">Uge 2</div>
+      <div class="week-subtitle">Forår · Maj 2026</div>
+    </div>
+    <div class="batch-box">
+      <div class="batch-icon">⚙️</div>
+      <div>
+        <div class="batch-title">Batch-cooking søndag</div>
+        <div class="batch-text">Kog 400g røde linser til dal. Lav stor portion byg — bruges i svampegryde onsdag og som tilbehør torsdag. Hårdkog 6 æg. Lav citrontahini dressing til ugens salater.</div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Mandag</div>
+          <div class="day-date">Dag 8</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight byg med kefir, kanel og æble</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~30</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Byg afkølet natten over med kefir. Revet æble, kanel, valnødder. Det nordiske svar på overnight oats.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Røde linser dal kold med rygeost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~20g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-dal fra søndag. Rygeost rørt i. Spises kold. Grøntsagsstave ved siden af.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Røde linser dal med kokosmælk og spinat</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Røde linser, løg, hvidløg, ingefær, gurkemeje, kokosmælk, frisk spinat. Citron og koriander over. Lav dobbelt til madpakke.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Tirsdag</div>
+          <div class="day-date">Dag 9</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt med hindbær og mandler</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~18</span>
+              <span class="carb-badge">~16g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kanel og hørfrø. Hindbær har lavest GI af alle bær.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Kantine: Salat med æg og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~10g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kantinefilter: protein og grøntsager først. Olivenolie som dressing. Ingen croutoner.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Æggekage med forårsløg, dild og rygeost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~4g kulhydrat</span>
+            </div>
+            <div class="meal-note">4 æg, frisk dild, forårsløg, smør. Rygeost ved siden af. Enkel, hurtig, nordisk.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Onsdag</div>
+          <div class="day-date">Dag 10</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og blåbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Laves aftenen før. Kanel og valnødder.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Byggsalat med svampe og parmesan</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-byg fra søndag. Svampe, spinat, parmesan, olivenolie, citron.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Svampegryde med fløde, timian og byg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~20g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blandede svampe sauteret i smør, timian, hvidløg, fløde. Byg rørt i til sidst. Parmesan over. Cremet og mættende.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Torsdag</div>
+          <div class="day-date">Dag 11</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Æggekage med spinat og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~3g kulhydrat</span>
+            </div>
+            <div class="meal-note">3 æg, frisk spinat, fetaost, smør. Bruger minimalt kulhydrat-budget.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Bagte rodfrugter med fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Rester fra aftensmad. Knoldselleri, gulerødder, pastinak. Fetaost og valnødder over.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Bagte rodfrugter med fetaost og valnødder</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~24g kulhydrat</span>
+            </div>
+            <div class="meal-note">Knoldselleri, pastinak, gulerødder i tern med olivenolie, timian, rosmarin. Ovnbagt 35 min. Fetaost og valnødder over ved servering. Lav dobbelt.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Fredag</div>
+          <div class="day-date">Dag 12 · Fredagshygge</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Boghvede grød med bær og smør</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~45</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Boghvede kogt med vand og en knivspids salt. Smør, friske bær, kanel. Nordisk og mættende.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rugbrød med god ost og pickles</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">1 skive surdejsrugbrød, smør, lagret ost, hjemmelavede pickles. Fredagsfrokost i ro.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Blomkålsrisotto med parmesan og citron</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~18</span>
+              <span class="carb-badge">~14g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkål revet groft — risotto-tekstur uden ris. Løg, hvidløg, hvidvin (lidt), fløde, parmesan. Citron og persille over. Fredagens comfort food.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card snyde-day">
+        <div class="day-header">
+          <div class="day-name">Lørdag</div>
+          <div class="day-date">Dag 13 · Snyde-dag 🎣</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Stort æg-bord med det bedste fra køleskabet</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~8</span>
+              <span class="carb-badge">~5g kulhydrat</span>
+            </div>
+            <div class="meal-note">Scrambled eggs i smør, svampe, lagret ost, avocado. Lørdag er til dette.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Nordisk frokostbord</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Surdejsrugbrød, smør, ost, pickles, evt. et glas vin. Weekendhygge.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Kikærte curry med kokosmælk og grønkål</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~24g kulhydrat</span>
+              <span class="snyde-badge">Snyde-mulighed</span>
+            </div>
+            <div class="meal-snyde">🎣 Alexander: Rør en dåse makrel i din portion inden servering. Eva tager extra kikærter og fetaost. Ingen ekstra arbejde.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Søndag</div>
+          <div class="day-date">Dag 14 · Batch-dag</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt bowl med granola og æble</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~35</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Hjemmelavet granola uden sukker. Revet æble, kanel, valnødder.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Varm suppe af ugens rester</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~25</span>
+              <span class="carb-badge">~15g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blend hvad der er tilbage. Grøntsager, bouillon, smør. En skive rugbrød ved siden af.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Grøn frittata med asparges og gedeost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~10</span>
+              <span class="carb-badge">~8g kulhydrat</span>
+            </div>
+            <div class="meal-note">6 æg, asparges, spinat, gedeost, smør. Starter på komfur, færdig i ovn. Grøn salat ved siden af.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="week-summary">
+      <div class="summary-card">
+        <div class="summary-num">~70g</div>
+        <div class="summary-label">Gns. kulhydrat/dag</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">~24</div>
+        <div class="summary-label">Gns. GI for ugen</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">1×</div>
+        <div class="summary-label">Snyde-mulighed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">Byg</div>
+        <div class="summary-label">Ugens nordiske stjerne</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UGE 3 -->
+  <div class="week-content" id="week-3">
+    <div class="week-header">
+      <div class="week-title">Uge 3</div>
+      <div class="week-subtitle">Forår · Maj/Juni 2026</div>
+    </div>
+    <div class="batch-box">
+      <div class="batch-icon">⚙️</div>
+      <div>
+        <div class="batch-title">Batch-cooking søndag</div>
+        <div class="batch-text">Kog 400g sorte bønner. Lav stor portion tomatsauce — bruges til bagte æg onsdag og som base torsdag. Hårdkog 8 æg. Lav peberrodscreme til ugens frokoster.</div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Mandag</div>
+          <div class="day-date">Dag 15</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og solbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Solbær har højest antioxidant-indhold af alle nordiske bær. Kanel og mandler.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Sorte bønner med peberfrugt og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~30</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-bønner fra søndag. Peberfrugt, forårsløg, fetaost, olivenolie, spidskommen.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Sorte bønner med peberfrugt, løg og fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~30</span>
+              <span class="carb-badge">~24g kulhydrat</span>
+            </div>
+            <div class="meal-note">Sorte bønner, peberfrugt, rødløg, cherrytomater, spidskommen, koriander. Fetaost og limesaft over. Lav dobbelt.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Tirsdag</div>
+          <div class="day-date">Dag 16</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt med blåbær og hørfrø</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~18</span>
+              <span class="carb-badge">~16g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kanel og valnødder. Hørfrø er rig på omega-3 og fiber.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Kantine: Varmt med grøntsager og æg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~12g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kantinefilter aktiv. Protein og grøntsager som base. Fedtet er din ven.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Persillesuppe med æg og surdejscrouton</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~25</span>
+              <span class="carb-badge">~15g kulhydrat</span>
+            </div>
+            <div class="meal-note">Frisk persille blendet med bouillon, smør, fløde, citron. Blødkogt æg i midten. En lille surdejscrouton stegt i smør.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Onsdag</div>
+          <div class="day-date">Dag 17</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Æggekage med grønkål og parmesan</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~4g kulhydrat</span>
+            </div>
+            <div class="meal-note">3 æg, grønkål sauteret i smør, parmesan. Bruger minimalt kulhydrat-budget.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Blomkålsmos med pocheret æg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~10g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkålsmos med smør og muskatnød. Hårdkogt æg skåret over. Kapers og citron.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Blomkålsmos med pocherede æg og kapers</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~12g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkål blendet med smør, muskatnød, fløde. Pocherede æg ovenpå. Kapers, dild, citronskal. Elegant og simpelt.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Torsdag</div>
+          <div class="day-date">Dag 18</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og æble</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~26g kulhydrat</span>
+            </div>
+            <div class="meal-note">Revet æble, kanel, hasselnødder. Laves aftenen før.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Linse og rødbede salat</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~32</span>
+              <span class="carb-badge">~20g kulhydrat</span>
+            </div>
+            <div class="meal-note">Grønne linser, rødbeder afkølet, creme fraiche, dild, æblecidereddike. Syre sænker rødbede-GI markant.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Linse og rødbede salat med creme fraiche</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~32</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Grønne linser, rødbeder, rødløg, creme fraiche, frisk dild, peberrod. Æblecidereddike i dressingen. Nordisk klassiker.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Fredag</div>
+          <div class="day-date">Dag 19 · Fredagshygge</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt bowl med granola og blåbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~32</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Hjemmelavet granola uden sukker. Frosne blåbær, kanel.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rugbrød med rygeost og rødbeder</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~40</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">1 skive surdejsrugbrød, smør, rygeost, syltede rødbeder, purløg, peberrod.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Svampe og spinat lasagne med squashplader</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~14g kulhydrat</span>
+            </div>
+            <div class="meal-note">Squash skåret i tynde plader erstatter lasagneplader. Svampe og spinat som fyld. Béchamel af smør og fløde uden mel. Parmesan over. Fredagsklassiker genopfundet.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card snyde-day">
+        <div class="day-header">
+          <div class="day-name">Lørdag</div>
+          <div class="day-date">Dag 20 · Snyde-dag 🎣</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Boghvede pandekager med smør og bær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~45</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Boghvedemel, æg, kefir. Smør og friske bær. Lørdag er til dette.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Nordisk frokostbord med ost og pickles</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Surdejsrugbrød, smør, lagret ost, hjemmelavede pickles, evt. et glas vin.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Bagte æg i tomatsauce med fetaost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~14g kulhydrat</span>
+              <span class="snyde-badge">Snyde-mulighed</span>
+            </div>
+            <div class="meal-snyde">🎣 Alexander: Læg 4-5 ansjoser i din del af tomatsaucen inden æggene bages i. Giver dybde og umami uden at Eva bemærker det. Næsten.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Søndag</div>
+          <div class="day-date">Dag 21 · Batch-dag</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Stor overnight havregryn med alt det gode</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Havregryn, kefir, blåbær, jordbær, kanel, valnødder, mandler, hørfrø. Søndagens store morgenmad.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rester og restesalat</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~15g kulhydrat</span>
+            </div>
+            <div class="meal-note">Ryd køleskabet intelligent. Alt der er tilbage bliver til en salat med olivenolie og citron.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Grøntsagscurry med kikærter og kokosmælk</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kikærter, blomkål, spinat, kokosmælk, karry, ingefær, gurkemeje. Citron og koriander over. Lav dobbelt — madpakke mandag.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="week-summary">
+      <div class="summary-card">
+        <div class="summary-num">~71g</div>
+        <div class="summary-label">Gns. kulhydrat/dag</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">~22</div>
+        <div class="summary-label">Gns. GI for ugen</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">1×</div>
+        <div class="summary-label">Snyde-mulighed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">Squash</div>
+        <div class="summary-label">Ugens nordiske stjerne</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UGE 4 -->
+  <div class="week-content" id="week-4">
+    <div class="week-header">
+      <div class="week-title">Uge 4</div>
+      <div class="week-subtitle">Forår · Juni 2026</div>
+    </div>
+    <div class="batch-box">
+      <div class="batch-icon">⚙️</div>
+      <div>
+        <div class="batch-title">Batch-cooking søndag</div>
+        <div class="batch-text">Kog 400g hvide bønner. Lav stor portion byg-risotto base — færdiggøres hurtigt om onsdagen. Hårdkog 6 æg. Lav blomkålssuppe og frys halvdelen til næste uge.</div>
+      </div>
+    </div>
+    <div class="days-grid">
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Mandag</div>
+          <div class="day-date">Dag 22</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og kirsebær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~35</span>
+              <span class="carb-badge">~26g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kirsebær har GI 22 — lavest af alle frugter. Kanel og valnødder.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Grøntsagscurry rester med byg</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Rester fra søndagens curry. Byg rørt i. Koriander og citron over.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Æggekage med rødkål og sennep</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~10</span>
+              <span class="carb-badge">~8g kulhydrat</span>
+            </div>
+            <div class="meal-note">4 æg, stegt rødkål med æblecidereddike og smør, grov sennep ved siden af. Nordisk og billigt.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Tirsdag</div>
+          <div class="day-date">Dag 23</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt med jordbær og mandler</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~18g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kanel og hørfrø. Friske jordbær når de er i sæson.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Hvide bønner med salvie og citron</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~31</span>
+              <span class="carb-badge">~20g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-bønner fra søndag. Olivenolie, salvie, citron, parmesan. Spises kold.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Hvide bønner med salvie, citron og parmesan</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~31</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Hvide bønner sauteret i smør med salvie og hvidløg. Citron og parmesan over. Spinat rørt i til sidst. Toscansk inspiration med nordisk base.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Onsdag</div>
+          <div class="day-date">Dag 24</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Overnight havregryn med kefir og blåbær</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~38</span>
+              <span class="carb-badge">~28g kulhydrat</span>
+            </div>
+            <div class="meal-note">Laves aftenen før. Kanel og valnødder.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Blomkålssuppe med ristede valnødder</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~10g kulhydrat</span>
+            </div>
+            <div class="meal-note">Batch-suppe fra søndag i termokande. Ristede valnødder og karse over ved servering.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Blomkålssuppe med ristede valnødder og karse</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~15</span>
+              <span class="carb-badge">~12g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blomkål blendet med fløde, smør, hvidløg, bouillon. Ristede valnødder, frisk karse, citronskal. En skive surdejsrugbrød med smør ved siden af.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card">
+        <div class="day-header">
+          <div class="day-name">Torsdag</div>
+          <div class="day-date">Dag 25</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Æggekage med purløg og lagret ost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~5</span>
+              <span class="carb-badge">~3g kulhydrat</span>
+            </div>
+            <div class="meal-note">3 æg, purløg, lagret danbo, smør. Bruger minimalt kulhydrat-budget.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Madpakke: Kikærter med spinat og røget paprika</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kikærter, spinat, røget paprika, olivenolie, citron, hvidløg. Spises kold.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Kikærter med spinat, hvidløg og røget paprika</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~24g kulhydrat</span>
+            </div>
+            <div class="meal-note">Kikærter sauteret i olivenolie med hvidløg, røget paprika, spidskommen. Frisk spinat rørt i. Citron og fetaost over. Lav dobbelt.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Fredag</div>
+          <div class="day-date">Dag 26 · Fredagshygge</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Boghvede pandekager med bær og fløde</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~45</span>
+              <span class="carb-badge">~26g kulhydrat</span>
+            </div>
+            <div class="meal-note">Boghvedemel, æg, kefir. Friske bær og lidt fløde. Fredagsmorgenmad.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Rugbrød med lagret ost og pickles</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+            </div>
+            <div class="meal-note">1 skive surdejsrugbrød, smør, lagret ost, hjemmelavede pickles. Fredagsfrokost.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Gratineret porret med æg og lagret ost</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~18</span>
+              <span class="carb-badge">~14g kulhydrat</span>
+            </div>
+            <div class="meal-note">Porrer sauteret i smør, æg pisket over, lagret ost revet over. Ovnbagt til gylden. Grøn salat ved siden af. Simpelt og elegant.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card snyde-day">
+        <div class="day-header">
+          <div class="day-name">Lørdag</div>
+          <div class="day-date">Dag 27 · Snyde-dag 🎣</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Stor æggefrokost med det bedste</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~8</span>
+              <span class="carb-badge">~5g kulhydrat</span>
+            </div>
+            <div class="meal-note">Scrambled eggs i smør, svampe, avocado, lagret ost. Weekendluksus.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Nordisk frokostbord</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-med">GI ~42</span>
+              <span class="carb-badge">~25g kulhydrat</span>
+            </div>
+            <div class="meal-note">Surdejsrugbrød, smør, god ost, pickles. Et glas vin hvis stemningen er der.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Byg risotto med svampe og friske urter</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~28</span>
+              <span class="carb-badge">~22g kulhydrat</span>
+              <span class="snyde-badge">Snyde-mulighed</span>
+            </div>
+            <div class="meal-snyde">🎣 Alexander: Læg 2-3 stykker røget sild over din portion ved servering. Eva tager ekstra parmesan og friske urter. Røget sild er omega-3 og nordisk identitet på én gang.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="day-card weekend">
+        <div class="day-header">
+          <div class="day-name">Søndag</div>
+          <div class="day-date">Dag 28 · Afslutning</div>
+        </div>
+        <div class="meals">
+          <div class="meal">
+            <div class="meal-type">Morgenmad</div>
+            <div class="meal-name">Græsk yoghurt bowl — ugens bedste version</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~20</span>
+              <span class="carb-badge">~18g kulhydrat</span>
+            </div>
+            <div class="meal-note">Alt det bedste: yoghurt, bær, valnødder, mandler, kanel, hørfrø, lidt honning hvis det er søndag.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Frokost</div>
+            <div class="meal-name">Stor restersuppe af hvad der er tilbage</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~22</span>
+              <span class="carb-badge">~15g kulhydrat</span>
+            </div>
+            <div class="meal-note">Blend hvad der er i køleskabet. Bouillon, smør, krydderier. En skive rugbrød ved siden af.</div>
+          </div>
+          <div class="meal">
+            <div class="meal-type">Aftensmad</div>
+            <div class="meal-name">Grønkålsfrittata med fetaost og solsikkefrø</div>
+            <div class="meal-meta">
+              <span class="gi-badge gi-low">GI ~10</span>
+              <span class="carb-badge">~8g kulhydrat</span>
+            </div>
+            <div class="meal-note">6 æg, grønkål, fetaost, solsikkefrø, smør. Starter på komfur, færdig i ovn. En værdig afslutning på 4 uger. Fejr det med et glas rødvin.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="week-summary">
+      <div class="summary-card">
+        <div class="summary-num">~69g</div>
+        <div class="summary-label">Gns. kulhydrat/dag</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">~23</div>
+        <div class="summary-label">Gns. GI for ugen</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">1×</div>
+        <div class="summary-label">Snyde-mulighed</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-num">Byg</div>
+        <div class="summary-label">Ugens nordiske stjerne</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <span>SmartBalanz — Nyt Nordisk Balanz Kost</span><br><br>
+  Baseret på Mary Newport · Stephen Cunnane · mediteransk evidensbase tilpasset nordisk råvaretradition<br>
+  75g kulhydrat/dag · Good Carbs · Ingen forbud · Ingen pasta
+</footer>
+
+<script>
+function showWeek(num, btn) {
+  document.querySelectorAll('.week-content').forEach(w => w.classList.remove('active'));
+  document.querySelectorAll('.week-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('week-' + num).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
