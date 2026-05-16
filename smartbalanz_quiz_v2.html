@@ -557,7 +557,7 @@
   </div>
   <div class="intro-meta">
     <div class="intro-meta-item">
-      <div class="intro-meta-num">56</div>
+      <div class="intro-meta-num">64</div>
       <div class="intro-meta-label">Spørgsmål</div>
     </div>
     <div class="divider"></div>
@@ -575,11 +575,18 @@
   <div class="intro-note">Ingen login. Ingen data gemt hos os. Du ejer dine svar.</div>
 </div>
 
+<!-- PART INTRO SCREEN -->
+<div id="part-intro" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#d4b07a;letter-spacing:0.05em;margin-bottom:3rem;">SmartBalanz</div>
+  <div id="part-intro-text" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,2rem);font-weight:300;font-style:italic;color:#f0ebe2;line-height:1.6;max-width:560px;margin-bottom:3rem;"></div>
+  <button class="btn-start" onclick="continueFromPartIntro()" style="opacity:0;animation:fadeDown 0.8s ease 0.4s both;">Fortsæt →</button>
+</div>
+
 <!-- QUIZ -->
 <div id="quiz">
   <div class="quiz-header">
     <div class="quiz-logo">SmartBalanz</div>
-    <div class="quiz-progress-text" id="progress-text">Spørgsmål 1 af 56</div>
+    <div class="quiz-progress-text" id="progress-text">Spørgsmål 1 af 64</div>
   </div>
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="progress-bar"></div>
@@ -622,6 +629,17 @@
 
 <script>
 const questions = [
+  // DEL 1 — OPVARMNING (8 spørgsmål)
+  { cat: "Kom godt i gang", label: "Energi", warmup: true, q: "Hvordan kører motoren på dig sådan en helt almindelig hverdag?", opts: ["Den spinder bare — jævn og go', intet bøvl", "Den hakker lidt i ny og næ — det går op og ned", "Skal satme lige chokes i gang først — kaffen skal sætte sig", "Helt fladt batteri — den svinger vildt og jeg er tit brugt"] },
+  { cat: "Kom godt i gang", label: "Søvn", warmup: true, q: "Hva' så med natten — får du lukket et øje?", opts: ["Sover som en sten — ubevægelig til vækkeuret", "Det er her-og-der — okay men det kunne godt være bedre", "Rendyrket rutsjebane — jeg roterer og vågner i ét væk", "Helt radbrækket — jeg vågner sjældent og tænker: jeg er frisk!"] },
+  { cat: "Kom godt i gang", label: "Kost", warmup: true, q: "Hva' kaster du i gabet i løbet af dagen?", opts: ["Fast system — reelle måltider til fast tid, ingen dikkedarer", "Det meste er vel fornuftigt nok — men lidt tilfældigt ind imellem", "Det der lige ligger på disken — når det skal gå stærkt hapses der bare", "Rendyrket rod — fuldstændig tilfældigt hvornår og hvad der ryger indenbords"] },
+  { cat: "Kom godt i gang", label: "Hovedet", warmup: true, q: "Hvordan står det til oppe i øverste etage på en helt almindelig onsdag?", opts: ["Helt klart udsyn — pæren virker som den skal", "Det svinger som vinden blæser — nogle gange skarp, andre gange tung", "Som at kigge ud gennem en beskidt forrude — ret tåget og uldent", "Helt mørklagt — jeg føler mig stort set aldrig rigtig skarp"] },
+  { cat: "Kom godt i gang", label: "Selvopfattelse", warmup: true, q: "Hvordan synes du egentlig selv hverdagen ruller derudad?", opts: ["Der er fuldstændig styr på butikken — den kører stabilt", "Det går sgu nok — det meste flasker sig da", "Det svinger med vinden — nogle dage kører det, andre vælter læsset", "Man ved aldrig hvad dagen bringer — fuldstændig uforudsigeligt"] },
+  { cat: "Kom godt i gang", label: "Blind spot", warmup: true, q: "Tænker du over om det du tygger på har noget at sige for hvor frisk du er?", opts: ["Ja det har da en del at sige — jeg lægger mærke til hvad der ryger indenbords", "Det sker da indimellem — men ikke noget jeg ligger vågen over", "Ikke det vilde — det er ikke noget jeg skænker de store tanker", "Næsten aldrig — mad er mad og så er den ikke længere"] },
+  { cat: "Kom godt i gang", label: "Madvalg", warmup: true, q: "Når du rækker ud efter noget spiseligt — hvad styrer dig så mest?", opts: ["Hvordan kroppen har det bagefter — jeg tænker over om det ligger tungt", "Gammel vane — det plejer jeg at spise så det gør jeg nok også", "Det skal bare være nemt — det der er tættest på og hurtigst at hapse", "Noget der giver hurtigt brændstof — motoren mangler kul og der skal noget ind"] },
+  { cat: "Kom godt i gang", label: "Fremtidsblik", warmup: true, q: "Når du kigger lidt frem i tiden — hvad vil du helst være sikker på der stadigvæk virker?", opts: ["Et klart syn — at pæren stadigvæk er skarp oppe i øverste etage", "Et skrog der fungerer — kroppen kan det den skal uden for meget bøvl", "At slippe for skavanker — holde sig fri af alt det der sygdomshalløj", "Det tænker jeg slet ikke over — vi tager det som det kommer"] },
+
+
   // KAT 1 — ENERGI & RYTME (6)
   { cat: "Energi & Rytme", label: "Energiforløb", q: "Hvordan plejer din dag at føles energimæssigt, når du ikke tænker over det?", opts: ["Den kører jævnt hele vejen","Jeg har et naturligt dyk et sted midt på dagen","Jeg skal lige \"i gang\" før jeg fungerer","Det svinger meget fra dag til dag"] },
   { cat: "Energi & Rytme", label: "Eftermiddagsmønster", q: "Hvad plejer der at ske i kroppen sidst på eftermiddagen?", opts: ["Ikke noget særligt","Jeg får lyst til noget — kaffe, snack eller bare en pause","Jeg mister fokus","Jeg er allerede flad før det tidspunkt"] },
@@ -743,8 +761,27 @@ let answers = new Array(questions.length).fill(null);
 
 function startQuiz() {
   document.getElementById('intro').style.display = 'none';
-  document.getElementById('quiz').style.display = 'flex';
-  renderQuestion();
+  showPartIntro(
+    "Inden vi går i dybden — lad os lige få et hurtigt overblik over hvordan motoren kører. Ingen dikkedarer, ingen fælder.",
+    function() {
+      document.getElementById('quiz').style.display = 'flex';
+      renderQuestion();
+    }
+  );
+}
+
+function showPartIntro(text, callback) {
+  const screen = document.getElementById('part-intro');
+  document.getElementById('part-intro-text').textContent = text;
+  screen.style.display = 'flex';
+  screen._callback = callback;
+}
+
+function continueFromPartIntro() {
+  const screen = document.getElementById('part-intro');
+  const cb = screen._callback;
+  screen.style.display = 'none';
+  if (cb) cb();
 }
 
 function renderQuestion() {
@@ -792,6 +829,25 @@ function selectOption(score) {
 function nextQuestion() {
   if (answers[current] === null) return;
   if (current === questions.length - 1) { showResult(); return; }
+
+  // Show transition after question 8 (index 7 — last warmup)
+  if (current === 7) {
+    const wrap = document.getElementById('question-wrap');
+    wrap.className = 'question-wrap fade-out';
+    setTimeout(() => {
+      document.getElementById('quiz').style.display = 'none';
+      showPartIntro(
+        "Godt kørt. Vi mangler bare et par stykker mere — så har vi det hele.",
+        function() {
+          current++;
+          document.getElementById('quiz').style.display = 'flex';
+          renderQuestion();
+        }
+      );
+    }, 200);
+    return;
+  }
+
   const wrap = document.getElementById('question-wrap');
   wrap.className = 'question-wrap fade-out';
   setTimeout(() => { current++; renderQuestion(); }, 200);
