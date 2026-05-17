@@ -621,6 +621,7 @@
     <p id="res-next-text"></p>
   </div>
   <div class="result-actions">
+    <button class="btn-download" onclick="printResult()">🖨 Print resultat</button>
     <button class="btn-download" onclick="downloadJSON()">Download mine data (JSON)</button>
     <button class="btn-restart" onclick="restartQuiz()">Tag testen igen</button>
   </div>
@@ -965,6 +966,144 @@ function restartQuiz() {
   initShuffledOrders();
   document.getElementById('result').style.display = 'none';
   document.getElementById('intro').style.display = 'flex';
+}
+
+function printResult() {
+  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+  const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const catRows = catRanges.map(cat => {
+    const catScore = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a || 1), 0);
+    const pct = Math.round((catScore / cat.max) * 100);
+    const status = pct < 40 ? 'Godt' : pct < 60 ? 'Opmærksomhed' : pct < 80 ? 'Ubalance' : 'Stress';
+    const bar = '█'.repeat(Math.round(pct / 10)) + '░'.repeat(10 - Math.round(pct / 10));
+    return `
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:500;">${cat.name}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;color:#666;letter-spacing:2px;">${bar}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;">${catScore}/${cat.max}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:600;">${pct}%</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;color:${pct < 40 ? '#16a34a' : pct < 60 ? '#92650a' : pct < 80 ? '#c2410c' : '#dc2626'}">${status}</td>
+      </tr>`;
+  }).join('');
+
+  // Alle svar (spring opvarmning over)
+  const svarRows = questions.slice(8).map((q, i) => {
+    const ai = i + 8;
+    const score = answers[ai] || 1;
+    const svar = q.opts[(score - 1)] || '—';
+    const col = score === 1 ? '#16a34a' : score === 2 ? '#92650a' : score === 3 ? '#c2410c' : '#dc2626';
+    return `
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;color:#666;font-size:12px;">${q.cat}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-weight:500;font-size:13px;">${q.label}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-size:12px;">${svar}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;text-align:center;font-weight:700;color:${col}">${score}</td>
+      </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>SmartBalanz — Metabolisk Assessment ${dato}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; color: #1a1a1a; padding: 40px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: normal; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: normal; color: #666; border-bottom: 2px solid #1a1a1a; padding-bottom: 8px; margin: 28px 0 16px; }
+  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.15em; color: #666; margin-bottom: 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #1a1a1a; }
+  .logo { font-size: 22px; letter-spacing: 0.05em; font-style: italic; }
+  .meta { text-align: right; font-size: 13px; color: #666; line-height: 1.8; }
+  .score-box { display: flex; gap: 32px; background: #f9f8f6; padding: 24px; border-radius: 6px; margin-bottom: 24px; border-left: 5px solid #1a1a1a; }
+  .score-big { font-size: 64px; font-weight: bold; line-height: 1; }
+  .score-info h3 { margin-bottom: 6px; }
+  .score-info .profil { font-size: 22px; margin-bottom: 8px; }
+  .score-info .desc { font-size: 14px; color: #444; line-height: 1.6; max-width: 500px; }
+  .next-box { background: #f0f9f4; border: 1px solid #86efac; padding: 16px 20px; border-radius: 6px; margin-bottom: 24px; }
+  .next-box strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #16a34a; }
+  .next-box p { font-size: 14px; color: #1a1a1a; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { background: #1a1a1a; color: white; padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .page-break { page-break-before: always; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 11px; color: #999; display: flex; justify-content: space-between; }
+  @media print {
+    body { padding: 20px; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">SmartBalanz</div>
+    <div style="font-size:13px;color:#666;margin-top:4px;">Metabolisk Assessment — Fortroligt dokument</div>
+  </div>
+  <div class="meta">
+    <div>${dato}</div>
+    <div>smartbalanz.dk</div>
+    <div style="margin-top:4px;">Version 2.0</div>
+  </div>
+</div>
+
+<div class="score-box">
+  <div class="score-big">${total}</div>
+  <div class="score-info">
+    <h3>Total score ud af ${MAX_SCORE}</h3>
+    <div class="profil">${profile.label}</div>
+    <div class="desc">${profile.desc}</div>
+  </div>
+</div>
+
+<div class="next-box">
+  <strong>Anbefalet næste skridt</strong>
+  <p>${profile.next}</p>
+</div>
+
+<h2>Kategori-oversigt</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Kategori</th>
+      <th>Profil</th>
+      <th>Score</th>
+      <th>%</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>${catRows}</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>Dine svar — Assessment spørgsmål</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Kategori</th>
+      <th>Emne</th>
+      <th>Svar</th>
+      <th style="text-align:center;">Score</th>
+    </tr>
+  </thead>
+  <tbody>${svarRows}</tbody>
+</table>
+
+<div class="footer">
+  <span>SmartBalanz — smartbalanz.dk — Alexander Birk</span>
+  <span>Dette dokument er personligt og fortroligt</span>
+</div>
+
+<script>window.onload = function() { window.print(); }<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 }
 </script>
 </body>
