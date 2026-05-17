@@ -140,8 +140,8 @@
   }
 
   .method-pos {
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.4rem;
@@ -155,17 +155,17 @@
   }
 
   .method-desc {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
     color: var(--muted);
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
   .method-note {
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     color: var(--muted);
     font-style: italic;
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.7;
   }
 
   /* MODE TOGGLE */
@@ -213,9 +213,9 @@
   }
 
   .instructions p {
-    font-size: 0.83rem;
+    font-size: 0.95rem;
     color: var(--muted);
-    line-height: 1.7;
+    line-height: 1.8;
   }
 
   .instructions strong { color: var(--gold); font-weight: 400; }
@@ -254,8 +254,8 @@
   }
 
   .stone-position-label {
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
     text-align: center;
@@ -265,7 +265,7 @@
   .stone-position-label span {
     display: block;
     color: var(--gold);
-    font-size: 0.6rem;
+    font-size: 0.75rem;
   }
 
   /* STONE */
@@ -515,8 +515,8 @@
   }
 
   .reading-card-pos {
-    font-size: 0.6rem;
-    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--gold);
     margin-bottom: 0.75rem;
@@ -548,8 +548,8 @@
   }
 
   .reading-card-text {
-    font-size: 0.84rem;
-    line-height: 1.75;
+    font-size: 0.95rem;
+    line-height: 1.8;
     color: var(--muted);
     margin-bottom: 1rem;
   }
@@ -697,12 +697,12 @@
     </div>
     <div class="method-item">
       <div class="method-pos">Rune 2 · Midten</div>
-      <div class="method-name">Handlung</div>
+      <div class="method-name">Handling</div>
       <div class="method-desc">Den handling der er påkrævet — vejen frem</div>
     </div>
     <div class="method-item">
       <div class="method-pos">Rune 3 · Venstre</div>
-      <div class="method-name">Neue Situation</div>
+      <div class="method-name">Ny Situation</div>
       <div class="method-desc">Det nye du vil kunne stå i — potentialet og retningen</div>
     </div>
   </div>
@@ -727,7 +727,7 @@
 
     <!-- Venstre — position 3 — låst til sidst -->
     <div class="stone-wrap">
-      <div class="stone-position-label">Venstre · 3<span>Neue Situation · Potentiale</span></div>
+      <div class="stone-position-label">Venstre · 3<span>Ny Situation · Potentiale</span></div>
       <div class="stone locked" id="stone-3" onclick="openPicker(3)">
         <div class="stone-back-icon">ᚱ</div>
         <div class="stone-rune-display">
@@ -740,7 +740,7 @@
 
     <!-- Midten — position 2 — låst til anden -->
     <div class="stone-wrap">
-      <div class="stone-position-label">Midten · 2<span>Handlung · Handling</span></div>
+      <div class="stone-position-label">Midten · 2<span>Handling</span></div>
       <div class="stone locked" id="stone-2" onclick="openPicker(2)">
         <div class="stone-back-icon">ᚱ</div>
         <div class="stone-rune-display">
@@ -775,6 +775,7 @@
       <div class="full-reading-text" id="fullReadingText"></div>
     </div>
     <div class="reset-area">
+      <button class="btn-reset" onclick="printRunes()" style="margin-right:0.75rem;">🖨 Print læsning</button>
       <button class="btn-reset" onclick="resetOracle()">↺ Ny læsning</button>
     </div>
   </div>
@@ -1026,7 +1027,7 @@ function setMode(newMode) {
     stonesLabel.textContent = 'Vælg dine runer · højre → midten → venstre';
     document.getElementById('stonesRow').innerHTML = `
       <div class="stone-wrap">
-        <div class="stone-position-label">Venstre · 3<span>Neue Situation · Potentiale</span></div>
+        <div class="stone-position-label">Venstre · 3<span>Ny Situation · Potentiale</span></div>
         <div class="stone locked" id="stone-3" onclick="openPicker(3)">
           <div class="stone-back-icon">ᚱ</div>
           <div class="stone-rune-display">
@@ -1037,7 +1038,7 @@ function setMode(newMode) {
         </div>
       </div>
       <div class="stone-wrap">
-        <div class="stone-position-label">Midten · 2<span>Handlung · Handling</span></div>
+        <div class="stone-position-label">Midten · 2<span>Handling</span></div>
         <div class="stone locked" id="stone-2" onclick="openPicker(2)">
           <div class="stone-back-icon">ᚱ</div>
           <div class="stone-rune-display">
@@ -1072,8 +1073,8 @@ function openPicker(position) {
 
   const posLabels = {
     1: 'Rune 1 · Højre · Nuværende Situation',
-    2: 'Rune 2 · Midten · Handlung',
-    3: 'Rune 3 · Venstre · Neue Situation'
+    2: 'Rune 2 · Midten · Handling',
+    3: 'Rune 3 · Venstre · Ny Situation'
   };
 
   document.getElementById('pickerPos').textContent = posLabels[position] || 'Din rune';
@@ -1158,8 +1159,8 @@ function showReading() {
     cards.style.gridTemplateColumns = '';
     const positions = [
       { pos: 1, label: 'Rune 1 · Højre · Nuværende Situation', posKey: 'pos1', qKey: 'q1' },
-      { pos: 2, label: 'Rune 2 · Midten · Handlung',            posKey: 'pos2', qKey: 'q2' },
-      { pos: 3, label: 'Rune 3 · Venstre · Neue Situation',     posKey: 'pos3', qKey: 'q3' }
+      { pos: 2, label: 'Rune 2 · Midten · Handling',            posKey: 'pos2', qKey: 'q2' },
+      { pos: 3, label: 'Rune 3 · Venstre · Ny Situation',     posKey: 'pos3', qKey: 'q3' }
     ];
 
     positions.forEach((p, i) => {
@@ -1307,6 +1308,88 @@ function resetOracle() {
     if (nm) nm.textContent = '';
     if (kw) kw.textContent = '';
   }
+}
+
+function printRunes() {
+  const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+  const fullText = document.getElementById('fullReadingText')?.textContent || '';
+
+  const posLabels = {
+    1: { pos: 'Rune 1 · Højre', rolle: 'Nuværende Situation' },
+    2: { pos: 'Rune 2 · Midten', rolle: 'Handling' },
+    3: { pos: 'Rune 3 · Venstre', rolle: 'Ny Situation' }
+  };
+
+  const kortHTML = Object.entries(selected).map(([pos, rune]) => {
+    const p = parseInt(pos);
+    const posKey = 'pos' + p;
+    const qKey = 'q' + p;
+    const label = posLabels[p];
+    return `
+    <div style="border:1px solid #ddd;border-radius:6px;padding:20px 24px;margin-bottom:16px;border-top:3px solid #b8955a;">
+      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#b8955a;margin-bottom:8px;">${label.pos} · ${label.rolle}</div>
+      <div style="font-size:48px;line-height:1;margin-bottom:6px;">${rune.symbol}</div>
+      <div style="font-size:22px;margin-bottom:4px;">${rune.name}</div>
+      <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:#888;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #eee;">${rune.keyword}</div>
+      <div style="font-size:14px;line-height:1.75;color:#333;margin-bottom:12px;">${rune[posKey]}</div>
+      <div style="font-size:14px;font-style:italic;color:#1a1a1a;border-top:1px solid #eee;padding-top:12px;">${rune[qKey]}</div>
+    </div>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>SmartBalanz — Rune Læsning ${dato}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; color: #1a1a1a; padding: 40px; max-width: 800px; margin: 0 auto; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #1a1a1a; }
+  .logo { font-size: 22px; letter-spacing: 0.05em; font-style: italic; }
+  .meta { text-align: right; font-size: 13px; color: #666; line-height: 1.8; }
+  .samlet { background: #f9f8f6; border-left: 4px solid #b8955a; padding: 20px 24px; margin: 24px 0; border-radius: 4px; }
+  .samlet-label { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: #b8955a; margin-bottom: 10px; }
+  .samlet-text { font-size: 16px; font-style: italic; line-height: 1.8; color: #1a1a1a; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 11px; color: #999; display: flex; justify-content: space-between; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.15em; color: #666; margin: 28px 0 16px; font-weight: normal; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">SmartBalanz</div>
+    <div style="font-size:13px;color:#666;margin-top:4px;">Tre Rune Orakel · Elder Futhark</div>
+  </div>
+  <div class="meta">
+    <div>${dato}</div>
+    <div>smartbalanz.dk</div>
+    <div style="margin-top:4px;">Baseret på Ralph Blum</div>
+  </div>
+</div>
+
+<h2>Din læsning — højre mod venstre</h2>
+${kortHTML}
+
+${fullText ? `
+<div class="samlet">
+  <div class="samlet-label">✦ Samlet læsning</div>
+  <div class="samlet-text">${fullText}</div>
+</div>` : ''}
+
+<div class="footer">
+  <span>SmartBalanz — smartbalanz.dk — Alexander Birk</span>
+  <span>Nordisk selvrefleksion · Ikke spådom</span>
+</div>
+
+<script>window.onload = function() { window.print(); }<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
 }
 
 // Close picker on overlay click
