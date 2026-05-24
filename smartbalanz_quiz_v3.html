@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBalanz — Metabolisk Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1a1a1a;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ede8;
+    --muted: #888880;
+    --gold: #c8a96e;
+    --gold-light: #e8c98e;
+    --green: #4a9e6e;
+    --orange: #c87040;
+    --red: #c85040;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* INTRO */
+  #intro {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .intro-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    letter-spacing: -0.02em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    animation: fadeDown 0.8s ease both;
+  }
+
+  .intro-sub {
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4rem;
+    animation: fadeDown 0.8s ease 0.1s both;
+  }
+
+  .intro-hero {
+    max-width: 620px;
+    margin-bottom: 3rem;
+    animation: fadeDown 0.8s ease 0.2s both;
+  }
+
+  .intro-hero p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+    line-height: 1.7;
+    color: var(--text);
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .intro-hero p.sub {
+    font-family: 'DM Sans', sans-serif;
+    font-style: normal;
+    font-size: 0.95rem;
+    color: var(--muted);
+    margin-top: 1rem;
+  }
+
+  .intro-meta {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+    animation: fadeDown 0.8s ease 0.3s both;
+  }
+
+  .intro-meta-item { text-align: center; }
+
+  .intro-meta-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .intro-meta-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .divider {
+    width: 1px;
+    height: 50px;
+    background: var(--border);
+    align-self: center;
+  }
+
+  .btn-start {
+    background: var(--gold);
+    color: #0d0d0d;
+    border: none;
+    padding: 1rem 3rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    animation: fadeDown 0.8s ease 0.4s both;
+  }
+
+  .btn-start:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(200, 169, 110, 0.3);
+  }
+
+  .intro-note {
+    margin-top: 1.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    animation: fadeDown 0.8s ease 0.5s both;
+  }
+
+  /* QUIZ */
+  #quiz {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .quiz-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .quiz-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .quiz-progress-text {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .progress-bar-wrap {
+    height: 2px;
+    background: var(--border);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .quiz-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .question-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .question-wrap.fade-out { animation: fadeOut 0.2s ease forwards; }
+  .question-wrap.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  .category-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+  }
+
+  .question-meta {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+    opacity: 0.6;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.15rem, 2.5vw, 1.55rem);
+    line-height: 1.55;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: var(--text);
+    min-height: 80px;
+  }
+
+  .options {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    line-height: 1.5;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+
+  .option:hover {
+    border-color: rgba(200, 169, 110, 0.4);
+    background: var(--surface2);
+    transform: translateX(4px);
+  }
+
+  .option:hover::before { transform: scaleY(1); }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: rgba(200, 169, 110, 0.08);
+  }
+
+  .option.selected::before { transform: scaleY(1); }
+
+  .quiz-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    width: 100%;
+  }
+
+  .btn-nav {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.7rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-nav:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-nav:disabled { opacity: 0.2; cursor: not-allowed; }
+
+  .btn-next {
+    background: var(--gold);
+    color: #0d0d0d;
+    border: none;
+    padding: 0.7rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .btn-next.active { opacity: 1; pointer-events: all; }
+  .btn-next.active:hover { background: var(--gold-light); }
+
+  /* RESULT */
+  #result {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    padding: 4rem 2rem;
+  }
+
+  .result-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 4rem;
+    letter-spacing: 0.05em;
+  }
+
+  .result-score-wrap {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 10vw, 7rem);
+    line-height: 1;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .result-score-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .score-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .score-stable { background: rgba(74,158,110,0.15); color: #4a9e6e; }
+  .score-attention { background: rgba(200,169,110,0.15); color: var(--gold); }
+  .score-imbalance { background: rgba(200,112,64,0.15); color: var(--orange); }
+  .score-stress { background: rgba(200,80,64,0.15); color: var(--red); }
+
+  .result-profile {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .result-description {
+    max-width: 580px;
+    text-align: center;
+    line-height: 1.8;
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 3rem;
+  }
+
+  .result-categories {
+    width: 100%;
+    max-width: 580px;
+    margin-bottom: 3rem;
+  }
+
+  .cat-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 55px;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cat-name {
+    font-size: 0.73rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .cat-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .cat-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s ease 0.5s;
+  }
+
+  .cat-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    text-align: right;
+  }
+
+  .result-next {
+    max-width: 580px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .result-next-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .result-next p {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .btn-download {
+    background: var(--gold);
+    color: #0d0d0d;
+    border: none;
+    padding: 0.9rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-download:hover { background: var(--gold-light); }
+
+  .btn-restart {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.9rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-restart:hover { border-color: var(--gold); color: var(--gold); }
+
+  .result-footer {
+    margin-top: 3rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-style: italic;
+    text-align: center;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-8px); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .cat-row { grid-template-columns: 120px 1fr 40px; }
+    .intro-meta { gap: 1rem; }
+    .result-actions { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:200;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(13,13,13,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.07);">
+  <a href="index.html" style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#d4b07a;text-decoration:none;letter-spacing:0.05em;">SmartBalanz</a>
+  <a href="index.html" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#7a7468;text-decoration:none;">← Start</a>
+</div>
+
+<!-- INTRO -->
+<div id="intro" style="padding-top:5rem;">
+  <div class="intro-logo">SmartBalanz</div>
+  <div class="intro-sub">Metabolisk Assessment</div>
+  <div class="intro-hero">
+    <p>Du føler at noget er ud af spor. Træthed, stress og søvn. Vægt, indre balance eller glemsomhed — uden forklaring.</p>
+    <p class="sub">Og vi ved at det ikke er nemt. Derfor kortlægger vi det med dig. Uden forbud. Uden at du mister dig selv og din identitet.</p>
+  </div>
+
+  <div style="max-width:520px;margin-bottom:2.5rem;padding:1.25rem 1.5rem;border:1px solid rgba(200,169,110,0.25);border-radius:4px;background:rgba(200,169,110,0.05);animation:fadeDown 0.8s ease 0.25s both;">
+    <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--gold);margin-bottom:0.6rem;">Inden du starter</div>
+    <p style="font-size:0.88rem;line-height:1.7;color:var(--muted);">
+      Svar så ærligt som muligt — ikke som du gerne vil have det til at være, men som det faktisk er.<br>
+      <span style="color:var(--text);font-style:italic;">Den eneste du snyder, er dig selv.</span>
+    </p>
+  </div>
+
+  <div class="intro-meta">
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">33</div>
+      <div class="intro-meta-label">Spørgsmål</div>
+    </div>
+    <div class="divider"></div>
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">4</div>
+      <div class="intro-meta-label">Blokke</div>
+    </div>
+    <div class="divider"></div>
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">~8</div>
+      <div class="intro-meta-label">Minutter</div>
+    </div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">Start assessment</button>
+  <div class="intro-note">Ingen login. Ingen data gemt hos os. Du ejer dine svar.</div>
+</div>
+
+<!-- PART INTRO SCREEN -->
+<div id="part-intro" style="display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;text-align:center;">
+  <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:#d4b07a;letter-spacing:0.05em;margin-bottom:3rem;">SmartBalanz</div>
+  <div id="part-intro-text" style="font-family:'Playfair Display',serif;font-size:clamp(1.3rem,3vw,2rem);font-weight:300;font-style:italic;color:#f0ebe2;line-height:1.6;max-width:560px;margin-bottom:3rem;"></div>
+  <button class="btn-start" onclick="continueFromPartIntro()" style="opacity:0;animation:fadeDown 0.8s ease 0.4s both;">Fortsæt →</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz">
+  <div class="quiz-header">
+    <div class="quiz-logo">SmartBalanz</div>
+    <div class="quiz-progress-text" id="progress-text">Spørgsmål 1 af 33</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+  <div class="quiz-body">
+    <div class="question-wrap" id="question-wrap">
+      <div class="category-badge" id="cat-badge"></div>
+      <div class="question-meta" id="q-meta"></div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="quiz-nav">
+        <button class="btn-nav" id="btn-prev" onclick="prevQuestion()">← Tilbage</button>
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Næste →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="result">
+  <div class="result-logo">SmartBalanz</div>
+  <div class="result-score-wrap">
+    <div class="result-score" id="res-score">0</div>
+    <div class="result-score-label">Point ud af 132</div>
+  </div>
+  <div class="score-badge" id="res-badge"></div>
+  <div class="result-profile" id="res-profile"></div>
+  <div class="result-description" id="res-desc"></div>
+  <div class="result-categories" id="res-cats"></div>
+  <div class="result-next">
+    <div class="result-next-title">Anbefalede næste skridt</div>
+    <p id="res-next-text"></p>
+  </div>
+  <div class="result-actions">
+    <button class="btn-download" onclick="printResult()">🖨 Print resultat</button>
+    <button class="btn-download" onclick="downloadJSON()">Download mine data (JSON)</button>
+    <button class="btn-restart" onclick="restartQuiz()">Tag testen igen</button>
+  </div>
+  <div class="result-footer">SmartBalanz — Hvis du vil forstå din metabolisme, kan du lige så godt starte her.</div>
+</div>
+
+<script>
+const questions = [
+  // BLOK 1 — SELVERKENDELSEN (Q1-3)
+  { cat:"Selverkendelsen", label:"Det ærlige spejlbillede", q:"Hvis du skal give din nuværende livsstil og sundhed en overordnet karakter, hvor føler du så, du reelt lander?", opts:["Helt i top. Jeg gør en aktiv indsats, spiser fornuftigt, rører mig og føler, jeg har styr på min sundhed.","Okay fornuftigt. I en travl hverdag gør jeg mit bedste, men der er plads til forbedringer.","Det halter. Jeg ved godt, det er lidt usundt, men jeg mangler energien til at vende skuden.","Det sejler fuldstændig. Kroppen brokker sig konstant, og mit overskud er helt væk."] },
+  { cat:"Selverkendelsen", label:"Kost-illusionen", q:"Når du står i supermarkedet, hvad styrer så dine valg, for at du føler, du køber 'sundt' ind?", opts:["Jeg går konsekvent udenom ultra-forarbejdet mad, sukker og raffinerede frøolier. Jeg køber rene, uforarbejdede råvarer og rigtigt fedt.","Jeg tænker ikke så meget over det. Jeg køber bare det, jeg plejer, og hvad der smager godt.","Jeg prøver at skære ned på sukker og hvidt brød, men spiser masser af rugbrød, havregryn, frugt og pasta.","Jeg iagttager de officielle råd: Går efter fuldkornsmærket, nøglehulsmærket, fedtfattige light-produkter og flydende planteolier."] },
+  { cat:"Selverkendelsen", label:"Symptom-blændingen", q:"Hvis du mærker træthed, hjernetåge eller uro i kroppen i løbet af ugen, hvad tænker du så selv er den dybere årsag?", opts:["Jeg er helt bevidst om, at det er min kost og min metaboliske motor, der hakker.","Jeg tænker, at min krop forsøger at råbe mig op, men jeg ved ikke helt, hvor jeg skal sætte ind.","Det skyldes nok bare, at jeg har sovet lidt dårligt på det seneste eller mangler vitaminer.","Det er vel bare alderen, genetikken, eller fordi jeg har haft travlt. Det er vel helt normalt."] },
+
+  // BLOK 2 — KOST, KØKKEN & TÆRSKLEN (Q4-14)
+  { cat:"Kost & Køkken", label:"Morgenmaden & Aktivitetsniveauet", q:"Hvis du spiser traditionelle morgenmadsprodukter (havregryn, rugbrød, bagerbolle eller juice), hvad gør du så i timerne efter?", opts:["Jeg springer morgenmaden helt over (faste) og kører udelukkende på vand eller sort kaffe indtil middag.","Jeg har et fysisk aktivt arbejde eller dyrker intensiv motion lige efter.","Jeg spiser min morgenmad, men mærker hurtigt en tunghed eller sløvhed i kroppen bagefter.","Jeg sætter mig direkte i bilen eller på kontorstolen og sidder stort set stille indtil frokost."] },
+  { cat:"Kost & Køkken", label:"Brændstofs-kvaliteten om morgenen", q:"Hvad kaster du helt konkret i gabet, hvis du spiser morgenmad?", opts:["Æg, bacon, smør, avokado eller fuldfed skyr uden sukker — rent fedt, protein og nul sukkerchok.","Havregryn med sødmælk, groft rugbrød med ost eller ægte råvarer uden tilsat sukker.","En grøn smoothie, frugt, juice eller en '0% fedt' frugtyoghurt.","Franskbrød med marmelade/Nutella, cornflakes, muesli eller en hurtig bagerbolle på farten."] },
+  { cat:"Kost & Køkken", label:"Frokost-mønsteret", q:"Hvad sker der, når din motor har kørt indtil midt på dagen — hvad spiser du til frokost?", opts:["Rigtige, uforarbejdede råvarer, kød/fisk og masser af grøntsager — uden brød, pasta, ris og færdiglavede dressinger.","Den klassiske madpakke: Groft rugbrød med traditionelt pålæg (æg, kød) og lidt gnavegrønt.","Kantineordningen eller salatbaren, men der ryger tit pasta, kartofler, hvide ris eller brød på tallerkenen.","Det der er nemt: En sandwich fra tanken, en fransk hotdog, fastfood eller en mikrobølge-færdigret."] },
+  { cat:"Kost & Køkken", label:"Eftermiddags-fælden (kl. 15)", q:"Når trætheden eller den lille sult melder sig sidst på dagen, hvad snacker du så for at holde pæren i gang?", opts:["Intet. Min motor kører rent på reservetanken indtil aftensmaden uden problemer.","En håndfuld mandler/valnødder eller et par stykker mørk chokolade (min. 85%).","En kop kaffe med mælk/sukker, en riskage, et stykke frugt eller en grovkiks for at overleve.","Sukker- og kagefælden klapper i. Der ryger wienerbrød, slik, chips eller en energidrik indenbords."] },
+  { cat:"Kost & Køkken", label:"Det skjulte olie-bombardement", q:"Hvor ofte spiser du mad, der ikke er lavet helt fra bunden i dit eget køkken? (Færdigretter, købe-brød, færdige dressinger, mayonnaise, chips eller take-away)", opts:["Næsten aldrig. Jeg laver stort set alt selv af rene råvarer og styrer mine egne fedtstoffer.","Et par gange om ugen, når det skal gå stærkt, eller når jeg spiser ude i weekenden.","Flere gange om ugen tyr jeg til færdigløsninger, købepålæg og færdigbagt brød for at spare tid.","Dagligt. Jeg spiser kantineordning, færdigretter eller take-away næsten hver eneste dag."] },
+  { cat:"Kost & Køkken", label:"Stegepanden og salatskålen", q:"Hvilket fedtstof dominerer i dit køkken, når der skal steges kød eller vendes en salat?", opts:["Rigtigt smør (økologisk), hjemmelavet ghee, kokosolie eller koldpresset jomfruolivenolie.","En god, økologisk koldpresset rapsolie til salaten, men jeg steger i almindelig stegeolie.","Almindelig olivenolie til stegning, men jeg bruger færdigkøbte dressinger og saucer på flaske.","Kærgården, flydende margarine, Becel, solsikkeolie eller almindelig billig rapsolie."] },
+  { cat:"Kost & Køkken", label:"Røntgensyn af dit køleskab", q:"Hvis jeg åbner din køleskabsdør lige nu, hvad vil mine øjne så primært møde?", opts:["Ægte råvarer: Smør, æg, uforarbejdet kød, fed fisk, hele overjordiske grøntsager og fuldfede mejeriprodukter.","En helt klassisk blanding: Mælk, leverpostej, pålægspakker, rugbrød, ost og rester fra i går.","Masser af light-produkter, fedtfattig skyr, flydende margarine og flasker med færdige dressinger.","Stort set tomt, præget af sodavand, energidrikke, færdigretter og bægre med højtforarbejdede madvarer."] },
+  { cat:"Kost & Køkken", label:"Jagten i køkkenskabene", q:"Hvad gemmer der sig på hylderne i dine tørre skabe, når du kigger efter?", opts:["Kokosolie, nødder, frø, kerner, rene krydderier og måske lidt mørk chokolade.","Dåsetomater, almindeligt hvedemel, havregryn, ris, pasta og rapsolie.","Kiks, knækbrød, morgenmadsprodukter, pulversupper og færdige krydderiblandinger.","Chips, slik, ultra-forarbejdede snacks, hvidt sukker og kager med lang holdbarhed."] },
+  { cat:"Kost & Køkken", label:"Glycemic Load ved aftensmaden", q:"Hvad fylder absolut mest på din tallerken til aftensmaden ved siden af dit kød eller din fisk?", opts:["En stor portion overjordiske grøntsager (broccoli, blomkål, kål, asparges) overhældt med smør eller olivenolie.","En god blanding af grøntsager samt mindre mængder kartofler eller grove ris.","'Sundere' kulhydrater i store mængder: Fuldkornspasta, brune ris, quinoa eller søde kartofler.","Det hvide læs: Store mængder kartofler (eller mos), hvide ris, traditionel hvid pasta eller hvidt brød."] },
+  { cat:"Kost & Køkken", label:"Energi efter maden", q:"Hvordan har din krop og dit hoved det typisk den første time efter, du har spist et stort måltid?", opts:["Fuldstændig stabil. Min energi fortsætter uforandret, og jeg føler mig bare mæt og klar i hovedet.","Jeg er mæt, men kan godt mærke en mild, naturlig afslapning i kroppen.","Jeg bliver hurtigt sulten eller lækkersulten igen efter kun 1-2 timer.","Trash Metal-kollaps! Jeg bliver ekstremt træt, tung i kroppen, og min hjerne tåger fuldstændig ud."] },
+  { cat:"Kost & Køkken", label:"Det flydende sukkerchok", q:"Hvad drikker du i løbet af en helt almindelig hverdag for at slukke tørsten?", opts:["Rent postevand, mineralvand eller sort kaffe/te uden noget i.","Vand, men der ryger også et par glas mælk, kaffe med en tår mælk eller en enkelt danskvand med smag ned.","Light-sodavand, saftevand uden sukker eller store mængder frugtjuice/smoothies (som du tror er sunde).","Almindelig sodavand, energidrikke, iste med sukker eller kaffe spækket med mælk og sukker/sirup."] },
+
+  // BLOK 3 — RYTME, SØVN & VASKEMASKINEN (Q15-22)
+  { cat:"Søvn & Rytme", label:"Det natlige vaskeprogram", q:"Hvordan ser din nat reelt ud — får du lukket et øje, så hjernen kan vaske affaldsstofferne ud?", opts:["Jeg sover for det meste som en sten. Ubevægelig og tungt indtil vækkeuret ringer.","Det er her-og-der okay, men det kunne godt være dybere og mere stabilt.","Rendyrket rutsjebane. Jeg roterer, vågner i ét væk og har mange opvågninger.","Fuldstændig radbrækket. Jeg vågner stort set aldrig og tænker: 'Hold kæft, jeg er frisk!'"] },
+  { cat:"Søvn & Rytme", label:"Morgentilstanden efter opvågning", q:"Hvordan har din krop og dit sind det det allerførste kvarter efter, du er stået ud af sengen?", opts:["Klar og parat med det samme. Motoren spinder, og jeg behøver intet for at komme i gang.","Lidt sløv i koderne, men efter et bad eller en tår vand kører systemet fornuftigt.","Skal satme lige chokes i gang først! Kaffen skal have sat sig i systemet, før jeg er menneske.","Helt fladt batteri. Min krop og mit hoved føles tunge som bly, uanset hvor længe jeg har ligget der."] },
+  { cat:"Søvn & Rytme", label:"Det indre tempo og stress-niveauet", q:"Hvordan vil du beskrive din indre motor, når du sidder i sofaen eller skal slappe af en aften?", opts:["Fuldstændig ro. Jeg kan sidde uden rastløshed og mærke, at systemet gearer helt ned.","En smule rastløs i ny og næ, men jeg kan godt finde ud af at koble af.","Der kører konstante tankecirkler i baggrunden. Min hjerne nægter at stoppe med at planlægge.","Konstant alarmtilstand. Jeg har en indre dirren, uro i benene eller hjertebanken, selvom jeg sidder stille."] },
+  { cat:"Søvn & Rytme", label:"Nedsmeltningen efter pres", q:"Hvordan reagerer din krop og din modstandskraft, når din hverdag i en periode bliver mere krævende end normalt?", opts:["Jeg holder mig nogenlunde stabil og kører jævnt igennem stormen uden det store bøvl.","Jeg bliver en smule mere sårbar og irritabel undervejs, men holder balancen.","Jeg bliver hurtigt træt, tåget i hovedet eller småsløj, når presset stiger.","Jeg falder fuldstændig sammen og bliver akut syg eller totalt udmattet, lige så snart presset letter."] },
+  { cat:"Søvn & Rytme", label:"Det ubevidste mønster om natten", q:"Hvad sker der med din krop, efter du er faldet i søvn (hvis du skal være ærlig)?", opts:["Intet mærkeligt. Jeg vågner i samme stilling og har en rolig krop hele natten.","Jeg kan godt vågne en enkelt gang for at skulle på toilettet, men falder hurtigt i søvn igen.","Jeg vågner ofte badet i sved, har voldsomme drømme eller sparker uroligt med benene.","Min søvn er fuldstændig fragmenteret. Jeg vågner fast på specifikke tidspunkter med hjertebanken."] },
+  { cat:"Søvn & Rytme", label:"Vejrtrækningen og det iltede system", q:"Hvad ved du (eller din partner) om din vejrtrækning, når du sover om natten?", opts:["Jeg trækker vejret roligt og lydløst gennem næsen hele natten.","Jeg kan godt snorke en smule, hvis jeg ligger på ryggen eller har drukket et glas vin.","Jeg snorker jævnligt, vågner ofte med fuldstændig tør mund og er nødt til at have vand stående.","Jeg snorker voldsomt, har vejrtrækningspauser (søvnapnø) eller vågner med et gisp efter luft."] },
+  { cat:"Søvn & Rytme", label:"Koffein-afhængigheden", q:"Hvor meget kaffe, te, energidrik eller cola skal der reelt hældes på motoren for at holde dig kørende på en dag?", opts:["Intet eller maksimalt 1-2 kopper om morgenen for hyggens skyld. Jeg kan sagtens undvære det.","3-4 kopper i løbet af arbejdsdagen, men jeg stopper i god tid før aften.","Jeg drikker kaffe/te konstant hele dagen, og hvis jeg ikke får min faste kop, får jeg dunkende hovedpine.","Systemet kører på kunstigt nødbrændstof. Jeg drikker stærk kaffe eller energidrikke helt indtil sengetid."] },
+  { cat:"Søvn & Rytme", label:"Fordøjelsens rytme", q:"Hvordan reagerer din mave og dit tarmsystem på den mad, du fodrer den med i hverdagen?", opts:["Som et schweizerur. Det kører fuldstændig regelmæssigt, ingen oppustethed, smerter eller bøvl.","Mavesituationen svinger en smule alt efter, hvad jeg spiser, men intet voldsomt.","Jeg er ofte oppustet, har meget luft i maven eller døjer med træg fordøjelse i perioder.","Totalt kaos. Min mave er som en ballon hver evig eneste aften, og jeg har skiftevis slem uro eller smerter."] },
+
+  // BLOK 4 — PÆREN, KLARHEDEN & RE-COGNITION (Q23-33)
+  { cat:"Hjerne & Klarhed", label:"Den mentale forrude", q:"Hvordan vil du beskrive din mentale klarhed på en helt almindelig onsdag formiddag?", opts:["Fuldstændig klar forrude. Tankerne kører hurtigt, og jeg har fuldt overblik over mine opgaver.","Okay, men der kan godt være små øjeblikke, hvor jeg lige skal samle tankerne.","Forruden er dugget. Det føles som om, min hjerne kører i sirup, og jeg skal anstrenge mig for at fokusere.","Totalt tåget. Jeg stirrer ind i skærmen eller væggen uden at kunne samle en eneste brik — pæren er slukket."] },
+  { cat:"Hjerne & Klarhed", label:"Arbejdshukommelsen", q:"Hvor ofte oplever du de der små, irriterende svigt i din korttidshukommelse i hverdagen?", opts:["Næsten aldrig. Jeg husker aftaler, navne og hvor mine nøgler/briller ligger uden problemer.","En sjælden gang imellem, hvis jeg er meget stresset eller har travlt.","Det sker ugentligt. Jeg går ind i et rum og aner pludselig ikke hvad jeg skulle hente, eller glemmer basale ord.","Konstant. Det er en stående joke i familien, at jeg forlægger alt og glemmer aftaler i ét væk."] },
+  { cat:"Hjerne & Klarhed", label:"Re-cognition-fælden", q:"Hvis andre (pårørende, kolleger, venner) påpeger, at du virker fraværende, glemsom eller har ændret humør, hvad gør du så?", opts:["Jeg lytter til det, reflekterer over det og kan godt se mønstret, hvis min krop er i ubalance.","Jeg bliver måske lidt overrasket, men tænker over, om der er noget om snakken.","Jeg slår det hen som ligegyldigt, forsvarer mig med at jeg bare har travlt, og nægter at snakke mere om det.","Illusionen lukker i! Jeg bliver oprigtig vred, irriteret eller såret. Min hjerne kan ikke se problemet selv."] },
+  { cat:"Hjerne & Klarhed", label:"Det mentale overskud og temperamentet", q:"Hvordan reagerer du på uforudsete problemer, afbrydelser eller småfejl i din hverdag?", opts:["Jeg tager det med ophøjet ro. Mit nervesystem er stabilt, og jeg løser tingene konstruktivt.","Jeg kan godt blive kortvarigt irriteret, men finder hurtigt min indre balance igen.","Min lunte er blevet markant kortere. Jeg knalder hurtigt brikkerne ud eller bliver enormt frustreret over ingenting.","Jeg føler mig konstant oversvømmet. Den mindste afbrydelse kan give mig et decideret følelsesmæssigt kollaps."] },
+  { cat:"Hjerne & Klarhed", label:"Koncentrationsevnen over tid", q:"Hvor længe kan du fordybe dig i en kompleks opgave (læse en bog, ordne papirarbejde, lytte til et foredrag) uden at miste tråden?", opts:["I flere timer uden problemer, hvis opgaven kræver det. Min hjerne holder fokus.","En times tid, hvorefter jeg lige har brug for at strække benene eller kigge væk.","Det kniber gevaldigt. Efter 15-20 minutter vandrer mine tanker, og jeg begynder at tjekke telefonen.","Stort set umuligt. Min hjerne flakker konstant, og jeg skal læse det samme afsnit tre gange."] },
+  { cat:"Hjerne & Klarhed", label:"Retningssansen og det rumlige overblik", q:"Hvordan fungerer din indre GPS, når du bevæger dig rundt i områder, du ikke besøger hver dag?", opts:["Perfekt. Jeg har en god rumlig forståelse og finder nemt vej uden det store besvær.","Okay, men jeg støtter mig gerne til min telefons GPS for en sikkerheds skyld.","Jeg bliver markant hurtigere desorienteret end før i tiden, og skal tænke mig godt om for at finde bilen.","Det sejler. Jeg mister fuldstændig overblikket i kendte stormagasiner eller vejkryds og føler en snigende angst."] },
+  { cat:"Hjerne & Klarhed", label:"Det fysiske syn og spejlbilledet", q:"Hvad lægger du mærke til, når du ser dig i spejlet en almindelig morgen eller mærker efter i ansigtet/huden?", opts:["Intet usædvanligt. Min hud, mit hår og mine øjne ser friske og vitale ud.","Min hud er måske en smule tør, eller jeg har lidt mørke rande under øjnene i perioder.","Jeg ser træt ud, huden virker slap, og jeg har mistet gløden i ansigtet, uanset hvad jeg gør.","Min krop opmagasinerer tydeligt visceral fedt, min hud er ekstremt tør, og mit udtryk bærer præg af kronisk stress."] },
+  { cat:"Hjerne & Klarhed", label:"Koordinationen og balancen i hverdagen", q:"Hvordan reagerer din krop, hvis du pludselig skal lave en uventet motorisk bevægelse — gribe noget du taber, eller træde udenom et hul i asfalten?", opts:["Lynhurtig reaktion. Min krop og min hjerne samarbejder fejlfrit i perfekt koordination.","Jeg griber tingen, men føler mig måske en smule mere klodset eller stiv i bevægelserne end før.","Jeg taber ofte ting, støder ind i dørkarme eller mister balancen en smule, hvis underlaget er ujævnt.","Min motorik hakker voldsomt. Mine fødder lystrer ikke hurtigt nok, og jeg føler mig usikker på mine egne ben."] },
+  { cat:"Hjerne & Klarhed", label:"Det sanselige overskud", q:"Hvordan reagerer din hjerne, hvis du befinder dig i et rum med mange mennesker, baggrundsstøj eller musik (fx en familiefest eller et supermarked)?", opts:["Intet problem. Min hjerne formår at sortere støjen fra og fokusere på den samtale, jeg er i.","Jeg bliver hurtigere træt i hovedet af larm end før, men jeg kan godt holde det ud.","Støjen skærer igennem min hjerne. Jeg mister fuldstændig tråden i samtaler, fordi hjernes ikke kan sortere lydene.","Total oversvømmelse. Det føles som om, min hjerne eksploderer af sanseindtryk. Jeg vil desperat ud i stilheden."] },
+  { cat:"Hjerne & Klarhed", label:"Dual-Tasking", q:"Hvordan reagerer dit system, hvis du skal udføre fysisk arbejde (fx gå en hurtig tur) og samtidig føre en kompleks samtale?", opts:["Det kører som smurt. Min krop bevæger sig rytmisk, mens min hjerne tænker og taler skarpt.","Jeg kan godt mærke, at jeg skal koncentrere mig en smule mere, men jeg holder tempoet.","Jeg er enten nødt til at sætte farten voldsomt ned eller holde helt op med at tale, fordi hjerne ikke kan rumme begge dele.","Totalt systemstop. Min koordination falder fuldstændig fra hinanden, hvis jeg tvinges til at koordinere krop og tanke."] },
+  { cat:"Hjerne & Klarhed", label:"Den indre baseline og sandhedens time", q:"Når du nu har svaret på alle disse spørgsmål, og du mærker helt efter i din dybeste kerne — hvordan har dit system det så reelt?", opts:["Stabil, stærk og i balance. Min biologiske motor spinder, og jeg har det rigtige brændstof på tanken.","Det svinger lidt her og der, og jeg kan mærke, at min krop forsøger at kompensere for hverdagens pres.","Min baseline er rutsjet nedad. Jeg lever i en konstant tilstand af at være 'halv-sløj', tåget eller uoplagt.","Akut metabolisk energikrise. Mit system skriger på hjælp. Låsene er rustet fast, og mit batteri er fuldstændig fladt."] }
+]
+
+const catRanges = [
+  { name: "Selverkendelsen",    from: 0,  to: 2,  max: 12 },
+  { name: "Kost & Køkken",     from: 3,  to: 13, max: 44 },
+  { name: "Søvn & Rytme",      from: 14, to: 21, max: 32 },
+  { name: "Hjerne & Klarhed",  from: 22, to: 32, max: 44 }
+];
+
+const MAX_SCORE = 132;
+
+const profiles = [
+  {
+    range: [33, 50],
+    label: "Det spinder — runerne er i balance",
+    badge: "score-stable",
+    desc: "Din biologiske motor har det fantastisk. Du fodrer din krop med rent, uforarbejdet brændstof, din frøolie-tærskel er intakt, og din hjernes natlige vaskemaskine kører fejlfrit. Dine hjerneceller har fremragende hørelse. Fortsæt det gode arbejde.",
+    next: "Du er et godt sted. Overvej at tilføje objektive data — GKI-tracker, søvndata, hvilepuls — så du har en konkret baseline at navigere efter fremover."
+  },
+  {
+    range: [51, 85],
+    label: "Læsset vipper ved tærsklen",
+    badge: "score-attention",
+    desc: "Pas på. Din krop forsøger at kompensere, og du lever måske i den tro, at du gør det hele 'sundt'. Men din sande biologi viser, at du er ved at overskride tærsklen. Din Glycemic Load er for høj i hverdagen, og Trash Metal-larmen er begyndt at spille i baggrunden.",
+    next: "Det er nu, du skal handle, før låsene ruster fast. Start med SmartBalanz madplan og GKI-beregner — de giver dig et konkret billede inden for ugen."
+  },
+  {
+    range: [86, 132],
+    label: "Bogstaveligt strømsvigt (Type 3-diabetes)",
+    badge: "score-stress",
+    desc: "Alarm. Dit system befinder sig i en dyb metabolisk energikrise. Dine hjerneceller er blevet fuldstændig døve over for insulin på grund af årtiers plastik-mad, skjulte frøolier og manglende søvn-restitution. Glukosen suser forbi ude i dine blodbaner, men din hjerne sulter ihjel midt i overfloden.",
+    next: "En individuel konsultation med Alexander Birk anbefales som første skridt. Ikke for at få en diagnose — men for at få et klart kortlagt billede og en prioriteret plan der passer til dit liv."
+  }
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+// Shuffled option order per question — generated once at start
+let shuffledOrders = [];
+
+function initShuffledOrders() {
+  shuffledOrders = questions.map((q, qi) => {
+    const order = [0,1,2,3];
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    return order;
+  });
+}
+
+function startQuiz() {
+  initShuffledOrders();
+  document.getElementById('intro').style.display = 'none';
+  document.getElementById('quiz').style.display = 'flex';
+  renderQuestion();
+}
+
+function showPartIntro(text, callback) {
+  const screen = document.getElementById('part-intro');
+  document.getElementById('part-intro-text').textContent = text;
+  screen.style.display = 'flex';
+  screen._callback = callback;
+}
+
+function continueFromPartIntro() {
+  const screen = document.getElementById('part-intro');
+  const cb = screen._callback;
+  screen.style.display = 'none';
+  if (cb) cb();
+}
+
+function renderQuestion() {
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-in';
+  const q = questions[current];
+  document.getElementById('cat-badge').textContent = q.cat;
+  document.getElementById('q-meta').textContent = `${q.label} · Spørgsmål ${current + 1} af ${questions.length}`;
+  document.getElementById('q-text').textContent = q.q;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  const order = shuffledOrders[current] || [0,1,2,3];
+  order.forEach((origIdx, displayPos) => {
+    const btn = document.createElement('button');
+    const score = origIdx + 1; // original score 1-4
+    btn.className = 'option' + (answers[current] === score ? ' selected' : '');
+    btn.textContent = q.opts[origIdx];
+    btn.onclick = () => selectOption(score);
+    opts.appendChild(btn);
+  });
+
+  const pct = ((current + 1) / questions.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `Spørgsmål ${current + 1} af ${questions.length}`;
+  document.getElementById('btn-prev').disabled = current === 0;
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === questions.length - 1 ? 'Se resultat →' : 'Næste →';
+  if (answers[current] !== null) {
+    nextBtn.classList.add('active');
+  } else {
+    nextBtn.classList.remove('active');
+  }
+}
+
+function selectOption(score) {
+  answers[current] = score;
+  document.querySelectorAll('.option').forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === score);
+  });
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.classList.add('active');
+  nextBtn.textContent = current === questions.length - 1 ? 'Se resultat →' : 'Næste →';
+}
+
+function nextQuestion() {
+  if (answers[current] === null) return;
+  if (current === questions.length - 1) { showResult(); return; }
+
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-out';
+  setTimeout(() => { current++; renderQuestion(); }, 200);
+}
+
+function prevQuestion() {
+  if (current === 0) return;
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-out';
+  setTimeout(() => { current--; renderQuestion(); }, 200);
+}
+
+function showResult() {
+  document.getElementById('quiz').style.display = 'none';
+  const res = document.getElementById('result');
+  res.style.display = 'flex';
+
+  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  document.getElementById('res-score').textContent = total;
+
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+  const badge = document.getElementById('res-badge');
+  badge.textContent = profile.label;
+  badge.className = 'score-badge ' + profile.badge;
+  document.getElementById('res-profile').textContent = profile.label;
+  document.getElementById('res-desc').textContent = profile.desc;
+  document.getElementById('res-next-text').textContent = profile.next;
+
+  const catsEl = document.getElementById('res-cats');
+  catsEl.innerHTML = '';
+  catRanges.forEach(cat => {
+    const catScore = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a || 1), 0);
+    const pct = (catScore / cat.max) * 100;
+    const col = pct < 40 ? '#4a9e6e' : pct < 60 ? '#c8a96e' : pct < 80 ? '#c87040' : '#c85040';
+    const row = document.createElement('div');
+    row.className = 'cat-row';
+    row.innerHTML = `
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-bar"><div class="cat-fill" style="width:0%;background:${col}" data-pct="${pct}"></div></div>
+      <div class="cat-score">${catScore}/${cat.max}</div>
+    `;
+    catsEl.appendChild(row);
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.cat-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 300);
+}
+
+function downloadJSON() {
+  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+
+  const catScores = {};
+  catRanges.forEach(cat => {
+    const score = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a || 1), 0);
+    catScores[cat.name] = { score, max: cat.max, pct: Math.round((score / cat.max) * 100) };
+  });
+
+  const svar = {};
+  questions.forEach((q, i) => {
+    svar[`Q${i + 1}`] = {
+      kategori: q.cat,
+      emne: q.label,
+      spørgsmål: q.q,
+      svar: q.opts[(answers[i] || 1) - 1],
+      score: answers[i] || 0
+    };
+  });
+
+  const data = {
+    assessment_dato: new Date().toISOString().split('T')[0],
+    version: "2.0",
+    platform: "SmartBalanz",
+    total_score: total,
+    max_score: MAX_SCORE,
+    profil: profile.label,
+    kategori_scores: catScores,
+    anbefalet_naeste_skridt: profile.next,
+    svar
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `smartbalanz_assessment_${data.assessment_dato}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  initShuffledOrders();
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('intro').style.display = 'flex';
+}
+
+function printResult() {
+  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+  const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const catRows = catRanges.map(cat => {
+    const catScore = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a || 1), 0);
+    const pct = Math.round((catScore / cat.max) * 100);
+    const status = pct < 40 ? 'Godt' : pct < 60 ? 'Opmærksomhed' : pct < 80 ? 'Ubalance' : 'Stress';
+    const bar = '█'.repeat(Math.round(pct / 10)) + '░'.repeat(10 - Math.round(pct / 10));
+    return `
+      <tr>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:500;">${cat.name}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;color:#666;letter-spacing:2px;">${bar}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;">${catScore}/${cat.max}</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:600;">${pct}%</td>
+        <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;color:${pct < 40 ? '#16a34a' : pct < 60 ? '#92650a' : pct < 80 ? '#c2410c' : '#dc2626'}">${status}</td>
+      </tr>`;
+  }).join('');
+
+  // Alle svar
+  const svarRows = questions.map((q, i) => {
+    const score = answers[i] || 1;
+    const svar = q.opts[(score - 1)] || '—';
+    const col = score === 1 ? '#16a34a' : score === 2 ? '#92650a' : score === 3 ? '#c2410c' : '#dc2626';
+    return `
+      <tr>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;color:#666;font-size:12px;">${q.cat}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-weight:500;font-size:13px;">${q.label}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-size:12px;">${svar}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;text-align:center;font-weight:700;color:${col}">${score}</td>
+      </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>SmartBalanz — Metabolisk Assessment ${dato}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Georgia, serif; color: #1a1a1a; padding: 40px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: normal; margin-bottom: 4px; }
+  h2 { font-size: 16px; font-weight: normal; color: #666; border-bottom: 2px solid #1a1a1a; padding-bottom: 8px; margin: 28px 0 16px; }
+  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.15em; color: #666; margin-bottom: 4px; }
+  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #1a1a1a; }
+  .logo { font-size: 22px; letter-spacing: 0.05em; font-style: italic; }
+  .meta { text-align: right; font-size: 13px; color: #666; line-height: 1.8; }
+  .score-box { display: flex; gap: 32px; background: #f9f8f6; padding: 24px; border-radius: 6px; margin-bottom: 24px; border-left: 5px solid #1a1a1a; }
+  .score-big { font-size: 64px; font-weight: bold; line-height: 1; }
+  .score-info h3 { margin-bottom: 6px; }
+  .score-info .profil { font-size: 22px; margin-bottom: 8px; }
+  .score-info .desc { font-size: 14px; color: #444; line-height: 1.6; max-width: 500px; }
+  .next-box { background: #f0f9f4; border: 1px solid #86efac; padding: 16px 20px; border-radius: 6px; margin-bottom: 24px; }
+  .next-box strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.1em; color: #16a34a; }
+  .next-box p { font-size: 14px; color: #1a1a1a; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { background: #1a1a1a; color: white; padding: 10px 12px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .page-break { page-break-before: always; }
+  .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #ddd; font-size: 11px; color: #999; display: flex; justify-content: space-between; }
+  @media print {
+    body { padding: 20px; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="logo">SmartBalanz</div>
+    <div style="font-size:13px;color:#666;margin-top:4px;">Metabolisk Assessment — Fortroligt dokument</div>
+  </div>
+  <div class="meta">
+    <div>${dato}</div>
+    <div>smartbalanz.dk</div>
+    <div style="margin-top:4px;">Version 2.0</div>
+  </div>
+</div>
+
+<div class="score-box">
+  <div class="score-big">${total}</div>
+  <div class="score-info">
+    <h3>Total score ud af ${MAX_SCORE}</h3>
+    <div class="profil">${profile.label}</div>
+    <div class="desc">${profile.desc}</div>
+  </div>
+</div>
+
+<div class="next-box">
+  <strong>Anbefalet næste skridt</strong>
+  <p>${profile.next}</p>
+</div>
+
+<h2>Kategori-oversigt</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Kategori</th>
+      <th>Profil</th>
+      <th>Score</th>
+      <th>%</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>${catRows}</tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>Dine svar — Assessment spørgsmål</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Kategori</th>
+      <th>Emne</th>
+      <th>Svar</th>
+      <th style="text-align:center;">Score</th>
+    </tr>
+  </thead>
+  <tbody>${svarRows}</tbody>
+</table>
+
+<div class="footer">
+  <span>SmartBalanz — smartbalanz.dk — Alexander Birk</span>
+  <span>Dette dokument er personligt og fortroligt</span>
+</div>
+
+<script>window.onload = function() { window.print(); }<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+</script>
+</body>
+</html>

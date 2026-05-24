@@ -777,7 +777,7 @@
 <div class="mobile-menu" id="mobileMenu">
   <button class="mobile-close" onclick="closeMobile()">✕</button>
   <a href="#" onclick="closeMobile()">Start</a>
-  <a href="smartbalanz_quiz_v2.html" onclick="closeMobile()">Quiz</a>
+  <a href="smartbalanz_quiz_v3.html" onclick="closeMobile()">Quiz</a>
   <a href="smartbalanz_madplan_4uger.html" onclick="closeMobile()">Madplan</a>
   <a href="smartbalanz_tracker.html" onclick="closeMobile()">Tracker</a>
   <a href="smartbalanz_runer.html" onclick="closeMobile()">Runer</a>
@@ -789,12 +789,12 @@
   <a href="index.html" class="nav-logo">SmartBalanz</a>
   <ul class="nav-links">
     <li><a href="index.html">Start</a></li>
-    <li><a href="smartbalanz_quiz_v2.html">Quiz</a></li>
+    <li><a href="smartbalanz_quiz_v3.html">Quiz</a></li>
     <li><a href="smartbalanz_madplan_4uger.html">Madplan</a></li>
     <li><a href="smartbalanz_tracker.html">Tracker</a></li>
     <li><a href="smartbalanz_runer.html">Runer</a></li>
     <li><a href="#om">Om Alex</a></li>
-    <li><a href="smartbalanz_quiz_v2.html" class="nav-cta">Tag testen</a></li>
+    <li><a href="smartbalanz_quiz_v3.html" class="nav-cta">Tag testen</a></li>
   </ul>
   <div class="hamburger" onclick="openMobile()">
     <span></span><span></span><span></span>
@@ -816,7 +816,7 @@
     <p>Og vi ved at det ikke er nemt. Derfor kortlægger vi det med dig. Uden forbud. Uden at du mister dig selv og din identitet.</p>
   </div>
   <div class="hero-actions">
-    <a href="smartbalanz_quiz_v2.html" class="btn-primary">Tag din metaboliske kortlægning</a>
+    <a href="smartbalanz_quiz_v3.html" class="btn-primary">Tag din metaboliske kortlægning</a>
     <a href="#vaerktoejer" class="btn-secondary">Se hvad vi tilbyder</a>
   </div>
   <div class="hero-scroll">
@@ -904,10 +904,10 @@
     <h2 class="section-title reveal">Kortlægning i tre niveauer.<br>Ét formål: <em style="color:#d4b07a;">Klarhed.</em></h2>
     <p class="section-sub reveal">Start hvor du er. Gå så dybt du vil. Ingen login. Dine data er dine.</p>
     <div class="tools-grid">
-      <a href="smartbalanz_quiz_v2.html" class="tool-card reveal">
+      <a href="smartbalanz_quiz_v3.html" class="tool-card reveal">
         <div class="tool-number">01</div>
         <div class="tool-name">Metabolisk Assessment</div>
-        <div class="tool-desc">56 spørgsmål der kortlægger dit energimønster, søvn, kost og stressniveau. Psykologisk sofistikeret — ingen kan se hvad vi leder efter. Du får et øjeblikkeligt snapshot og kan downloade dine data.</div>
+        <div class="tool-desc">33 spørgsmål der kortlægger dit energimønster, søvn, kost og kognitiv klarhed fordelt på 4 blokke. Forensisk og direkte — ingen kan se hvad vi leder efter. Du får et øjeblikkeligt snapshot med runefortolkning.</div>
         <div class="tool-link">Start kortlægning</div>
       </a>
       <a href="smartbalanz_madplan_4uger.html" class="tool-card reveal">
@@ -941,6 +941,35 @@
         <div class="tool-link">Se tricks</div>
       </a>
     </div>
+
+    <!-- MCI FEATURED CARD -->
+    <div class="reveal" style="margin-top:1.5rem;">
+      <a href="smartbalanz_mci.html" style="
+        display:grid;
+        grid-template-columns:1fr auto;
+        align-items:center;
+        gap:2rem;
+        background:var(--bg);
+        border:1px solid rgba(184,149,90,0.2);
+        border-left:3px solid var(--gold);
+        border-radius:4px;
+        padding:2rem 2.5rem;
+        text-decoration:none;
+        transition:all 0.3s ease;
+      " onmouseover="this.style.borderColor='rgba(184,149,90,0.5)';this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(0,0,0,0.3)'"
+         onmouseout="this.style.borderColor='rgba(184,149,90,0.2)';this.style.transform='translateY(0)';this.style.boxShadow='none'">
+        <div>
+          <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">Til pårørende · Kognitiv Observationstest</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--text);margin-bottom:0.5rem;">Kognitiv Kortlægning</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.6;max-width:600px;">Et struktureret observationsredskab til pårørende, hjælpere og vejledere. Du observerer — personen udfører opgaverne. Klokkeopgaven, ordhukommelse, orientering og mere. Resultatet er et samlet billede med runefortolkning og en konkret rapport til lægen. <em style="color:rgba(184,149,90,0.7);">Ikke en diagnose — brobygning.</em></div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="font-size:2.5rem;color:rgba(184,149,90,0.25);font-family:'Cormorant Garamond',serif;line-height:1;margin-bottom:0.5rem;">ᛈ</div>
+          <div style="font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">Start test →</div>
+        </div>
+      </a>
+    </div>
+
   </div>
 </section>
 
@@ -975,7 +1004,7 @@
     </div>
     <h2 class="section-title" style="margin-bottom: 1rem;">Tag din kortlægning nu</h2>
     <p style="color: var(--muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 2rem;">56 spørgsmål. 6 kategorier. Et øjeblikkeligt snapshot af din metaboliske stabilitet. Ingen login. Ingen data gemt hos os. Dine svar er dine.</p>
-    <a href="smartbalanz_quiz_v2.html" class="btn-primary">Start assessment — det tager ~12 minutter</a>
+    <a href="smartbalanz_quiz_v3.html" class="btn-primary">Start assessment — det tager ~8 minutter</a>
     <div class="quiz-meta">
       <div class="quiz-meta-item">Ingen login</div>
       <div class="quiz-meta-item">Ingen data gemt</div>
@@ -1017,7 +1046,7 @@
   <div class="footer-logo">SmartBalanz</div>
   <div class="footer-tagline">Hvis du vil forstå din metabolisme,<br>kan du lige så godt starte her.</div>
   <ul class="footer-links">
-    <li><a href="smartbalanz_quiz_v2.html">Quiz</a></li>
+    <li><a href="smartbalanz_quiz_v3.html">Quiz</a></li>
     <li><a href="smartbalanz_madplan_4uger.html">Madplan</a></li>
     <li><a href="smartbalanz_tracker.html">Tracker</a></li>
     <li><a href="smartbalanz_runer.html">Runer</a></li>

@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBalanz — Kognitiv Observationstest</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --surface: #141210;
+    --surface2: #1c1a16;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0ebe2;
+    --muted: #7a7468;
+    --gold: #b8955a;
+    --gold-light: #d4b07a;
+    --gold-pale: rgba(184,149,90,0.08);
+    --warn: rgba(200,112,64,0.12);
+    --warn-border: rgba(200,112,64,0.3);
+    --warn-text: #c87040;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 900;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(12,11,9,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--gold-light);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-back {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--gold); }
+
+  /* SCREENS */
+  .screen { display: none; min-height: 100vh; }
+  .screen.active { display: block; }
+
+  /* INTRO */
+  #screen-intro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+    text-align: center;
+  }
+
+  .intro-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .intro-title em { font-style: italic; color: var(--gold-light); }
+
+  .intro-sub {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 560px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  /* DISCLAIMER BOX */
+  .disclaimer {
+    max-width: 580px;
+    width: 100%;
+    background: var(--warn);
+    border: 1px solid var(--warn-border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+    animation: fadeUp 0.8s ease 0.35s both;
+  }
+
+  .disclaimer-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warn-text);
+    margin-bottom: 0.75rem;
+  }
+
+  .disclaimer p {
+    font-size: 0.85rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  .disclaimer p + p { margin-top: 0.5rem; }
+
+  /* META ROW */
+  .intro-meta {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .intro-meta-item { text-align: center; }
+
+  .intro-meta-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .intro-meta-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .divider-v {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    align-self: center;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--gold);
+    color: #0c0b09;
+    border: none;
+    padding: 1rem 3rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    animation: fadeUp 0.8s ease 0.45s both;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(184,149,90,0.25);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.8rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+  .intro-note {
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  /* QUIZ SCREEN */
+  #screen-quiz {
+    display: none;
+    flex-direction: column;
+  }
+
+  #screen-quiz.active { display: flex; }
+
+  .quiz-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 64px;
+  }
+
+  .quiz-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+
+  .quiz-progress-text {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .progress-bar-wrap {
+    height: 2px;
+    background: var(--border);
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .quiz-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .question-wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .question-wrap.fade-out { animation: fadeOut 0.2s ease forwards; }
+  .question-wrap.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+  .category-badge {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    opacity: 0.8;
+  }
+
+  /* TASK BOX — for cognitive exercises */
+  .task-box {
+    width: 100%;
+    background: var(--gold-pale);
+    border: 1px solid rgba(184,149,90,0.2);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.75rem;
+    text-align: center;
+  }
+
+  .task-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+
+  .task-instruction {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    font-style: italic;
+    line-height: 1.6;
+    color: var(--text);
+  }
+
+  .task-timer {
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .timer-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    color: var(--gold);
+    line-height: 1;
+    margin: 0.5rem 0;
+    transition: color 0.3s;
+  }
+
+  .timer-display.urgent { color: #c87040; }
+
+  .btn-timer {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    padding: 0.5rem 1.25rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-timer:hover { border-color: var(--gold); background: var(--gold-pale); }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    line-height: 1.55;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text);
+  }
+
+  .options {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 1.5;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+
+  .option:hover {
+    border-color: rgba(184,149,90,0.4);
+    background: var(--surface2);
+    transform: translateX(4px);
+  }
+
+  .option:hover::before { transform: scaleY(1); }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+
+  .option.selected::before { transform: scaleY(1); }
+
+  .quiz-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 2.5rem;
+    width: 100%;
+  }
+
+  .btn-nav {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.7rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .btn-nav:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-nav:disabled { opacity: 0.2; cursor: not-allowed; }
+
+  .btn-next {
+    background: var(--gold);
+    color: #0c0b09;
+    border: none;
+    padding: 0.7rem 2rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  .btn-next.active { opacity: 1; pointer-events: all; }
+  .btn-next.active:hover { background: var(--gold-light); }
+
+  /* SECTION BREAK SCREEN */
+  #screen-break {
+    display: none;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  #screen-break.active { display: flex; }
+
+  .break-rune {
+    font-size: 4rem;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+    animation: runeGlow 3s ease-in-out infinite;
+  }
+
+  .break-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 520px;
+    margin-bottom: 2rem;
+  }
+
+  /* RESULT */
+  #screen-result {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 8rem 2rem 5rem;
+  }
+
+  #screen-result.active { display: flex; }
+
+  .result-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    margin-bottom: 3rem;
+    letter-spacing: 0.05em;
+  }
+
+  .result-score-wrap {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .result-score {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    line-height: 1;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+  }
+
+  .result-score-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+  }
+
+  .score-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+  }
+
+  .badge-green { background: rgba(74,158,110,0.15); color: #4a9e6e; }
+  .badge-yellow { background: rgba(184,149,90,0.15); color: var(--gold); }
+  .badge-orange { background: rgba(200,112,64,0.15); color: #c87040; }
+  .badge-red { background: rgba(200,80,64,0.15); color: #c85040; }
+
+  .result-profile {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    text-align: center;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+    max-width: 600px;
+  }
+
+  .result-desc {
+    max-width: 580px;
+    text-align: center;
+    line-height: 1.8;
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 3rem;
+  }
+
+  /* CATEGORY BARS */
+  .result-cats {
+    width: 100%;
+    max-width: 560px;
+    margin-bottom: 3rem;
+  }
+
+  .cat-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 60px;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .cat-name {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  .cat-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .cat-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s ease 0.5s;
+  }
+
+  .cat-score {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    text-align: right;
+  }
+
+  /* RUNE RESULT */
+  .rune-result {
+    width: 100%;
+    max-width: 580px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    border-radius: 4px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s ease 0.8s both;
+  }
+
+  .rune-result-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.25rem;
+  }
+
+  .rune-result-top {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .rune-result-symbol {
+    font-size: 3.5rem;
+    color: var(--gold-light);
+    line-height: 1;
+    animation: runeGlow 3s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  .rune-result-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--text);
+    margin-bottom: 0.2rem;
+  }
+
+  .rune-result-keyword {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .rune-result-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-style: italic;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+
+  .rune-result-action {
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--muted);
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* NEXT STEPS */
+  .next-steps {
+    width: 100%;
+    max-width: 580px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .next-steps-title {
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .next-steps p {
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  /* DISCLAIMER RESULT */
+  .result-disclaimer {
+    width: 100%;
+    max-width: 580px;
+    background: var(--warn);
+    border: 1px solid var(--warn-border);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+  }
+
+  .result-disclaimer-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warn-text);
+    margin-bottom: 0.6rem;
+  }
+
+  .result-disclaimer p {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .result-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .result-footer {
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-style: italic;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  footer a { color: var(--gold); text-decoration: none; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-8px); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes runeGlow {
+    0%, 100% { text-shadow: 0 0 20px rgba(184,149,90,0.3); }
+    50% { text-shadow: 0 0 50px rgba(184,149,90,0.7); }
+  }
+
+  @media (max-width: 600px) {
+    .cat-row { grid-template-columns: 110px 1fr 45px; }
+    .intro-meta { gap: 1rem; }
+    .result-actions { flex-direction: column; align-items: stretch; }
+    .rune-result-top { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">SmartBalanz</a>
+  <a href="index.html" class="nav-back">← Start</a>
+</nav>
+
+<!-- INTRO SCREEN -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-eyebrow">Kognitiv Observationstest · Pårørendeversion</div>
+  <h1 class="intro-title">Kognitiv<br><em>Kortlægning</em></h1>
+  <p class="intro-sub">
+    Dette redskab er til dig som pårørende, hjælper eller interviewer.<br>
+    Du observerer og vurderer — den person du holder af udfører opgaverne.<br>
+    Resultatet er et samlet billede, ikke en diagnose.
+  </p>
+
+  <div class="disclaimer">
+    <div class="disclaimer-title">⚠ Vigtig information inden du starter</div>
+    <p>Denne test er <strong style="color:var(--gold-light)">ikke</strong> et diagnostisk redskab og erstatter ikke en professionel medicinsk vurdering. Den er udelukkende vejledende og skabt til at hjælpe pårørende med at kortlægge og beskrive observerede ændringer.</p>
+    <p style="margin-top:0.5rem;">Er du bekymret for tegn på kognitiv svækkelse, bør du altid kontakte din læge eller et demenscenter. Resultatet fra denne test kan bruges som samtaleoplæg — ikke som diagnose.</p>
+  </div>
+
+  <div style="max-width:560px;width:100%;padding:1.25rem 1.5rem;background:var(--gold-pale);border:1px solid rgba(184,149,90,0.15);border-radius:4px;margin-bottom:2.5rem;animation:fadeUp 0.8s ease 0.35s both;">
+    <div style="font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;">Sådan bruger du testen</div>
+    <p style="font-size:0.85rem;line-height:1.8;color:var(--muted);">Sid sammen med personen. Bed dem udføre opgaverne højt eller på papir. <strong style="color:var(--text);font-weight:400;">Du</strong> vurderer resultatet og vælger det svar der bedst matcher hvad du observerede. Vær ærlig — din observation er redskabets præcision.</p>
+  </div>
+
+  <div class="intro-meta">
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">24</div>
+      <div class="intro-meta-label">Opgaver</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">5</div>
+      <div class="intro-meta-label">Domæner</div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="intro-meta-item">
+      <div class="intro-meta-num">~20</div>
+      <div class="intro-meta-label">Minutter</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="startQuiz()">Start kortlægning</button>
+  <div class="intro-note">Ingen data gemt hos os · Personligt og fortroligt · Ikke en diagnose</div>
+</div>
+
+<!-- BREAK SCREEN -->
+<div id="screen-break" class="screen">
+  <div class="break-rune" id="break-rune">ᚱ</div>
+  <div class="break-title" id="break-text"></div>
+  <button class="btn-primary" onclick="continueFromBreak()">Fortsæt →</button>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-header" style="margin-top:64px;">
+    <div class="quiz-logo">SmartBalanz · Kognitiv Kortlægning</div>
+    <div class="quiz-progress-text" id="progress-text">Opgave 1 af 24</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+  <div class="quiz-body">
+    <div class="question-wrap" id="question-wrap">
+      <div class="category-badge" id="cat-badge"></div>
+      <div id="task-box-container"></div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="quiz-nav">
+        <button class="btn-nav" id="btn-prev" onclick="prevQuestion()">← Tilbage</button>
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Næste →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="screen-result" class="screen">
+  <div class="result-logo">SmartBalanz · Kognitiv Kortlægning</div>
+  <div class="result-score-wrap">
+    <div class="result-score" id="res-score">0</div>
+    <div class="result-score-label">Samlet observationsscore</div>
+  </div>
+  <div class="score-badge" id="res-badge"></div>
+  <div class="result-profile" id="res-profile"></div>
+  <div class="result-desc" id="res-desc"></div>
+
+  <div class="result-cats" id="res-cats"></div>
+
+  <div class="rune-result" id="rune-result-box">
+    <div class="rune-result-eyebrow">✦ Runens fortolkning</div>
+    <div class="rune-result-top">
+      <div class="rune-result-symbol" id="rune-symbol"></div>
+      <div>
+        <div class="rune-result-name" id="rune-name"></div>
+        <div class="rune-result-keyword" id="rune-keyword"></div>
+      </div>
+    </div>
+    <div class="rune-result-text" id="rune-text"></div>
+    <div class="rune-result-action" id="rune-action"></div>
+  </div>
+
+  <div class="next-steps" id="next-steps-box">
+    <div class="next-steps-title">Anbefalede næste skridt</div>
+    <p id="next-steps-text"></p>
+  </div>
+
+  <div class="result-disclaimer">
+    <div class="result-disclaimer-title">⚠ Ansvarsfraskrivelse</div>
+    <p>Dette er et observationsbaseret vejledningsredskab — ikke en medicinsk diagnose. Resultaterne bør altid følges op med en samtale med læge, neurolog eller demensvejleder. SmartBalanz og Alexander Birk påtager sig intet medicinsk ansvar for fortolkning af resultater.</p>
+  </div>
+
+  <div class="result-actions">
+    <button class="btn-primary" onclick="printResult()">🖨 Print rapport</button>
+    <button class="btn-secondary" onclick="restartQuiz()">↺ Tag testen igen</button>
+  </div>
+
+  <div class="result-footer">SmartBalanz — Brobygning mellem observation og handling · smartbalanz.dk</div>
+</div>
+
+<footer>
+  <a href="index.html">SmartBalanz</a> · Kognitiv Observationstest · Alexander Birk · 2026 · Ikke en diagnose
+</footer>
+
+<script>
+// ─── SPØRGSMÅL ────────────────────────────────────────────────────────────────
+// score: 0 = ingen tegn, 1 = lette tegn, 2 = tydelige tegn, 3 = markante tegn
+const questions = [
+
+  // ── DOMÆNE 1: ORIENTERING (4) ──────────────────────────────────
+  { cat:"Orientering", label:"Dato og tid",
+    task:"Spørg personen: 'Hvad er dagens dato?' og 'Hvad er årstallet?'",
+    q:"Hvordan svarede personen?",
+    opts:[
+      "Svarede korrekt og hurtigt uden tøven",
+      "Tøvede lidt, men kom frem til det rigtige svar",
+      "Var usikker og svarede forkert på dato eller år",
+      "Kunne ikke svare — virkede desorienteret i tid"
+    ]},
+
+  { cat:"Orientering", label:"Sted og sammenhæng",
+    task:"Spørg personen: 'Hvor er vi henne lige nu?' og 'Hvad hedder det sted/den by vi er i?'",
+    q:"Hvordan svarede personen?",
+    opts:[
+      "Svarede korrekt og sikkert",
+      "Svarede korrekt men med en smule usikkerhed",
+      "Svarede delvist forkert eller forvirret",
+      "Kunne ikke svare — virkede desorienteret i rum"
+    ]},
+
+  { cat:"Orientering", label:"Personlige oplysninger",
+    task:"Spørg personen om sit fødselsdato eller adresse.",
+    q:"Hvordan svarede personen?",
+    opts:[
+      "Svarede korrekt og ubesværet",
+      "Svarede efter kortere tøven",
+      "Svarede delvist korrekt — huskede dele men ikke alt",
+      "Var ikke i stand til at svare korrekt"
+    ]},
+
+  { cat:"Orientering", label:"Tidlig/sen observation",
+    q:"Sammenlign med dit kendskab til personen — er der sket ændringer i evnen til at orientere sig (finde vej, kende steder)?",
+    opts:[
+      "Ingen ændring — orienterer sig som altid",
+      "Små ændringer — tøver lidt mere end tidligere",
+      "Tydelige ændringer — farer oftere vild eller bliver forvirret i kendte omgivelser",
+      "Markante ændringer — taber tråden selv i velkendte omgivelser"
+    ]},
+
+  // ── DOMÆNE 2: HUKOMMELSE (5) ──────────────────────────────────
+  { cat:"Hukommelse", label:"Ordhukommelse — indlæring",
+    task:"Læs disse 5 ord langsomt op én gang: ÆBLE · HUS · BLÅ · FISK · KIRKE\nBed derefter personen gentage dem. Husk ordene — de bruges igen.",
+    q:"Hvor mange ord huskede personen ved første forsøg?",
+    opts:[
+      "Alle 5 ord",
+      "3–4 ord",
+      "1–2 ord",
+      "Ingen eller næsten ingen"
+    ]},
+
+  { cat:"Hukommelse", label:"Ordhukommelse — genkaldelse",
+    task:"Fortsæt med andre spørgsmål i 5-10 minutter. Spørg derefter: 'Husker du de 5 ord jeg læste op for lidt siden?'",
+    q:"Hvor mange ord huskede personen efter forsinkelse?",
+    opts:[
+      "Alle 5 ord uden hjælp",
+      "3–4 ord — eller huskede dem med ledetråde",
+      "1–2 ord selv med hjælp",
+      "Ingen — havde glemt at der overhovedet var ord"
+    ]},
+
+  { cat:"Hukommelse", label:"Episodisk hukommelse",
+    q:"Kan personen huske hvad de spiste til aftensmad i går eller hvad de lavede i weekenden?",
+    opts:[
+      "Husker det klart og detaljeret",
+      "Husker det men med lidt besvær",
+      "Husker fragmenter — men ikke sammenhængende",
+      "Kan ikke huske det — eller husker forkert"
+    ]},
+
+  { cat:"Hukommelse", label:"Procedurel hukommelse",
+    q:"Kan personen stadig udføre velkendte daglige handlinger (lave kaffe, bruge telefon, låse dør) uden at skulle tænke over det?",
+    opts:[
+      "Ja — ubesværet og automatisk",
+      "Ja — men tager lidt længere tid end før",
+      "Har svært ved det og har brug for hjælp",
+      "Kan ikke gøre det alene — er afhængig af hjælp"
+    ]},
+
+  { cat:"Hukommelse", label:"Gentagelse",
+    q:"Gentager personen de samme spørgsmål, historier eller kommentarer inden for kort tid — uden at bemærke det selv?",
+    opts:[
+      "Aldrig eller meget sjældent",
+      "Af og til — men ikke bemærkelsesværdigt",
+      "Jævnligt — det sker regelmæssigt",
+      "Konstant — gentager sig selv i næsten enhver samtale"
+    ]},
+
+  // ── DOMÆNE 3: KOGNITIVE FUNKTIONER (6) ──────────────────────────────────
+  { cat:"Kognition", label:"Klokkeopgaven",
+    task:"Giv personen et blankt stykke papir og en blyant.\nSig: 'Tegn en urskive med alle tal og sæt viserne til kl. 11:10 — ti minutter over elleve.'",
+    q:"Hvad observerede du?",
+    opts:[
+      "Tegnede korrekt urskive — lang viser ved 2, kort viser ved 11",
+      "Tegnede urskiven men med mindre fejl i tallenes placering eller visernes vinkel",
+      "Satte begge visere ved 11 eller ved 10 — kopierede tallet direkte i stedet for at abstrahere minutter",
+      "Kunne ikke gennemføre opgaven — tegnede noget uforståeligt, manglede tal eller opgav"
+    ]},
+
+  { cat:"Kognition", label:"Dyreopgaven",
+    task:"Sig: 'Nævn så mange dyr som muligt på 1 minut.' Start timeren.",
+    q:"Hvor mange dyr nævnte personen på 1 minut?",
+    opts:[
+      "15 eller flere dyr",
+      "10–14 dyr",
+      "5–9 dyr",
+      "Færre end 5 dyr"
+    ]},
+
+  { cat:"Kognition", label:"Opmærksomhed og koncentration",
+    task:"Sig: 'Tæl baglæns fra 100 med 7 ad gangen.' (100, 93, 86...)\nStop efter 5 gennemførsler.",
+    q:"Hvordan klarede personen opgaven?",
+    opts:[
+      "Gennemførte alle 5 korrekt og relativt hurtigt",
+      "Lavede 1 fejl men rettede sig selv eller fortsatte",
+      "Lavede 2–3 fejl — tydelig anstrengelse",
+      "Kunne ikke gennemføre — stoppede eller svarede forkert gentagende gange"
+    ]},
+
+  { cat:"Kognition", label:"Sproglig forståelse",
+    task:"Sig følgende instruktion én gang:\n'Tag et stykke papir i din højre hånd, fold det i to og læg det på bordet.'",
+    q:"Hvad skete der?",
+    opts:[
+      "Fulgte alle tre dele af instruktionen korrekt",
+      "Fulgte 2 af 3 dele — missede eller forvekslede én",
+      "Fulgte kun 1 del korrekt",
+      "Kunne ikke følge instruktionen"
+    ]},
+
+  { cat:"Kognition", label:"Ordgenkaldelse og fluency",
+    task:"Sig: 'Nævn så mange ord som muligt der starter med bogstavet F på 1 minut.' (Ikke navne på personer eller steder)",
+    q:"Hvor mange F-ord nævnte personen?",
+    opts:[
+      "12 eller flere",
+      "8–11 ord",
+      "4–7 ord",
+      "Færre end 4 ord"
+    ]},
+
+  { cat:"Kognition", label:"Abstrakt tænkning",
+    task:"Spørg: 'Hvad har en appelsin og en banan til fælles?' og 'Hvad har et ur og en lineal til fælles?'",
+    q:"Hvordan svarede personen?",
+    opts:[
+      "Svarede abstrakt og korrekt ('frugt', 'måler noget')",
+      "Svarede konkret men acceptabelt ('begge er mad', 'begge er lange')",
+      "Svarede kun ved at beskrive udseende eller brug",
+      "Forstod ikke spørgsmålet eller svarede forkert"
+    ]},
+
+  // ── DOMÆNE 4: ADFÆRD OG PERSONLIGHED (5) ──────────────────────────────────
+  { cat:"Adfærd & Personlighed", label:"Initiativ og apati",
+    q:"Har personen mistet interessen for ting de tidligere holdt af — hobbyer, sociale aktiviteter, nyheder?",
+    opts:[
+      "Ingen ændring — stadig engageret i sine interesser",
+      "Lidt tilbagetrækning men stadig aktiv",
+      "Tydelig apati — initierer sjældent selv noget",
+      "Markant tilbagetrækning — sidder mest passivt og reagerer ikke på tilbud"
+    ]},
+
+  { cat:"Adfærd & Personlighed", label:"Humørsvingninger",
+    q:"Er der sket ændringer i humøret — irritabilitet, angst, tristhed eller udbrud der er anderledes end tidligere?",
+    opts:[
+      "Ingen ændring i humørmønster",
+      "Lette og sjældne ændringer",
+      "Regelmæssige humørsvingninger der er anderledes end personens 'baseline'",
+      "Markante og hyppige humørændringer — svære at forudsige eller håndtere"
+    ]},
+
+  { cat:"Adfærd & Personlighed", label:"Social tilbagetrækning",
+    q:"Undgår personen socialt samvær eller situationer de tidligere trivedes i?",
+    opts:[
+      "Nej — socialt aktivt som altid",
+      "Lidt mere tilbageholdende end tidligere",
+      "Undgår jævnligt sociale situationer",
+      "Trækker sig konsekvent fra al social kontakt"
+    ]},
+
+  { cat:"Adfærd & Personlighed", label:"Impulsivitet og hæmning",
+    q:"Siger eller gør personen ting der virker socialt upassende eller impulsive — på en måde der er anderledes end før?",
+    opts:[
+      "Nej — opfører sig som altid",
+      "Sjældne tilfælde der nemt forklares",
+      "Det sker regelmæssigt og er bemærkelsesværdigt",
+      "Hyppigt og tydeligt anderledes end personens tidligere adfærd"
+    ]},
+
+  { cat:"Adfærd & Personlighed", label:"Selvindsigt",
+    q:"Er personen selv bevidst om de forandringer du observerer — eller benægter eller minimerer de dem?",
+    opts:[
+      "Fuldt bevidst og taler åbent om det",
+      "Delvist bevidst — erkender noget men bagatelliserer",
+      "Benægter at der er noget — reagerer defensivt",
+      "Synes ikke at kunne se det overhovedet — manglende selvindsigt"
+    ]},
+
+  // ── DOMÆNE 5: DAGLIGDAG OG FUNKTION (4) ──────────────────────────────────
+  { cat:"Dagligdag & Funktion", label:"Daglige aktiviteter",
+    q:"Klarer personen daglige gøremål selvstændigt — personlig hygiejne, madlavning, medicin, regninger?",
+    opts:[
+      "Klarer alt selvstændigt uden problemer",
+      "Klarer det meste men har brug for lejlighedsvise påmindelser",
+      "Har svært ved flere daglige opgaver — kræver regelmæssig hjælp",
+      "Afhængig af hjælp til de fleste daglige funktioner"
+    ]},
+
+  { cat:"Dagligdag & Funktion", label:"Navigation og transport",
+    q:"Kan personen finde rundt i kendte omgivelser og bruge transport selvstændigt?",
+    opts:[
+      "Ingen problemer — navigerer som altid",
+      "Lidt mere usikker end tidligere — men klarer det",
+      "Farer af og til vild eller har brug for hjælp til at navigere",
+      "Kan ikke navigere alene — taber orientering selv i velkendte omgivelser"
+    ]},
+
+  { cat:"Dagligdag & Funktion", label:"Kommunikation",
+    q:"Har personen svært ved at finde ord, følge samtaler eller udtrykke sig?",
+    opts:[
+      "Kommunikerer som altid — ingen mærkbare ændringer",
+      "Søger lidt oftere efter ord end tidligere",
+      "Taber jævnligt tråden i samtaler eller finder ikke ordene",
+      "Har markante sproglige vanskeligheder der påvirker kommunikationen tydeligt"
+    ]},
+
+  { cat:"Dagligdag & Funktion", label:"Samlet helhedsvurdering",
+    q:"Sammenlignet med for 1–2 år siden — hvordan vil du samlet vurdere personens kognitive og funktionelle niveau?",
+    opts:[
+      "Ingen mærkbar forskel",
+      "Lette ændringer der muligvis skyldes normal aldring",
+      "Tydelige ændringer der bekymrer mig",
+      "Markante ændringer der tydeligt påvirker hverdagen"
+    ]}
+];
+
+// ─── KATEGORIER ────────────────────────────────────────────────────────────────
+const catRanges = [
+  { name:"Orientering",           from:0,  to:3,  max:12 },
+  { name:"Hukommelse",            from:4,  to:8,  max:15 },
+  { name:"Kognition",             from:9,  to:14, max:18 },
+  { name:"Adfærd & Personlighed", from:15, to:19, max:15 },
+  { name:"Dagligdag & Funktion",  from:20, to:23, max:12 }
+];
+
+const MAX_SCORE = 72;
+
+// ─── PROFILER ────────────────────────────────────────────────────────────────
+const profiles = [
+  {
+    range:[0,18],
+    label:"Ingen tydelige tegn observeret",
+    badge:"badge-green",
+    desc:"Observationerne giver ikke anledning til bekymring på dette tidspunkt. Det er muligt at der er normale aldersrelaterede variationer i hvad du har observeret. Fortsæt med at være opmærksom over tid.",
+    next:"Ingen akut handling påkrævet. Overvej at gentage observationstesten om 6-12 måneder som reference. Del gerne resultatet med jeres læge ved næste konsultation.",
+    runeId:22 // Dagaz — vendepunkt, bevidsthed opstår
+  },
+  {
+    range:[19,36],
+    label:"Lette tegn der fortjener opmærksomhed",
+    badge:"badge-yellow",
+    desc:"Der er observeret lette men bemærkelsesværdige ændringer på tværs af et eller flere domæner. Det er endnu ikke et klart mønster — men det er signaler der bør følges op på. Det er tid til at handle proaktivt.",
+    next:"Book en tid hos jeres praktiserende læge og del dine observationer. Brug printversionen af denne rapport som samtaleoplæg. Det er ikke for tidligt at spørge — det er præcis det rigtige tidspunkt.",
+    runeId:7 // Nauthiz — nødvendighed, handle nu
+  },
+  {
+    range:[37,54],
+    label:"Tydelige tegn på kognitiv svækkelse",
+    badge:"badge-orange",
+    desc:"Observationerne viser tydelige ændringer på tværs af flere domæner. Mønstret er konsistent og bekymrende. Det er ikke normal aldring. Det er tegn på at noget har ændret sig kognitivt — og det kræver professionel vurdering.",
+    next:"Kontakt jeres praktiserende læge hurtigst muligt for en kognitiv udredning. Tag printversionen med. Det er vigtigt at handle nu — tidlig indsats giver de bedste muligheder for støtte og behandling.",
+    runeId:6 // Perth — det skjulte bliver synligt, handle
+  },
+  {
+    range:[55,72],
+    label:"Markante tegn — professionel hjælp påkrævet",
+    badge:"badge-red",
+    desc:"Observationerne er alvorlige og gennemgående på tværs af næsten alle domæner. Det du beskriver rækker langt ud over normal aldring og kræver omgående professionel vurdering og støtte — både til personen og til dig som pårørende.",
+    next:"Kontakt jeres læge i dag. Bed om en kognitiv udredning og henvisning til demenscenter eller neurolog. Du skal ikke bære dette alene — der er hjælp at hente. Alzheimerforeningen (alzheimer.dk) har en gratis rådgivningstelefon.",
+    runeId:19 // Hagalaz — noget er brudt ned, men ny grund vokser frem
+  }
+];
+
+// ─── RUNE DATA (subset relevant til MCI-kontekst) ────────────────────────────
+const runeData = {
+  6:  { symbol:"ᛈ", name:"Perth",    keyword:"Det skjulte",
+        text:"Noget er ved at blive synligt — noget der har ulmet under overfladen. Perth er ikke frygtens rune. Det er erkendelsens. Det du har observeret er ikke tilfældigt. Det er et mønster der nu kan ses — og det der kan ses, kan der handles på.",
+        action:"Erkendelsen er det første og vigtigste skridt. Nu er det tid til at bringe det frem i lyset — i samtale med lægen, med familien, med systemet. Det du bærer alene er tungere end det du deler." },
+  7:  { symbol:"ᚾ", name:"Nauthiz",  keyword:"Nødvendighed",
+        text:"Nauthiz minder dig om at der er noget der ikke kan udsættes. Ikke fordi situationen er håbløs — men fordi det nødvendige og det behagelige peger i forskellige retninger. Og det nødvendige vinder til sidst altid.",
+        action:"Det er nu du skal handle — ikke vente og se. En samtale med lægen koster ingenting. En forsinket samtale kan koste meget. Tag det første skridt i dag." },
+  19: { symbol:"ᚺ", name:"Hagalaz",  keyword:"Renselse",
+        text:"Hagalaz er ikke ødelæggelsens rune. Det er rensningens. Noget er brudt ned — eller er ved at bryde ned — og det er ikke til at stoppe. Men på den rene grund kan noget nyt og stærkere vokse. Forståelse. Støtte. Nærvær.",
+        action:"Du er ikke alene i dette. Der er hjælp at hente — professionelt, familiært og menneskeligt. Lad systemet hjælpe dig med at bære det der er for tungt at bære alene." },
+  22: { symbol:"ᛞ", name:"Dagaz",    keyword:"Vendepunkt",
+        text:"Dagaz er daggryet — det øjeblik bevidstheden sætter sig. Du har taget dig tid til at se — at observere, at kortlægge, at spørge. Det er ikke selvfølgeligt. Det er kærlighedens udtryk i praksis.",
+        action:"Bliv ved med at være opmærksom. Gentag observationstesten om 6-12 måneder. Del dine observationer med jeres læge. Det der kan ses tidligt kan også handles på tidligt." }
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+let timerInterval = null;
+let timerSeconds = 60;
+let timerRunning = false;
+
+// ─── NAVIGATION ──────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    if(s.id === 'screen-quiz') s.style.display = 'none';
+    if(s.id === 'screen-result') s.style.display = 'none';
+    if(s.id === 'screen-break') s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  if(id === 'screen-quiz')   el.style.display = 'flex';
+  if(id === 'screen-result') el.style.display = 'flex';
+  if(id === 'screen-break')  el.style.display = 'flex';
+  if(id === 'screen-intro' || id === 'screen-result') window.scrollTo(0,0);
+}
+
+function startQuiz() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showBreak(text, rune, callback) {
+  document.getElementById('break-text').textContent = text;
+  document.getElementById('break-rune').textContent = rune;
+  showScreen('screen-break');
+  document.getElementById('screen-break')._callback = callback;
+}
+
+function continueFromBreak() {
+  const cb = document.getElementById('screen-break')._callback;
+  showScreen('screen-quiz');
+  if(cb) cb();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function renderQuestion() {
+  stopTimer();
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-in';
+
+  const q = questions[current];
+  document.getElementById('cat-badge').textContent = q.cat + ' · ' + q.label;
+  document.getElementById('q-text').textContent = q.q;
+
+  // Task box
+  const taskContainer = document.getElementById('task-box-container');
+  if(q.task) {
+    const hasTimer = q.cat === 'Kognition' &&
+      (q.label === 'Dyreopgaven' || q.label === 'Ordgenkaldelse og fluency');
+    taskContainer.innerHTML = `
+      <div class="task-box">
+        <div class="task-label">📋 Opgave til personen</div>
+        <div class="task-instruction">${q.task.replace(/\n/g,'<br>')}</div>
+        ${hasTimer ? `
+        <div class="task-timer">
+          <div class="timer-display" id="timer-display">1:00</div>
+          <button class="btn-timer" id="timer-btn" onclick="toggleTimer()">▶ Start timer</button>
+        </div>` : ''}
+      </div>`;
+  } else {
+    taskContainer.innerHTML = '';
+  }
+
+  // Options
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option' + (answers[current] === i ? ' selected' : '');
+    btn.textContent = opt;
+    btn.onclick = () => selectOption(i);
+    opts.appendChild(btn);
+  });
+
+  // Progress
+  const pct = ((current + 1) / questions.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent =
+    `Opgave ${current + 1} af ${questions.length}`;
+  document.getElementById('btn-prev').disabled = current === 0;
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === questions.length - 1 ? 'Se resultat →' : 'Næste →';
+  nextBtn.classList.toggle('active', answers[current] !== null);
+}
+
+function selectOption(i) {
+  answers[current] = i;
+  document.querySelectorAll('.option').forEach((btn, idx) => {
+    btn.classList.toggle('selected', idx === i);
+  });
+  document.getElementById('btn-next').classList.add('active');
+}
+
+function nextQuestion() {
+  if(answers[current] === null) return;
+  if(current === questions.length - 1) { showResult(); return; }
+
+  // Break tussen domæner
+  const breaks = {
+    3:  { text:"Godt. Vi går nu over til at teste hukommelsen — fem ord og to opgaver.", rune:"ᛗ" },
+    8:  { text:"Fint. De næste opgaver tester koncentration, sprog og tænkning.", rune:"ᚲ" },
+    14: { text:"Næste del handler om adfærd og personlighed — det du har observeret over tid.", rune:"ᚨ" },
+    19: { text:"Og til sidst — dagligdag og funktion. Hvad kan personen stadig klare selvstændigt?", rune:"ᛟ" }
+  };
+
+  if(breaks[current]) {
+    const b = breaks[current];
+    const wrap = document.getElementById('question-wrap');
+    wrap.className = 'question-wrap fade-out';
+    setTimeout(() => {
+      showBreak(b.text, b.rune, () => { current++; renderQuestion(); });
+    }, 200);
+    return;
+  }
+
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-out';
+  setTimeout(() => { current++; renderQuestion(); }, 200);
+}
+
+function prevQuestion() {
+  if(current === 0) return;
+  const wrap = document.getElementById('question-wrap');
+  wrap.className = 'question-wrap fade-out';
+  setTimeout(() => { current--; renderQuestion(); }, 200);
+}
+
+// ─── TIMER ────────────────────────────────────────────────────────────────────
+function toggleTimer() {
+  if(timerRunning) {
+    stopTimer();
+    document.getElementById('timer-btn').textContent = '▶ Genstart';
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  timerSeconds = 60;
+  timerRunning = true;
+  document.getElementById('timer-btn').textContent = '⏸ Stop';
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    const el = document.getElementById('timer-display');
+    if(!el) { stopTimer(); return; }
+    const mins = Math.floor(timerSeconds / 60);
+    const secs = timerSeconds % 60;
+    el.textContent = mins + ':' + String(secs).padStart(2,'0');
+    el.classList.toggle('urgent', timerSeconds <= 10);
+    if(timerSeconds <= 0) {
+      stopTimer();
+      el.textContent = 'Tid!';
+      document.getElementById('timer-btn').textContent = '↺ Genstart';
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+}
+
+// ─── RESULT ──────────────────────────────────────────────────────────────────
+function showResult() {
+  stopTimer();
+  const total = answers.reduce((sum, a) => sum + (a !== null ? a : 0), 0);
+  document.getElementById('res-score').textContent = total;
+
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+
+  const badge = document.getElementById('res-badge');
+  badge.textContent = profile.label;
+  badge.className = 'score-badge ' + profile.badge;
+
+  document.getElementById('res-profile').textContent = profile.label;
+  document.getElementById('res-desc').textContent = profile.desc;
+  document.getElementById('next-steps-text').textContent = profile.next;
+
+  // Category bars
+  const catsEl = document.getElementById('res-cats');
+  catsEl.innerHTML = '';
+  catRanges.forEach(cat => {
+    const catScore = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a !== null ? a : 0), 0);
+    const pct = (catScore / cat.max) * 100;
+    const col = pct < 25 ? '#4a9e6e' : pct < 50 ? '#b8955a' : pct < 75 ? '#c87040' : '#c85040';
+    const row = document.createElement('div');
+    row.className = 'cat-row';
+    row.innerHTML = `
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-bar"><div class="cat-fill" style="width:0%;background:${col}" data-pct="${pct}"></div></div>
+      <div class="cat-score">${catScore}/${cat.max}</div>`;
+    catsEl.appendChild(row);
+  });
+
+  setTimeout(() => {
+    document.querySelectorAll('.cat-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 300);
+
+  // Rune
+  const rune = runeData[profile.runeId];
+  document.getElementById('rune-symbol').textContent = rune.symbol;
+  document.getElementById('rune-name').textContent = rune.name;
+  document.getElementById('rune-keyword').textContent = rune.keyword;
+  document.getElementById('rune-text').textContent = rune.text;
+  document.getElementById('rune-action').textContent = rune.action;
+
+  showScreen('screen-result');
+}
+
+// ─── PRINT ────────────────────────────────────────────────────────────────────
+function printResult() {
+  const total = answers.reduce((sum, a) => sum + (a !== null ? a : 0), 0);
+  const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
+  const rune = runeData[profile.runeId];
+  const dato = new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+
+  const catRows = catRanges.map(cat => {
+    const catScore = answers.slice(cat.from, cat.to + 1).reduce((sum, a) => sum + (a !== null ? a : 0), 0);
+    const pct = Math.round((catScore / cat.max) * 100);
+    const bar = '█'.repeat(Math.round(pct / 10)) + '░'.repeat(10 - Math.round(pct / 10));
+    const status = pct < 25 ? 'Ingen tegn' : pct < 50 ? 'Lette tegn' : pct < 75 ? 'Tydelige tegn' : 'Markante tegn';
+    const col = pct < 25 ? '#16a34a' : pct < 50 ? '#92650a' : pct < 75 ? '#c2410c' : '#dc2626';
+    return `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;font-weight:500;">${cat.name}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;font-family:monospace;color:#999;letter-spacing:2px;">${bar}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;">${catScore}/${cat.max}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:right;font-weight:600;color:${col};">${status}</td>
+    </tr>`;
+  }).join('');
+
+  const svarRows = questions.map((q, i) => {
+    const a = answers[i] !== null ? answers[i] : 0;
+    const svar = q.opts[a] || '—';
+    const col = a === 0 ? '#16a34a' : a === 1 ? '#92650a' : a === 2 ? '#c2410c' : '#dc2626';
+    return `<tr>
+      <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;color:#888;font-size:12px;">${q.cat}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-weight:500;font-size:13px;">${q.label}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;font-size:12px;">${svar}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #f0f0f0;text-align:center;font-weight:700;color:${col}">${a}</td>
+    </tr>`;
+  }).join('');
+
+  const html = `<!DOCTYPE html>
+<html lang="da"><head><meta charset="UTF-8">
+<title>SmartBalanz — Kognitiv Observationsrapport ${dato}</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:Georgia,serif; color:#1a1a1a; padding:40px; max-width:900px; margin:0 auto; }
+  h2 { font-size:15px;font-weight:normal;color:#666;border-bottom:2px solid #1a1a1a;padding-bottom:8px;margin:28px 0 16px; }
+  .header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:20px;border-bottom:3px solid #1a1a1a; }
+  .logo { font-size:20px;letter-spacing:0.05em;font-style:italic; }
+  .meta { text-align:right;font-size:12px;color:#888;line-height:1.8; }
+  .score-box { display:flex;gap:24px;background:#f9f8f6;padding:24px;border-radius:6px;margin-bottom:24px;border-left:5px solid #1a1a1a; }
+  .score-big { font-size:56px;font-weight:bold;line-height:1; }
+  .score-info .profil { font-size:20px;margin:8px 0; }
+  .score-info .desc { font-size:13px;color:#555;line-height:1.6;max-width:500px; }
+  .rune-box { background:#faf7f2;border:1px solid #d4b07a;padding:20px;border-radius:6px;margin-bottom:24px; }
+  .rune-symbol { font-size:3rem;color:#b8955a; }
+  .rune-name { font-size:20px;font-style:italic;margin:6px 0 4px; }
+  .rune-kw { font-size:11px;text-transform:uppercase;letter-spacing:0.15em;color:#999;margin-bottom:12px; }
+  .rune-text { font-size:13px;color:#555;line-height:1.7; }
+  .warn-box { background:#fff8f5;border:1px solid #f0c0a0;padding:16px;border-radius:6px;margin-bottom:24px;font-size:12px;color:#888;line-height:1.7; }
+  .warn-title { font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#c87040;margin-bottom:6px; }
+  .next-box { background:#f0f9f4;border:1px solid #86efac;padding:16px 20px;border-radius:6px;margin-bottom:24px; }
+  .next-box strong { display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#16a34a; }
+  .next-box p { font-size:13px;color:#1a1a1a;line-height:1.6; }
+  table { width:100%;border-collapse:collapse;font-size:13px; }
+  thead th { background:#1a1a1a;color:white;padding:10px 12px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.08em; }
+  .page-break { page-break-before:always; }
+  .footer { margin-top:40px;padding-top:16px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between; }
+  @media print { body { padding:20px; } .no-print { display:none; } }
+</style></head><body>
+
+<div class="header">
+  <div><div class="logo">SmartBalanz</div>
+  <div style="font-size:12px;color:#888;margin-top:4px;">Kognitiv Observationsrapport · Fortroligt · Ikke en diagnose</div></div>
+  <div class="meta"><div>${dato}</div><div>smartbalanz.dk</div><div style="margin-top:4px;">Pårørendeversion v1.0</div></div>
+</div>
+
+<div class="score-box">
+  <div class="score-big">${total}</div>
+  <div class="score-info">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:#888;">Samlet score ud af ${MAX_SCORE}</div>
+    <div class="profil">${profile.label}</div>
+    <div class="desc">${profile.desc}</div>
+  </div>
+</div>
+
+<div class="next-box">
+  <strong>Anbefalede næste skridt</strong>
+  <p>${profile.next}</p>
+</div>
+
+<div class="rune-box">
+  <div class="rune-symbol">${rune.symbol}</div>
+  <div class="rune-name">${rune.name}</div>
+  <div class="rune-kw">${rune.keyword}</div>
+  <div class="rune-text">${rune.text}<br><br><em>${rune.action}</em></div>
+</div>
+
+<h2>Domæne-oversigt</h2>
+<table><thead><tr><th>Domæne</th><th>Profil</th><th>Score</th><th>Status</th></tr></thead>
+<tbody>${catRows}</tbody></table>
+
+<div class="page-break"></div>
+
+<h2>Detaljerede observationer</h2>
+<table><thead><tr><th>Domæne</th><th>Opgave</th><th>Observation</th><th style="text-align:center;">Score</th></tr></thead>
+<tbody>${svarRows}</tbody></table>
+
+<div class="warn-box" style="margin-top:24px;">
+  <div class="warn-title">⚠ Ansvarsfraskrivelse</div>
+  Dette dokument er et observationsbaseret vejledningsredskab og udgør ikke en medicinsk diagnose. Resultaterne bør altid følges op med en professionel medicinsk vurdering. SmartBalanz og Alexander Birk påtager sig intet medicinsk ansvar.
+</div>
+
+<div class="footer">
+  <span>SmartBalanz · smartbalanz.dk · Alexander Birk · 2026</span>
+  <span>Personligt og fortroligt · Ikke en diagnose</span>
+</div>
+
+<script>window.onload=function(){window.print();}<\/script>
+</body></html>`;
+
+  const blob = new Blob([html], { type:'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function restartQuiz() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
