@@ -555,19 +555,28 @@
     <p>Du føler at noget er ud af spor. Træthed, stress og søvn. Vægt, indre balance eller glemsomhed — uden forklaring.</p>
     <p class="sub">Og vi ved at det ikke er nemt. Derfor kortlægger vi det med dig. Uden forbud. Uden at du mister dig selv og din identitet.</p>
   </div>
+
+  <div style="max-width:520px;margin-bottom:2.5rem;padding:1.25rem 1.5rem;border:1px solid rgba(200,169,110,0.25);border-radius:4px;background:rgba(200,169,110,0.05);animation:fadeDown 0.8s ease 0.25s both;">
+    <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--gold);margin-bottom:0.6rem;">Inden du starter</div>
+    <p style="font-size:0.88rem;line-height:1.7;color:var(--muted);">
+      Svar så ærligt som muligt — ikke som du gerne vil have det til at være, men som det faktisk er.<br>
+      <span style="color:var(--text);font-style:italic;">Den eneste du snyder, er dig selv.</span>
+    </p>
+  </div>
+
   <div class="intro-meta">
     <div class="intro-meta-item">
-      <div class="intro-meta-num">69</div>
+      <div class="intro-meta-num">33</div>
       <div class="intro-meta-label">Spørgsmål</div>
     </div>
     <div class="divider"></div>
     <div class="intro-meta-item">
-      <div class="intro-meta-num">6</div>
-      <div class="intro-meta-label">Kategorier</div>
+      <div class="intro-meta-num">4</div>
+      <div class="intro-meta-label">Blokke</div>
     </div>
     <div class="divider"></div>
     <div class="intro-meta-item">
-      <div class="intro-meta-num">~12</div>
+      <div class="intro-meta-num">~8</div>
       <div class="intro-meta-label">Minutter</div>
     </div>
   </div>
@@ -586,7 +595,7 @@
 <div id="quiz">
   <div class="quiz-header">
     <div class="quiz-logo">SmartBalanz</div>
-    <div class="quiz-progress-text" id="progress-text">Spørgsmål 1 af 69</div>
+    <div class="quiz-progress-text" id="progress-text">Spørgsmål 1 af 33</div>
   </div>
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="progress-bar"></div>
@@ -610,7 +619,7 @@
   <div class="result-logo">SmartBalanz</div>
   <div class="result-score-wrap">
     <div class="result-score" id="res-score">0</div>
-    <div class="result-score-label">Point ud af 276</div>
+    <div class="result-score-label">Point ud af 132</div>
   </div>
   <div class="score-badge" id="res-badge"></div>
   <div class="result-profile" id="res-profile"></div>
@@ -630,128 +639,77 @@
 
 <script>
 const questions = [
-  // DEL 1 — KOM GODT I GANG (8 opvarmning)
-  { cat:"Kom godt i gang", label:"Energi", warmup:true, q:"Hvordan kører motoren på dig sådan en helt almindelig hverdag?", opts:["Den spinder bare — jævn og go', intet bøvl","Den hakker lidt i ny og næ — nogle gange går det op og ned","Skal satme lige chokes i gang først — kaffen skal sætte sig","Helt fladt batteri — den svinger vildt og jeg er tit brugt"] },
-  { cat:"Kom godt i gang", label:"Søvn", warmup:true, q:"Hva' så med natten — får du lukket et øje?", opts:["Sover for det meste som en sten — ubevægelig til vækkeuret","Det er her-og-der — okay men det kunne godt være bedre","Rendyrket rutsjebane — jeg roterer og vågner i ét væk","Helt radbrækket — jeg vågner sjældent og tænker: jeg er frisk!"] },
-  { cat:"Kom godt i gang", label:"Kost", warmup:true, q:"Hva' kaster du i gabet i løbet af dagen?", opts:["Indkørt system — reelle måltider til faste tider","Det meste er vel fornuftigt nok — men lidt tilfældigt ind imellem","Det der lige ligger på disken — når det skal gå stærkt hapses der bare","Rendyrket rod — fuldstændig tilfældigt hvornår og hvad der ryger indenbords"] },
-  { cat:"Kom godt i gang", label:"Hovedet", warmup:true, q:"Hvordan står det til oppe i øverste etage på en helt almindelig onsdag?", opts:["Næsten helt klart udsyn — pæren virker som den skal","Det svinger en lille smule","Som at kigge ud gennem en beskidt forrude — tåget og uldent","Helt mørklagt — jeg føler mig stort set aldrig rigtig skarp"] },
-  { cat:"Kom godt i gang", label:"Selvopfattelse", warmup:true, q:"Hvordan synes du egentlig selv hverdagen ruller derudad?", opts:["Der er fuldstændig styr på butikken","Det går sgu nok","Det svinger med vinden","Man ved aldrig hvad dagen bringer"] },
-  { cat:"Kom godt i gang", label:"Blind spot", warmup:true, q:"Tænker du over om det du spiser har noget at sige for hvor frisk du er?", opts:["Ja — jeg lægger mærke til hvad der ryger indenbords","Det sker da indimellem","Ikke det vilde","Næsten aldrig — mad er mad"] },
-  { cat:"Kom godt i gang", label:"Madvalg", warmup:true, q:"Når du rækker ud efter noget spiseligt — hvad styrer dig så mest?", opts:["Hvordan kroppen har det bagefter","Gammel vane","Det skal bare være nemt","Hurtigt brændstof — motoren mangler kul"] },
-  { cat:"Kom godt i gang", label:"Fremtidsblik", warmup:true, q:"Når du kigger lidt frem i tiden — hvad vil du helst være sikker på der stadigvæk virker?", opts:["Et klart syn — pæren skal være skarp","Et skrog der fungerer","At slippe for skavanker","Det tænker jeg slet ikke over"] },
+  // BLOK 1 — SELVERKENDELSEN (Q1-3)
+  { cat:"Selverkendelsen", label:"Det ærlige spejlbillede", q:"Hvis du skal give din nuværende livsstil og sundhed en overordnet karakter, hvor føler du så, du reelt lander?", opts:["Helt i top. Jeg gør en aktiv indsats, spiser fornuftigt, rører mig og føler, jeg har styr på min sundhed.","Okay fornuftigt. I en travl hverdag gør jeg mit bedste, men der er plads til forbedringer.","Det halter. Jeg ved godt, det er lidt usundt, men jeg mangler energien til at vende skuden.","Det sejler fuldstændig. Kroppen brokker sig konstant, og mit overskud er helt væk."] },
+  { cat:"Selverkendelsen", label:"Kost-illusionen", q:"Når du står i supermarkedet, hvad styrer så dine valg, for at du føler, du køber 'sundt' ind?", opts:["Jeg går konsekvent udenom ultra-forarbejdet mad, sukker og raffinerede frøolier. Jeg køber rene, uforarbejdede råvarer og rigtigt fedt.","Jeg tænker ikke så meget over det. Jeg køber bare det, jeg plejer, og hvad der smager godt.","Jeg prøver at skære ned på sukker og hvidt brød, men spiser masser af rugbrød, havregryn, frugt og pasta.","Jeg iagttager de officielle råd: Går efter fuldkornsmærket, nøglehulsmærket, fedtfattige light-produkter og flydende planteolier."] },
+  { cat:"Selverkendelsen", label:"Symptom-blændingen", q:"Hvis du mærker træthed, hjernetåge eller uro i kroppen i løbet af ugen, hvad tænker du så selv er den dybere årsag?", opts:["Jeg er helt bevidst om, at det er min kost og min metaboliske motor, der hakker.","Jeg tænker, at min krop forsøger at råbe mig op, men jeg ved ikke helt, hvor jeg skal sætte ind.","Det skyldes nok bare, at jeg har sovet lidt dårligt på det seneste eller mangler vitaminer.","Det er vel bare alderen, genetikken, eller fordi jeg har haft travlt. Det er vel helt normalt."] },
 
-  // KAT 1 — ENERGI & RYTME (6)
-  { cat:"Energi & Rytme", label:"Energiforløb", q:"Hvordan plejer din dag at føles energimæssigt?", opts:["Jævn hele vejen","Naturligt dyk midt på dagen","Skal lige i omdrejninger, men så kører det","Det svinger meget"] },
-  { cat:"Energi & Rytme", label:"Eftermiddagsmønster", q:"Hva' sker der sidst på eftermiddagen?", opts:["Motoren kører jævnt","Jeg får lyst til kaffe eller en snack","Jeg bliver ulden i kanten","Batteriet er helt fladt"] },
-  { cat:"Energi & Rytme", label:"Morgenrutine", q:"Hvordan starter du typisk din dag i forhold til mad og drikke?", opts:["Jeg spiser ret hurtigt","Jeg spiser senere","Jeg kører mest på kaffe","Det varierer meget"] },
-  { cat:"Energi & Rytme", label:"Efter måltid", q:"Hvordan har skroget det, en times tid efter du har spist?", opts:["Masser af trækraft","Det svinger med menuen","Jeg bliver hurtigt sulten igen","Jeg bliver tung og mad-doven"] },
-  { cat:"Energi & Rytme", label:"Udhvilethed", q:"Hvor tit oplever du en dag hvor kroppen føles udhvilet?", opts:["Ofte","Af og til","Sjældent","Næsten aldrig"] },
-  { cat:"Energi & Rytme", label:"Kaffe & morgenmad", q:"Hvordan ser din morgenrutine ud i praksis?", opts:["Jeg spiser lidt før kaffe","Kaffe og så mad","Primært kaffe","Jeg springer ofte mad over"] },
+  // BLOK 2 — KOST, KØKKEN & TÆRSKLEN (Q4-14)
+  { cat:"Kost & Køkken", label:"Morgenmaden & Aktivitetsniveauet", q:"Hvis du spiser traditionelle morgenmadsprodukter (havregryn, rugbrød, bagerbolle eller juice), hvad gør du så i timerne efter?", opts:["Jeg springer morgenmaden helt over (faste) og kører udelukkende på vand eller sort kaffe indtil middag.","Jeg har et fysisk aktivt arbejde eller dyrker intensiv motion lige efter.","Jeg spiser min morgenmad, men mærker hurtigt en tunghed eller sløvhed i kroppen bagefter.","Jeg sætter mig direkte i bilen eller på kontorstolen og sidder stort set stille indtil frokost."] },
+  { cat:"Kost & Køkken", label:"Brændstofs-kvaliteten om morgenen", q:"Hvad kaster du helt konkret i gabet, hvis du spiser morgenmad?", opts:["Æg, bacon, smør, avokado eller fuldfed skyr uden sukker — rent fedt, protein og nul sukkerchok.","Havregryn med sødmælk, groft rugbrød med ost eller ægte råvarer uden tilsat sukker.","En grøn smoothie, frugt, juice eller en '0% fedt' frugtyoghurt.","Franskbrød med marmelade/Nutella, cornflakes, muesli eller en hurtig bagerbolle på farten."] },
+  { cat:"Kost & Køkken", label:"Frokost-mønsteret", q:"Hvad sker der, når din motor har kørt indtil midt på dagen — hvad spiser du til frokost?", opts:["Rigtige, uforarbejdede råvarer, kød/fisk og masser af grøntsager — uden brød, pasta, ris og færdiglavede dressinger.","Den klassiske madpakke: Groft rugbrød med traditionelt pålæg (æg, kød) og lidt gnavegrønt.","Kantineordningen eller salatbaren, men der ryger tit pasta, kartofler, hvide ris eller brød på tallerkenen.","Det der er nemt: En sandwich fra tanken, en fransk hotdog, fastfood eller en mikrobølge-færdigret."] },
+  { cat:"Kost & Køkken", label:"Eftermiddags-fælden (kl. 15)", q:"Når trætheden eller den lille sult melder sig sidst på dagen, hvad snacker du så for at holde pæren i gang?", opts:["Intet. Min motor kører rent på reservetanken indtil aftensmaden uden problemer.","En håndfuld mandler/valnødder eller et par stykker mørk chokolade (min. 85%).","En kop kaffe med mælk/sukker, en riskage, et stykke frugt eller en grovkiks for at overleve.","Sukker- og kagefælden klapper i. Der ryger wienerbrød, slik, chips eller en energidrik indenbords."] },
+  { cat:"Kost & Køkken", label:"Det skjulte olie-bombardement", q:"Hvor ofte spiser du mad, der ikke er lavet helt fra bunden i dit eget køkken? (Færdigretter, købe-brød, færdige dressinger, mayonnaise, chips eller take-away)", opts:["Næsten aldrig. Jeg laver stort set alt selv af rene råvarer og styrer mine egne fedtstoffer.","Et par gange om ugen, når det skal gå stærkt, eller når jeg spiser ude i weekenden.","Flere gange om ugen tyr jeg til færdigløsninger, købepålæg og færdigbagt brød for at spare tid.","Dagligt. Jeg spiser kantineordning, færdigretter eller take-away næsten hver eneste dag."] },
+  { cat:"Kost & Køkken", label:"Stegepanden og salatskålen", q:"Hvilket fedtstof dominerer i dit køkken, når der skal steges kød eller vendes en salat?", opts:["Rigtigt smør (økologisk), hjemmelavet ghee, kokosolie eller koldpresset jomfruolivenolie.","En god, økologisk koldpresset rapsolie til salaten, men jeg steger i almindelig stegeolie.","Almindelig olivenolie til stegning, men jeg bruger færdigkøbte dressinger og saucer på flaske.","Kærgården, flydende margarine, Becel, solsikkeolie eller almindelig billig rapsolie."] },
+  { cat:"Kost & Køkken", label:"Røntgensyn af dit køleskab", q:"Hvis jeg åbner din køleskabsdør lige nu, hvad vil mine øjne så primært møde?", opts:["Ægte råvarer: Smør, æg, uforarbejdet kød, fed fisk, hele overjordiske grøntsager og fuldfede mejeriprodukter.","En helt klassisk blanding: Mælk, leverpostej, pålægspakker, rugbrød, ost og rester fra i går.","Masser af light-produkter, fedtfattig skyr, flydende margarine og flasker med færdige dressinger.","Stort set tomt, præget af sodavand, energidrikke, færdigretter og bægre med højtforarbejdede madvarer."] },
+  { cat:"Kost & Køkken", label:"Jagten i køkkenskabene", q:"Hvad gemmer der sig på hylderne i dine tørre skabe, når du kigger efter?", opts:["Kokosolie, nødder, frø, kerner, rene krydderier og måske lidt mørk chokolade.","Dåsetomater, almindeligt hvedemel, havregryn, ris, pasta og rapsolie.","Kiks, knækbrød, morgenmadsprodukter, pulversupper og færdige krydderiblandinger.","Chips, slik, ultra-forarbejdede snacks, hvidt sukker og kager med lang holdbarhed."] },
+  { cat:"Kost & Køkken", label:"Glycemic Load ved aftensmaden", q:"Hvad fylder absolut mest på din tallerken til aftensmaden ved siden af dit kød eller din fisk?", opts:["En stor portion overjordiske grøntsager (broccoli, blomkål, kål, asparges) overhældt med smør eller olivenolie.","En god blanding af grøntsager samt mindre mængder kartofler eller grove ris.","'Sundere' kulhydrater i store mængder: Fuldkornspasta, brune ris, quinoa eller søde kartofler.","Det hvide læs: Store mængder kartofler (eller mos), hvide ris, traditionel hvid pasta eller hvidt brød."] },
+  { cat:"Kost & Køkken", label:"Energi efter maden", q:"Hvordan har din krop og dit hoved det typisk den første time efter, du har spist et stort måltid?", opts:["Fuldstændig stabil. Min energi fortsætter uforandret, og jeg føler mig bare mæt og klar i hovedet.","Jeg er mæt, men kan godt mærke en mild, naturlig afslapning i kroppen.","Jeg bliver hurtigt sulten eller lækkersulten igen efter kun 1-2 timer.","Trash Metal-kollaps! Jeg bliver ekstremt træt, tung i kroppen, og min hjerne tåger fuldstændig ud."] },
+  { cat:"Kost & Køkken", label:"Det flydende sukkerchok", q:"Hvad drikker du i løbet af en helt almindelig hverdag for at slukke tørsten?", opts:["Rent postevand, mineralvand eller sort kaffe/te uden noget i.","Vand, men der ryger også et par glas mælk, kaffe med en tår mælk eller en enkelt danskvand med smag ned.","Light-sodavand, saftevand uden sukker eller store mængder frugtjuice/smoothies (som du tror er sunde).","Almindelig sodavand, energidrikke, iste med sukker eller kaffe spækket med mælk og sukker/sirup."] },
 
-  // KAT 2 — SØVN & RESTITUTION (5)
-  { cat:"Søvn & Restitution", label:"Opvågning", q:"Hvordan føles kroppen lige når du står op?", opts:["Jeg kommer hurtigt i gang","Jeg skal lige lande","Jeg har brug for noget (fx kaffe)","Natten har ikke gjort forskel"] },
-  { cat:"Søvn & Restitution", label:"Indsovning", q:"Hvad sker der i pæren, når du rammer puden?", opts:["Jeg slukker med det samme","Tankerne kører","Jeg vågner i løbet af natten","Kroppen er urolig"] },
-  { cat:"Søvn & Restitution", label:"Natteoplevelse", q:"Hvordan oplever du natten, når du tænker tilbage?", opts:["Jeg husker drømme","Jeg husker noget indimellem","Jeg sover tungt","Det føles som et sort hul"] },
-  { cat:"Søvn & Restitution", label:"Aftensmad", q:"Hvordan ser din aften ud i forhold til mad?", opts:["Jeg spiser senest kl. 18","Jeg spiser ved 18/19 tiden","Jeg spiser sent","Jeg småspiser frem til sengetid"] },
-  { cat:"Søvn & Restitution", label:"Vækningsmønster", q:"Hvordan kommer du ud af fjerene?", opts:["Jeg vågner af mig selv","Uret ringer — det går","Overlevelseskamp","Jeg er slet ikke udhvilet"] },
+  // BLOK 3 — RYTME, SØVN & VASKEMASKINEN (Q15-22)
+  { cat:"Søvn & Rytme", label:"Det natlige vaskeprogram", q:"Hvordan ser din nat reelt ud — får du lukket et øje, så hjernen kan vaske affaldsstofferne ud?", opts:["Jeg sover for det meste som en sten. Ubevægelig og tungt indtil vækkeuret ringer.","Det er her-og-der okay, men det kunne godt være dybere og mere stabilt.","Rendyrket rutsjebane. Jeg roterer, vågner i ét væk og har mange opvågninger.","Fuldstændig radbrækket. Jeg vågner stort set aldrig og tænker: 'Hold kæft, jeg er frisk!'"] },
+  { cat:"Søvn & Rytme", label:"Morgentilstanden efter opvågning", q:"Hvordan har din krop og dit sind det det allerførste kvarter efter, du er stået ud af sengen?", opts:["Klar og parat med det samme. Motoren spinder, og jeg behøver intet for at komme i gang.","Lidt sløv i koderne, men efter et bad eller en tår vand kører systemet fornuftigt.","Skal satme lige chokes i gang først! Kaffen skal have sat sig i systemet, før jeg er menneske.","Helt fladt batteri. Min krop og mit hoved føles tunge som bly, uanset hvor længe jeg har ligget der."] },
+  { cat:"Søvn & Rytme", label:"Det indre tempo og stress-niveauet", q:"Hvordan vil du beskrive din indre motor, når du sidder i sofaen eller skal slappe af en aften?", opts:["Fuldstændig ro. Jeg kan sidde uden rastløshed og mærke, at systemet gearer helt ned.","En smule rastløs i ny og næ, men jeg kan godt finde ud af at koble af.","Der kører konstante tankecirkler i baggrunden. Min hjerne nægter at stoppe med at planlægge.","Konstant alarmtilstand. Jeg har en indre dirren, uro i benene eller hjertebanken, selvom jeg sidder stille."] },
+  { cat:"Søvn & Rytme", label:"Nedsmeltningen efter pres", q:"Hvordan reagerer din krop og din modstandskraft, når din hverdag i en periode bliver mere krævende end normalt?", opts:["Jeg holder mig nogenlunde stabil og kører jævnt igennem stormen uden det store bøvl.","Jeg bliver en smule mere sårbar og irritabel undervejs, men holder balancen.","Jeg bliver hurtigt træt, tåget i hovedet eller småsløj, når presset stiger.","Jeg falder fuldstændig sammen og bliver akut syg eller totalt udmattet, lige så snart presset letter."] },
+  { cat:"Søvn & Rytme", label:"Det ubevidste mønster om natten", q:"Hvad sker der med din krop, efter du er faldet i søvn (hvis du skal være ærlig)?", opts:["Intet mærkeligt. Jeg vågner i samme stilling og har en rolig krop hele natten.","Jeg kan godt vågne en enkelt gang for at skulle på toilettet, men falder hurtigt i søvn igen.","Jeg vågner ofte badet i sved, har voldsomme drømme eller sparker uroligt med benene.","Min søvn er fuldstændig fragmenteret. Jeg vågner fast på specifikke tidspunkter med hjertebanken."] },
+  { cat:"Søvn & Rytme", label:"Vejrtrækningen og det iltede system", q:"Hvad ved du (eller din partner) om din vejrtrækning, når du sover om natten?", opts:["Jeg trækker vejret roligt og lydløst gennem næsen hele natten.","Jeg kan godt snorke en smule, hvis jeg ligger på ryggen eller har drukket et glas vin.","Jeg snorker jævnligt, vågner ofte med fuldstændig tør mund og er nødt til at have vand stående.","Jeg snorker voldsomt, har vejrtrækningspauser (søvnapnø) eller vågner med et gisp efter luft."] },
+  { cat:"Søvn & Rytme", label:"Koffein-afhængigheden", q:"Hvor meget kaffe, te, energidrik eller cola skal der reelt hældes på motoren for at holde dig kørende på en dag?", opts:["Intet eller maksimalt 1-2 kopper om morgenen for hyggens skyld. Jeg kan sagtens undvære det.","3-4 kopper i løbet af arbejdsdagen, men jeg stopper i god tid før aften.","Jeg drikker kaffe/te konstant hele dagen, og hvis jeg ikke får min faste kop, får jeg dunkende hovedpine.","Systemet kører på kunstigt nødbrændstof. Jeg drikker stærk kaffe eller energidrikke helt indtil sengetid."] },
+  { cat:"Søvn & Rytme", label:"Fordøjelsens rytme", q:"Hvordan reagerer din mave og dit tarmsystem på den mad, du fodrer den med i hverdagen?", opts:["Som et schweizerur. Det kører fuldstændig regelmæssigt, ingen oppustethed, smerter eller bøvl.","Mavesituationen svinger en smule alt efter, hvad jeg spiser, men intet voldsomt.","Jeg er ofte oppustet, har meget luft i maven eller døjer med træg fordøjelse i perioder.","Totalt kaos. Min mave er som en ballon hver evig eneste aften, og jeg har skiftevis slem uro eller smerter."] },
 
-  // KAT 3 — KOST & KØKKEN (20)
-  { cat:"Kost & Køkken", label:"Stegefedt", q:"Hvad ryger der på panden, når det skal gå stærkt?", opts:["Smør/Ghee/Oksefedt","Olivenolie/Kokosfedt","Raps-/solsikkeolie","Flydende fedt/margarine"] },
-  { cat:"Kost & Køkken", label:"Hverdagsmad", q:"Når du kommer hjem og er sulten, hvad sker der så typisk?", opts:["Jeg laver noget simpelt af råvarer","Rugbrød/pålæg","Pasta/ris med det der er","Færdigret/indkøb udefra"] },
-  { cat:"Kost & Køkken", label:"Sultmønster", q:"Hvordan viser sult sig for dig i løbet af dagen?", opts:["Jeg spiser når jeg er sulten","Jeg opdager pludselig at jeg er meget sulten","Jeg spiser mest af vane","Jeg tænker meget på mad"] },
-  { cat:"Kost & Køkken", label:"Køleskabet", q:"Hvis jeg kigger ind i dit køleskab, hvad ser jeg så mest af?", opts:["Rigtige råvarer","Light/fedtfattige produkter","Pålæg/færdigretter","Lidt af hvert/impulskøb"] },
-  { cat:"Kost & Køkken", label:"Mejerivalg", q:"Når du vælger mejeri, hvad styrer dit valg mest?", opts:["Smag og mæthed","Fedtprocent","Pris/praktik","Jeg undgår mejeri"] },
-  { cat:"Kost & Køkken", label:"Snack", q:"Når du får lyst til noget mellem måltiderne, hvad ender du oftest med?", opts:["Protein/fedt","Frugt/smoothie","Noget sødt","Kiks/chokolade/kantinevalg"] },
-  { cat:"Kost & Køkken", label:"Tallerkenfordeling", q:"Hvad fylder mest på din tallerken?", opts:["Grøntsager","Protein","Brød/pasta/ris","Det der er nemmest"] },
-  { cat:"Kost & Køkken", label:"Low GI-måltid", q:"Hvornår spiste du sidst et måltid uden brød, ris, pasta eller kartofler?", opts:["I dag/i går","For nylig","Sjældent","Kan ikke huske"] },
-  { cat:"Kost & Køkken", label:"Drikkevalg", q:"Hvis du vil have noget med smag, hvad vælger du så?", opts:["Vand/kaffe/te","Juice/smoothie","Sodavand/iste","Light sodavand/energidrik"] },
-  { cat:"Kost & Køkken", label:"Forarbejdet mad", q:"Hvor tit ender du med mad, der er lavet for dig?", opts:["Sjældent","Et par gange om ugen","Flere gange om ugen","Næsten dagligt"] },
-  { cat:"Kost & Køkken", label:"Sødt mønster", q:"Hvordan viser lysten til noget sødt sig?", opts:["Den fylder ikke meget","Efter måltider","Sidst på dagen/aften","Jeg holder den nede med sukkerfri alternativer"] },
-  { cat:"Kost & Køkken", label:"Grøntsagstilberedning", q:"Hvordan ender dine grøntsager typisk?", opts:["Rå/dampede/sauterede","Kogte","Frosne/varmet","De fylder ikke meget"] },
-  { cat:"Kost & Køkken", label:"Grøntsagsandel", q:"Hvor meget fylder grøntsager på din tallerken?", opts:["Halvdelen eller mere","En fjerdedel","En lille portion","Sjældent"] },
-  { cat:"Kost & Køkken", label:"Alkohol", q:"Hvordan passer alkohol ind i din uge?", opts:["Sjældent","Et glas vin/øl et par gange om ugen","Mest i weekenden","Cocktails/blandinger"] },
-  { cat:"Kost & Køkken", label:"Varedeklarationer", q:"Når du handler, hvad kigger du mest efter?", opts:["Ingredienser","Fedtprocent","Kalorier","Jeg kigger ikke"] },
-  { cat:"Kost & Køkken", label:"Morgenmad", q:"Når du spiser morgenmad, hvad består den af?", opts:["Protein/fedt","Frugt/smoothie/skyr","Brød/gryn","Jeg spiser sjældent morgenmad"] },
-  { cat:"Kost & Køkken", label:"Sundt valg", q:"Hvad rækker du ud efter, når du gerne vil gøre noget godt for kroppen?", opts:["Råvarer","Light/fedtreduceret","Frugt/smoothies","Sukkerfri produkter"] },
-  { cat:"Kost & Køkken", label:"Fedtadfærd", q:"Hvordan har du det med naturligt fedt i mad?", opts:["Det giver mig ro og mæthed","Jeg spiser det men tænker over det","Jeg prøver at undgå det","Jeg undgår det konsekvent"] },
-  { cat:"Kost & Køkken", label:"Træthed & mad", q:"Hvis du er træt og skal have noget hurtigt, hvad vælger du?", opts:["Protein/fedt","Frugt/smoothie","Brød/pasta/snacks","Noget sødt eller light"] },
-  { cat:"Kost & Køkken", label:"Stress & mad", q:"Når du er presset, hvad sker der så med dine madvalg?", opts:["Jeg holder mig til det sædvanlige","Jeg springer måltider over","Jeg spiser mere nemt","Jeg går efter hurtig energi"] },
-
-  // KAT 4 — KONCENTRATION & HJERNE (10)
-  { cat:"Koncentration & Hjerne", label:"Fokusdybde", q:"Når du arbejder med noget, der kræver fokus, hvad sker der så?", opts:["Jeg fortsætter uden problemer","Jeg mister tråden","Jeg bliver let forstyrret","Jeg arbejder i korte ryk"] },
-  { cat:"Koncentration & Hjerne", label:"Hukommelse", q:"Når du skal huske navne, aftaler eller detaljer, hvad oplever du?", opts:["Det sidder fast","Jeg glemmer navne lidt oftere","Jeg er afhængig af kalender/påmindelser","Jeg glemmer ting kort efter"] },
-  { cat:"Koncentration & Hjerne", label:"Mental klarhed", q:"Hvordan føles hovedet på en helt almindelig onsdag?", opts:["Klart og skarpt","Lidt tåget efter maden","Det svinger meget","Tågen er blevet den nye normal"] },
-  { cat:"Koncentration & Hjerne", label:"Arbejdsstil", q:"Hvordan arbejder du bedst?", opts:["Én ting ad gangen","Jeg skifter mellem opgaver","Jeg starter mange ting men færdiggør færre","Jeg har svært ved at komme i gang"] },
-  { cat:"Koncentration & Hjerne", label:"Skarpeste tidspunkt", q:"Hvornår på dagen er du mest mentalt skarp?", opts:["Tidligt","Sidst på formiddagen","Om aftenen","Det varierer meget"] },
-  { cat:"Koncentration & Hjerne", label:"Læsning", q:"Når du læser noget krævende, hvad sker der så?", opts:["Jeg læser og forstår det","Jeg skal nogle gange læse om","Jeg mister fokus","Jeg undgår længere tekster"] },
-  { cat:"Koncentration & Hjerne", label:"Ord & sprog", q:"Hvordan oplever du din evne til at finde de rigtige ord?", opts:["Ordene kommer naturligt","Jeg leder lidt oftere","Jeg mister tråden","Jeg undgår komplekse samtaler"] },
-  { cat:"Koncentration & Hjerne", label:"Mentalt skift", q:"Når du skifter opgave, hvad sker der så?", opts:["Jeg skifter uden problemer","Jeg skal lige omstille mig","Jeg mister momentum","Jeg bliver overvældet"] },
-  { cat:"Koncentration & Hjerne", label:"Mentalt overskud", q:"Hvordan føles dit mentale overskud?", opts:["Stabilt","Varierende","Lavt","Jeg føler mig drænet"] },
-  { cat:"Koncentration & Hjerne", label:"Social kognition", q:"Hvordan påvirker sociale situationer dig, når du er træt?", opts:["Ingen forskel","Jeg bliver mere stille","Jeg bliver overstimuleret","Jeg undgår dem helst"] },
-
-  // KAT 5 — STRESS & NERVESYSTEM (10)
-  { cat:"Stress & Nervesystem", label:"Indre tempo", q:"Hvordan føles dit indre tempo?", opts:["Roligt og stabilt","Lidt højt men håndterbart","Jeg er ofte på","Konstant alarmberedskab"] },
-  { cat:"Stress & Nervesystem", label:"Afkobling", q:"Når du får fri, hvad sker der så i kroppen?", opts:["Jeg falder hurtigt til ro","Jeg skal lige bruge lidt tid","Jeg har svært ved at slippe dagen","Jeg falder først sammen når presset slipper"] },
-  { cat:"Stress & Nervesystem", label:"Kropslig reaktion", q:"Når du står overfor noget krævende, hvad mærker du?", opts:["Jeg går i gang uden større reaktion","Spænding i kroppen","Søvn eller appetit ændrer sig","Hjertebanken/uro/åndedræt"] },
-  { cat:"Stress & Nervesystem", label:"Tankecirkler", q:"Hvordan opfører dine tanker sig, når du prøver at slappe af?", opts:["De falder til ro","De kører lidt videre","De kører i ring","De stopper næsten aldrig"] },
-  { cat:"Stress & Nervesystem", label:"Tålmodighed", q:"Hvordan reagerer du når ting tager længere tid end forventet?", opts:["Jeg tager det roligt","Jeg bliver lidt kortere for hovedet","Jeg reagerer hurtigere end jeg ønsker","Jeg bliver let overvældet eller vred"] },
-  { cat:"Stress & Nervesystem", label:"Overvældelse", q:"Når du føler dig presset, hvad sker der så?", opts:["Jeg prioriterer og fortsætter","Jeg trækker mig lidt","Jeg dulmer (mad/skærm/drikke)","Jeg går i stå"] },
-  { cat:"Stress & Nervesystem", label:"Søvn under pres", q:"Hvordan påvirkes din søvn, når der er meget omkring dig?", opts:["Næsten ikke","Jeg falder senere i søvn","Jeg vågner tidligt","Jeg sover meget lidt"] },
-  { cat:"Stress & Nervesystem", label:"Følelsesmæssig farve", q:"Hvordan har dit følelsesmæssige overskud været på det seneste?", opts:["Stabilt","Lidt fladere end normalt","Jeg fungerer men føler mig ikke rigtig levende","Jeg kan ikke huske hvornår jeg sidst var glad"] },
-  { cat:"Stress & Nervesystem", label:"Arbejdslivets pris", q:"Hvordan påvirker dit arbejde dig?", opts:["Det giver mig energi","Det koster lidt mere end før","Jeg er ofte udmattet","Jeg er i overlevelsesmodus"] },
-  { cat:"Stress & Nervesystem", label:"Tidslinje", q:"Hvornår følte du dig sidst i balance — fysisk og mentalt?", opts:["For nylig","For et år eller to siden","Flere år siden","Jeg kan ikke huske det"] },
-
-  // KAT 6 — KROP & SIGNALER (10)
-  { cat:"Krop & Signaler", label:"Kroppens stabilitet", q:"Hvordan har din krop føltes de sidste par år i forhold til stabilitet og forandringer?", opts:["Ret stabil","Lidt mere tung uden klar grund","Svingende op og ned","Den reagerer ikke som jeg forventer"] },
-  { cat:"Krop & Signaler", label:"Mavefornemmelse", q:"Hvordan føles din mave typisk efter et almindeligt måltid?", opts:["Rolig","Lidt urolig indimellem","Ofte tung eller oppustet","Sjældent helt i ro"] },
-  { cat:"Krop & Signaler", label:"Temperatur", q:"Hvordan har du det med temperatur i hverdagen?", opts:["Helt fint","Jeg fryser lidt oftere end før","Jeg skifter mellem at fryse og have det varmt","Jeg er næsten altid kold"] },
-  { cat:"Krop & Signaler", label:"Kroppens grundtempo", q:"Hvordan oplever du din krops grundtempo i hvile?", opts:["Roligt og stabilt","Jeg tænker ikke så meget over det","Jeg mærker at kroppen arbejder lidt mere end før","Jeg mærker tydeligt hjertet eller uro i hvile"] },
-  { cat:"Krop & Signaler", label:"Hud, hår & negle", q:"Hvad lægger du mærke til, når du ser dig i spejlet eller mærker efter en almindelig morgen?", opts:["Ingen ændringer","Lidt mere tørre/sarte","Tyndere eller langsommere vækst","Flere ændringer på samme tid"] },
-  { cat:"Krop & Signaler", label:"Kroppens signaler", q:"Hvordan reagerer din krop, når du har haft en lang dag?", opts:["Jeg slapper af uden problemer","Jeg mærker lidt spænding eller uro","Jeg bliver tung eller slår fra","Jeg får kropslige signaler jeg ikke helt kan forklare"] },
-  { cat:"Krop & Signaler", label:"Energi efter mad", q:"Hvordan føles kroppen typisk den første time efter du har spist?", opts:["Stabil","Det afhænger af måltidet","Jeg bliver hurtigt sulten igen","Jeg bliver træt eller tung"] },
-  { cat:"Krop & Signaler", label:"Robusthed", q:"Hvordan reagerer du, når din hverdag bliver mere krævende end normalt?", opts:["Jeg holder mig nogenlunde stabil","Jeg bliver lidt mere sårbar","Jeg bliver hurtigere træt eller småsløj","Jeg falder let sammen når presset letter"] },
-  { cat:"Krop & Signaler", label:"Kroppens baseline", q:"Hvordan vil du beskrive din krops generelle tilstand, når du ikke tænker over det?", opts:["Stabil","Lidt mere træt end før","Ofte urolig eller tung","Jeg føler mig sjældent helt i balance"] },
-  { cat:"Krop & Signaler", label:"Forebyggelse", q:"Hvor meget fylder forebyggelse og tjek af kroppens signaler i din hverdag?", opts:["Jeg gør det regelmæssigt","Det er et stykke tid siden","Jeg kan ikke huske hvornår","Jeg går kun til læge hvis jeg absolut skal"] }
+  // BLOK 4 — PÆREN, KLARHEDEN & RE-COGNITION (Q23-33)
+  { cat:"Hjerne & Klarhed", label:"Den mentale forrude", q:"Hvordan vil du beskrive din mentale klarhed på en helt almindelig onsdag formiddag?", opts:["Fuldstændig klar forrude. Tankerne kører hurtigt, og jeg har fuldt overblik over mine opgaver.","Okay, men der kan godt være små øjeblikke, hvor jeg lige skal samle tankerne.","Forruden er dugget. Det føles som om, min hjerne kører i sirup, og jeg skal anstrenge mig for at fokusere.","Totalt tåget. Jeg stirrer ind i skærmen eller væggen uden at kunne samle en eneste brik — pæren er slukket."] },
+  { cat:"Hjerne & Klarhed", label:"Arbejdshukommelsen", q:"Hvor ofte oplever du de der små, irriterende svigt i din korttidshukommelse i hverdagen?", opts:["Næsten aldrig. Jeg husker aftaler, navne og hvor mine nøgler/briller ligger uden problemer.","En sjælden gang imellem, hvis jeg er meget stresset eller har travlt.","Det sker ugentligt. Jeg går ind i et rum og aner pludselig ikke hvad jeg skulle hente, eller glemmer basale ord.","Konstant. Det er en stående joke i familien, at jeg forlægger alt og glemmer aftaler i ét væk."] },
+  { cat:"Hjerne & Klarhed", label:"Re-cognition-fælden", q:"Hvis andre (pårørende, kolleger, venner) påpeger, at du virker fraværende, glemsom eller har ændret humør, hvad gør du så?", opts:["Jeg lytter til det, reflekterer over det og kan godt se mønstret, hvis min krop er i ubalance.","Jeg bliver måske lidt overrasket, men tænker over, om der er noget om snakken.","Jeg slår det hen som ligegyldigt, forsvarer mig med at jeg bare har travlt, og nægter at snakke mere om det.","Illusionen lukker i! Jeg bliver oprigtig vred, irriteret eller såret. Min hjerne kan ikke se problemet selv."] },
+  { cat:"Hjerne & Klarhed", label:"Det mentale overskud og temperamentet", q:"Hvordan reagerer du på uforudsete problemer, afbrydelser eller småfejl i din hverdag?", opts:["Jeg tager det med ophøjet ro. Mit nervesystem er stabilt, og jeg løser tingene konstruktivt.","Jeg kan godt blive kortvarigt irriteret, men finder hurtigt min indre balance igen.","Min lunte er blevet markant kortere. Jeg knalder hurtigt brikkerne ud eller bliver enormt frustreret over ingenting.","Jeg føler mig konstant oversvømmet. Den mindste afbrydelse kan give mig et decideret følelsesmæssigt kollaps."] },
+  { cat:"Hjerne & Klarhed", label:"Koncentrationsevnen over tid", q:"Hvor længe kan du fordybe dig i en kompleks opgave (læse en bog, ordne papirarbejde, lytte til et foredrag) uden at miste tråden?", opts:["I flere timer uden problemer, hvis opgaven kræver det. Min hjerne holder fokus.","En times tid, hvorefter jeg lige har brug for at strække benene eller kigge væk.","Det kniber gevaldigt. Efter 15-20 minutter vandrer mine tanker, og jeg begynder at tjekke telefonen.","Stort set umuligt. Min hjerne flakker konstant, og jeg skal læse det samme afsnit tre gange."] },
+  { cat:"Hjerne & Klarhed", label:"Retningssansen og det rumlige overblik", q:"Hvordan fungerer din indre GPS, når du bevæger dig rundt i områder, du ikke besøger hver dag?", opts:["Perfekt. Jeg har en god rumlig forståelse og finder nemt vej uden det store besvær.","Okay, men jeg støtter mig gerne til min telefons GPS for en sikkerheds skyld.","Jeg bliver markant hurtigere desorienteret end før i tiden, og skal tænke mig godt om for at finde bilen.","Det sejler. Jeg mister fuldstændig overblikket i kendte stormagasiner eller vejkryds og føler en snigende angst."] },
+  { cat:"Hjerne & Klarhed", label:"Det fysiske syn og spejlbilledet", q:"Hvad lægger du mærke til, når du ser dig i spejlet en almindelig morgen eller mærker efter i ansigtet/huden?", opts:["Intet usædvanligt. Min hud, mit hår og mine øjne ser friske og vitale ud.","Min hud er måske en smule tør, eller jeg har lidt mørke rande under øjnene i perioder.","Jeg ser træt ud, huden virker slap, og jeg har mistet gløden i ansigtet, uanset hvad jeg gør.","Min krop opmagasinerer tydeligt visceral fedt, min hud er ekstremt tør, og mit udtryk bærer præg af kronisk stress."] },
+  { cat:"Hjerne & Klarhed", label:"Koordinationen og balancen i hverdagen", q:"Hvordan reagerer din krop, hvis du pludselig skal lave en uventet motorisk bevægelse — gribe noget du taber, eller træde udenom et hul i asfalten?", opts:["Lynhurtig reaktion. Min krop og min hjerne samarbejder fejlfrit i perfekt koordination.","Jeg griber tingen, men føler mig måske en smule mere klodset eller stiv i bevægelserne end før.","Jeg taber ofte ting, støder ind i dørkarme eller mister balancen en smule, hvis underlaget er ujævnt.","Min motorik hakker voldsomt. Mine fødder lystrer ikke hurtigt nok, og jeg føler mig usikker på mine egne ben."] },
+  { cat:"Hjerne & Klarhed", label:"Det sanselige overskud", q:"Hvordan reagerer din hjerne, hvis du befinder dig i et rum med mange mennesker, baggrundsstøj eller musik (fx en familiefest eller et supermarked)?", opts:["Intet problem. Min hjerne formår at sortere støjen fra og fokusere på den samtale, jeg er i.","Jeg bliver hurtigere træt i hovedet af larm end før, men jeg kan godt holde det ud.","Støjen skærer igennem min hjerne. Jeg mister fuldstændig tråden i samtaler, fordi hjernes ikke kan sortere lydene.","Total oversvømmelse. Det føles som om, min hjerne eksploderer af sanseindtryk. Jeg vil desperat ud i stilheden."] },
+  { cat:"Hjerne & Klarhed", label:"Dual-Tasking", q:"Hvordan reagerer dit system, hvis du skal udføre fysisk arbejde (fx gå en hurtig tur) og samtidig føre en kompleks samtale?", opts:["Det kører som smurt. Min krop bevæger sig rytmisk, mens min hjerne tænker og taler skarpt.","Jeg kan godt mærke, at jeg skal koncentrere mig en smule mere, men jeg holder tempoet.","Jeg er enten nødt til at sætte farten voldsomt ned eller holde helt op med at tale, fordi hjerne ikke kan rumme begge dele.","Totalt systemstop. Min koordination falder fuldstændig fra hinanden, hvis jeg tvinges til at koordinere krop og tanke."] },
+  { cat:"Hjerne & Klarhed", label:"Den indre baseline og sandhedens time", q:"Når du nu har svaret på alle disse spørgsmål, og du mærker helt efter i din dybeste kerne — hvordan har dit system det så reelt?", opts:["Stabil, stærk og i balance. Min biologiske motor spinder, og jeg har det rigtige brændstof på tanken.","Det svinger lidt her og der, og jeg kan mærke, at min krop forsøger at kompensere for hverdagens pres.","Min baseline er rutsjet nedad. Jeg lever i en konstant tilstand af at være 'halv-sløj', tåget eller uoplagt.","Akut metabolisk energikrise. Mit system skriger på hjælp. Låsene er rustet fast, og mit batteri er fuldstændig fladt."] }
 ]
 
 const catRanges = [
-  { name: "Energi & Rytme",         from: 8,  to: 13, max: 24 },
-  { name: "Søvn & Restitution",     from: 14, to: 18, max: 20 },
-  { name: "Kost & Køkken",          from: 19, to: 38, max: 80 },
-  { name: "Koncentration & Hjerne", from: 39, to: 48, max: 40 },
-  { name: "Stress & Nervesystem",   from: 49, to: 58, max: 40 },
-  { name: "Krop & Signaler",        from: 59, to: 68, max: 40 }
+  { name: "Selverkendelsen",    from: 0,  to: 2,  max: 12 },
+  { name: "Kost & Køkken",     from: 3,  to: 13, max: 44 },
+  { name: "Søvn & Rytme",      from: 14, to: 21, max: 32 },
+  { name: "Hjerne & Klarhed",  from: 22, to: 32, max: 44 }
 ];
 
-const MAX_SCORE = 276;
+const MAX_SCORE = 132;
 
 const profiles = [
   {
-    range: [69, 110],
-    label: "Metabolisk Stabil",
+    range: [33, 50],
+    label: "Det spinder — runerne er i balance",
     badge: "score-stable",
-    desc: "Din krop sender relativt få alarmsignaler. Energien er nogenlunde stabil, søvnen fungerer og du har et bevidst forhold til hvad du putter i kroppen. Du er ikke i krise — men ingen er immune over for metabolisk drift over tid.",
-    next: "Niveau 1 er dækket. Overvej at tilføje objektive data — hvilepuls, søvnkvalitet, GKI — så du har en baseline at navigere efter fremover."
+    desc: "Din biologiske motor har det fantastisk. Du fodrer din krop med rent, uforarbejdet brændstof, din frøolie-tærskel er intakt, og din hjernes natlige vaskemaskine kører fejlfrit. Dine hjerneceller har fremragende hørelse. Fortsæt det gode arbejde.",
+    next: "Du er et godt sted. Overvej at tilføje objektive data — GKI-tracker, søvndata, hvilepuls — så du har en konkret baseline at navigere efter fremover."
   },
   {
-    range: [111, 160],
-    label: "Metabolisk Opmærksomhed",
+    range: [51, 85],
+    label: "Læsset vipper ved tærsklen",
     badge: "score-attention",
-    desc: "Der er mønstre her der fortjener opmærksomhed. Energidyk, søvn der ikke restituerer fuldt ud, eller kost der ikke støtter hjernen optimalt. Ikke alarmer — men signaler. Kroppen kompenserer stadig — men det koster.",
-    next: "Kortlægning af kost og rytme er det naturlige første skridt. SmartBalanz madplan og GKI-beregner kan give dig et konkret billede inden for ugen."
+    desc: "Pas på. Din krop forsøger at kompensere, og du lever måske i den tro, at du gør det hele 'sundt'. Men din sande biologi viser, at du er ved at overskride tærsklen. Din Glycemic Load er for høj i hverdagen, og Trash Metal-larmen er begyndt at spille i baggrunden.",
+    next: "Det er nu, du skal handle, før låsene ruster fast. Start med SmartBalanz madplan og GKI-beregner — de giver dig et konkret billede inden for ugen."
   },
   {
-    range: [161, 210],
-    label: "Metabolisk Ubalance",
-    badge: "score-imbalance",
-    desc: "Flere kategorier viser tydelige mønstre på samme tid. Det er ikke tilfældigt. Kroppen og hjernen er i en tilstand hvor de arbejder hårdere end de burde for at holde hverdagen kørende.",
-    next: "En struktureret kortlægning anbefales. Start med madplan og GKI-tracker. Overvej en individuel konsultation med Alexander Birk for at kortlægge mønstre og prioritere indsats."
-  },
-  {
-    range: [211, 276],
-    label: "Metabolisk Stress",
+    range: [86, 132],
+    label: "Bogstaveligt strømsvigt (Type 3-diabetes)",
     badge: "score-stress",
-    desc: "Din krop og hjerne er under vedvarende pres på tværs af flere systemer samtidig. Det du beskriver er ikke svaghed — det er biologi. Kroppen reagerer præcist som den skal på de betingelser den har fået.",
+    desc: "Alarm. Dit system befinder sig i en dyb metabolisk energikrise. Dine hjerneceller er blevet fuldstændig døve over for insulin på grund af årtiers plastik-mad, skjulte frøolier og manglende søvn-restitution. Glukosen suser forbi ude i dine blodbaner, men din hjerne sulter ihjel midt i overfloden.",
     next: "En individuel konsultation med Alexander Birk anbefales som første skridt. Ikke for at få en diagnose — men for at få et klart kortlagt billede og en prioriteret plan der passer til dit liv."
   }
 ];
@@ -763,9 +721,6 @@ let shuffledOrders = [];
 
 function initShuffledOrders() {
   shuffledOrders = questions.map((q, qi) => {
-    // Warmup questions keep fixed order
-    if (q.warmup) return [0,1,2,3];
-    // Shuffle for assessment questions
     const order = [0,1,2,3];
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -778,13 +733,8 @@ function initShuffledOrders() {
 function startQuiz() {
   initShuffledOrders();
   document.getElementById('intro').style.display = 'none';
-  showPartIntro(
-    "Inden vi går i dybden — lad os lige få et hurtigt overblik over hvordan motoren kører. Ingen dikkedarer, ingen fælder.",
-    function() {
-      document.getElementById('quiz').style.display = 'flex';
-      renderQuestion();
-    }
-  );
+  document.getElementById('quiz').style.display = 'flex';
+  renderQuestion();
 }
 
 function showPartIntro(text, callback) {
@@ -848,24 +798,6 @@ function selectOption(score) {
 function nextQuestion() {
   if (answers[current] === null) return;
   if (current === questions.length - 1) { showResult(); return; }
-
-  // Show transition after question 8 (index 7 — last warmup)
-  if (current === 7) {
-    const wrap = document.getElementById('question-wrap');
-    wrap.className = 'question-wrap fade-out';
-    setTimeout(() => {
-      document.getElementById('quiz').style.display = 'none';
-      showPartIntro(
-        "Godt kørt. Vi mangler bare et par stykker mere — så har vi det hele.",
-        function() {
-          current++;
-          document.getElementById('quiz').style.display = 'flex';
-          renderQuestion();
-        }
-      );
-    }, 200);
-    return;
-  }
 
   const wrap = document.getElementById('question-wrap');
   wrap.className = 'question-wrap fade-out';
@@ -988,10 +920,9 @@ function printResult() {
       </tr>`;
   }).join('');
 
-  // Alle svar (spring opvarmning over)
-  const svarRows = questions.slice(8).map((q, i) => {
-    const ai = i + 8;
-    const score = answers[ai] || 1;
+  // Alle svar
+  const svarRows = questions.map((q, i) => {
+    const score = answers[i] || 1;
     const svar = q.opts[(score - 1)] || '—';
     const col = score === 1 ? '#16a34a' : score === 2 ? '#92650a' : score === 3 ? '#c2410c' : '#dc2626';
     return `
