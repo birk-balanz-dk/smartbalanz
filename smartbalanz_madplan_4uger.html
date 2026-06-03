@@ -437,10 +437,7 @@
 
   /* PRINT */
   @media print {
-    body > div:first-child { display: none !important; }
-    .week-nav { display: none !important; }
-    .week-content { display: none !important; }
-    .week-content.print-active { display: block !important; page-break-after: always; }
+    .week-nav { display: none; }
   }
 </style>
 </head>
@@ -450,8 +447,8 @@
 <div style="position:fixed;top:0;left:0;right:0;z-index:200;padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;background:rgba(247,244,239,0.97);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,0,0,0.08);">
   <a href="index.html" style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:#9a7a4a;text-decoration:none;letter-spacing:0.05em;">SmartBalanz</a>
   <div style="display:flex;align-items:center;gap:1rem;">
-    <button onclick="printWeek('current')" style="background:transparent;border:1px solid rgba(154,122,74,0.4);color:#9a7a4a;padding:0.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;" onmouseover="this.style.borderColor='#9a7a4a';this.style.background='rgba(154,122,74,0.06)'" onmouseout="this.style.borderColor='rgba(154,122,74,0.4)';this.style.background='transparent'">🖨 Aktiv uge</button>
-    <button onclick="printWeek('all')" style="background:#9a7a4a;border:none;color:#fff;padding:0.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s;" onmouseover="this.style.background='#b8955a'" onmouseout="this.style.background='#9a7a4a'">🖨 Alle 4 uger</button>
+    <button onclick="printWeek('current')" style="background:transparent;border:1px solid rgba(154,122,74,0.4);color:#9a7a4a;padding:0.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;" >🖨 Aktiv uge</button>
+    <button onclick="printWeek('all')" style="background:#9a7a4a;border:none;color:#fff;padding:0.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;border-radius:2px;">🖨 Alle 4 uger</button>
     <a href="index.html" style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#8a8578;text-decoration:none;">← Start</a>
   </div>
 </div>
@@ -1673,24 +1670,31 @@ function showWeek(num, btn) {
 }
 
 function printWeek(mode) {
-  document.querySelectorAll('.week-content').forEach(w => w.classList.remove('print-active'));
+  let html = '';
 
   if (mode === 'current') {
     const active = document.querySelector('.week-content.active');
-    if (active) active.classList.add('print-active');
+    if (active) html = active.outerHTML;
   } else {
-    document.querySelectorAll('.week-content').forEach(w => w.classList.add('print-active'));
+    document.querySelectorAll('.week-content').forEach(w => {
+      html += '<div style="page-break-after:always">' + w.innerHTML + '</div>';
+    });
   }
 
-  // Give browser one frame to apply classes before printing
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      window.print();
-      setTimeout(() => {
-        document.querySelectorAll('.week-content').forEach(w => w.classList.remove('print-active'));
-      }, 1000);
-    });
-  });
+  const styles = Array.from(document.querySelectorAll('style'))
+    .map(s => '<style>' + s.innerHTML + '</style>').join('');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html lang="da"><head><meta charset="UTF-8">
+    <title>SmartBalanz Madplan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    ${styles}
+    <style>
+      body { background: #f7f4ef; padding: 2rem; }
+      .week-content { display: block !important; }
+    </style>
+  </head><body>${html}<script>window.onload=function(){window.print();}<\/script></body></html>`);
+  win.document.close();
 }
 </script>
 </body>
