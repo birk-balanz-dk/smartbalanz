@@ -437,10 +437,10 @@
 
   /* PRINT */
   @media print {
-    .week-nav { position: static; }
+    body > div:first-child { display: none !important; }
+    .week-nav { display: none !important; }
     .week-content { display: none !important; }
     .week-content.print-active { display: block !important; page-break-after: always; }
-    body > div:first-child { display: none !important; }
   }
 </style>
 </head>
@@ -1673,7 +1673,6 @@ function showWeek(num, btn) {
 }
 
 function printWeek(mode) {
-  // Remove any leftover print-active classes
   document.querySelectorAll('.week-content').forEach(w => w.classList.remove('print-active'));
 
   if (mode === 'current') {
@@ -1683,12 +1682,15 @@ function printWeek(mode) {
     document.querySelectorAll('.week-content').forEach(w => w.classList.add('print-active'));
   }
 
-  window.print();
-
-  // Clean up after print dialog closes
-  setTimeout(() => {
-    document.querySelectorAll('.week-content').forEach(w => w.classList.remove('print-active'));
-  }, 1000);
+  // Give browser one frame to apply classes before printing
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      window.print();
+      setTimeout(() => {
+        document.querySelectorAll('.week-content').forEach(w => w.classList.remove('print-active'));
+      }, 1000);
+    });
+  });
 }
 </script>
 </body>
