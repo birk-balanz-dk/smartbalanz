@@ -1693,7 +1693,7 @@ function printWeek(mode) {
       body { background: #f7f4ef; padding: 2rem; }
       .week-content { display: block !important; }
     </style>
-  </head><body>${html}<script>window.onload=function(){window.print();}<\/script></body></html>`);
+  </head><body>${html}<script>setTimeout(function(){window.print();},800);<\/script></body></html>`);
   win.document.close();
 }
 </script>
