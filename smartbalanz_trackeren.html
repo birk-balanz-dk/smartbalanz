@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartBalanz — Metabolisk Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: rgba(255,255,255,0.12);
+    --text: #f0ede8;
+    --muted: #a0a09b;
+    --accent: #c8f560;
+    --accent2: #60c8f5;
+    --accent3: #f5a260;
+    --gold: #b8955a;
+    --danger: #ff7070;
+    --good: #70ffb0;
+    --warn: #ffd060;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+  }
+
+  /* NAV */
+  .top-nav {
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(15,15,15,0.97);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .top-nav-logo {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .top-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .top-nav-date {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--mono);
+  }
+
+  .top-nav-back {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    font-family: var(--mono);
+    transition: color 0.2s;
+  }
+
+  .top-nav-back:hover { color: var(--gold); }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+  /* METRICS */
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 2rem; }
+  .metric {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .metric::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--accent-color, var(--accent));
+  }
+  .metric-label { font-size: 12px; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; font-family: var(--mono); font-weight: 600; }
+  .metric-value { font-size: 30px; font-weight: 500; color: var(--text); font-family: var(--mono); }
+  .metric-unit { font-size: 13px; color: var(--muted); margin-left: 2px; font-weight: 400; }
+  .metric-status { font-size: 11px; margin-top: 6px; font-family: var(--mono); letter-spacing: 0.02em; font-weight: 600; }
+
+  /* REFERENCE — moved up */
+  .reference-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .ref-title {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+
+  .ref-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--mono);
+    font-size: 11px;
+  }
+
+  .ref-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .ref-label { color: var(--text); font-weight: 500; }
+  .ref-desc { color: var(--muted); }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+  @media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+
+  .card-title {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+  }
+
+  .card-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* LOG FORM */
+  .log-form { display: flex; flex-direction: column; gap: 14px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-family: var(--mono); font-weight: 600; }
+  .field input, .field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-weight: 500;
+    width: 100%;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gold); }
+  .field input::placeholder { color: #555; }
+
+  .btn-log {
+    background: var(--gold);
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    font-weight: 700;
+    transition: opacity 0.2s;
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .btn-log:hover { opacity: 0.85; }
+
+  /* GKI RESULT */
+  .gki-result {
+    margin-top: 12px;
+    padding: 1rem 1.25rem;
+    background: var(--surface2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    display: none;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .gki-number {
+    font-size: 2.8rem;
+    font-weight: 500;
+    font-family: var(--mono);
+    line-height: 1;
+    min-width: 70px;
+  }
+
+  .gki-info-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 4px;
+    font-weight: 600;
+  }
+
+  .gki-zone {
+    font-size: 13px;
+    font-family: var(--mono);
+    font-weight: 700;
+  }
+
+  .gki-msg {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* GKI SCALE */
+  .gki-scale {
+    height: 6px;
+    border-radius: 999px;
+    background: linear-gradient(to right, #70ffb0 0%, #ffd060 40%, #f5a260 65%, #ff7070 100%);
+    margin-top: 10px;
+    position: relative;
+  }
+
+  .gki-pointer {
+    position: absolute;
+    top: -5px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px white;
+    transform: translateX(-50%);
+    transition: left 0.4s ease;
+  }
+
+  /* TRENDS */
+  .chart-wrap { position: relative; height: 250px; width: 100%; }
+
+  .tab-row { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    font-weight: 600;
+  }
+  .tab.active { background: var(--gold); color: #0f0f0f; border-color: var(--gold); }
+
+  /* LOG TABLE */
+  .log-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+  .log-table th { color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 10px; border-bottom: 2px solid var(--border); text-align: left; font-weight: 700; }
+  .log-table td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--text); font-weight: 500; }
+  .log-table tr:last-child td { border-bottom: none; }
+
+  /* DATA BACKUP */
+  .backup-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-export {
+    background: var(--accent);
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+  }
+  .btn-export:hover { opacity: 0.85; }
+
+  .btn-import {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .btn-import:hover { border-color: var(--gold); color: var(--gold); }
+
+  .backup-note {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    line-height: 1.6;
+  }
+
+  /* FULL CARD */
+  .full-card { margin-bottom: 1.5rem; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-row-3 { grid-template-columns: 1fr; }
+    .metric-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* PEAK MÅLER */
+  .peak-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .peak-inner {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+  }
+  @media (max-width: 600px) { .peak-inner { grid-template-columns: 1fr; } }
+  .peak-led-col { display: flex; flex-direction: column; gap: 5px; }
+  .peak-led {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.4s ease;
+    opacity: 0.2;
+  }
+  .peak-led.active { opacity: 1; background: rgba(255,255,255,0.03); }
+  .peak-led-lights { display: flex; gap: 3px; flex-shrink: 0; }
+  .peak-light {
+    width: 10px;
+    height: 26px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.05);
+    transition: background 0.4s ease, box-shadow 0.4s ease;
+  }
+  .peak-light.on-green  { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.6); }
+  .peak-light.on-yellow { background: #fbbf24; box-shadow: 0 0 8px rgba(251,191,36,0.6); }
+  .peak-light.on-red    { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+  .peak-light.on-dark   { background: #991b1b; box-shadow: 0 0 10px rgba(153,27,27,0.8); }
+  .peak-led-meta { display: flex; flex-direction: column; }
+  .peak-led-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .peak-led-range { font-family: var(--mono); font-size: 11px; font-weight: 600; color: var(--text); margin-top: 1px; }
+  .peak-zone-name { font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 8px; transition: color 0.4s; }
+  .peak-headline { font-size: 1.3rem; font-weight: 500; color: var(--text); line-height: 1.25; margin-bottom: 8px; }
+  .peak-desc { font-size: 12px; color: var(--muted); line-height: 1.75; }
+  .peak-pct {
+    font-family: var(--mono);
+    font-size: 10px;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .peak-idle { text-align: center; color: var(--muted); font-size: 12px; font-family: var(--mono); padding: 1.5rem 0; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<div class="top-nav">
+  <a href="index.html" class="top-nav-logo">SmartBalanz</a>
+  <div class="top-nav-right">
+    <div class="top-nav-date" id="current-date"></div>
+    <a href="index.html" class="top-nav-back">← Start</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- METRIC ROW -->
+  <div class="metric-row">
+    <div class="metric" style="--accent-color: var(--accent)">
+      <div class="metric-label">Glukose</div>
+      <div class="metric-value" id="m-glucose">—<span class="metric-unit"> mmol/L</span></div>
+      <div class="metric-status" id="s-glucose" style="color: var(--muted)">ingen data</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent2)">
+      <div class="metric-label">Ketoner</div>
+      <div class="metric-value" id="m-ketones">—<span class="metric-unit"> mmol/L</span></div>
+      <div class="metric-status" id="s-ketones" style="color: var(--muted)">ingen data</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--gold)">
+      <div class="metric-label">GKI</div>
+      <div class="metric-value" id="m-gki">—</div>
+      <div class="metric-status" id="s-gki" style="color: var(--muted)">ingen data</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent2)">
+      <div class="metric-label">Søvn score</div>
+      <div class="metric-value" id="m-sleep">—</div>
+      <div class="metric-status" id="s-sleep" style="color: var(--muted)">ingen data</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--accent3)">
+      <div class="metric-label">Stress niveau</div>
+      <div class="metric-value" id="m-stress">—</div>
+      <div class="metric-status" id="s-stress" style="color: var(--muted)">ingen data</div>
+    </div>
+    <div class="metric" style="--accent-color: var(--good)">
+      <div class="metric-label">Dage logget</div>
+      <div class="metric-value" id="m-days">0</div>
+      <div class="metric-status" style="color: var(--muted)">n=1 eksperiment</div>
+    </div>
+  </div>
+
+  <!-- REFERENCE BAR — moved up -->
+  <div class="reference-bar">
+    <span class="ref-title">Reference</span>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#70ffb0"></div>
+      <span class="ref-label">Glukose &lt; 5.6</span>
+      <span class="ref-desc">optimal fastende</span>
+    </div>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#ffd060"></div>
+      <span class="ref-label">Glukose 5.6–7.0</span>
+      <span class="ref-desc">grænseværdi</span>
+    </div>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#ff7070"></div>
+      <span class="ref-label">Glukose &gt; 7.0</span>
+      <span class="ref-desc">forhøjet</span>
+    </div>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#a0a09b"></div>
+      <span class="ref-label">Ketoner &lt; 0.5</span>
+      <span class="ref-desc">ingen ketose</span>
+    </div>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#60c8f5"></div>
+      <span class="ref-label">Ketoner 0.5–3.0</span>
+      <span class="ref-desc">ernæringsketose</span>
+    </div>
+    <div class="ref-item">
+      <div class="ref-dot" style="background:#b8955a"></div>
+      <span class="ref-label">GKI &lt; 9</span>
+      <span class="ref-desc">metabolisk fleksibel</span>
+    </div>
+  </div>
+
+  <!-- PEAK MÅLER -->
+  <div class="peak-card">
+    <div class="card-title">📊 Peak-Måleren — Overtryk i systemet</div>
+    <div class="peak-inner" id="peak-inner">
+      <div class="peak-led-col">
+        <!-- Zone 1: Grøn -->
+        <div class="peak-led" id="peak-led-0">
+          <div class="peak-led-lights">
+            <div class="peak-light" id="pl-0-0"></div>
+            <div class="peak-light" id="pl-0-1"></div>
+            <div class="peak-light" id="pl-0-2"></div>
+            <div class="peak-light" id="pl-0-3"></div>
+            <div class="peak-light" id="pl-0-4"></div>
+          </div>
+          <div class="peak-led-meta">
+            <div class="peak-led-label">🟢 Grønt felt</div>
+            <div class="peak-led-range">4.5 – 6.5 mmol/L</div>
+          </div>
+        </div>
+        <!-- Zone 2: Gul -->
+        <div class="peak-led" id="peak-led-1">
+          <div class="peak-led-lights">
+            <div class="peak-light" id="pl-1-0"></div>
+            <div class="peak-light" id="pl-1-1"></div>
+            <div class="peak-light" id="pl-1-2"></div>
+          </div>
+          <div class="peak-led-meta">
+            <div class="peak-led-label">🟡 Gult felt</div>
+            <div class="peak-led-range">6.6 – 8.5 mmol/L</div>
+          </div>
+        </div>
+        <!-- Zone 3: Rød -->
+        <div class="peak-led" id="peak-led-2">
+          <div class="peak-led-lights">
+            <div class="peak-light" id="pl-2-0"></div>
+            <div class="peak-light" id="pl-2-1"></div>
+          </div>
+          <div class="peak-led-meta">
+            <div class="peak-led-label">🔴 Rødt felt</div>
+            <div class="peak-led-range">8.6 – 11.0 mmol/L</div>
+          </div>
+        </div>
+        <!-- Zone 4: Mørkerød -->
+        <div class="peak-led" id="peak-led-3">
+          <div class="peak-led-lights">
+            <div class="peak-light" id="pl-3-0"></div>
+          </div>
+          <div class="peak-led-meta">
+            <div class="peak-led-label">🚨 System Failure</div>
+            <div class="peak-led-range">&gt; 11.0 mmol/L</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO SIDE -->
+      <div id="peak-info">
+        <div class="peak-idle" id="peak-idle">Indtast dit glukosetal for at se dit overtryk</div>
+        <div id="peak-content" style="display:none">
+          <div class="peak-zone-name" id="peak-zone-name"></div>
+          <div class="peak-headline" id="peak-headline"></div>
+          <div class="peak-desc" id="peak-desc"></div>
+          <div class="peak-pct" id="peak-pct"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG FORM + GKI -->
+  <div class="grid-2">
+
+    <div class="card">
+      <div class="card-title">Log i dag</div>
+      <div class="log-form">
+
+        <div class="form-row">
+          <div class="field">
+            <label>Dato</label>
+            <input type="date" id="in-date">
+          </div>
+          <div class="field">
+            <label>Tidspunkt</label>
+            <select id="in-timeofday" onchange="toggleMorningFields()">
+              <option value="Morgen">Morgenmåling</option>
+              <option value="Aften">Aftenmåling</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Glukose (mmol/L)</label>
+            <input type="number" id="in-glucose" placeholder="f.eks. 5.2" step="0.1" min="2" max="15" oninput="calcGKILive()">
+          </div>
+          <div class="field">
+            <label>Ketoner (mmol/L)</label>
+            <input type="number" id="in-ketones" placeholder="f.eks. 0.4" step="0.1" min="0" max="8" oninput="calcGKILive()">
+          </div>
+        </div>
+
+        <div class="form-row" id="morning-only-fields">
+          <div class="field">
+            <label>Søvn score (Zepp)</label>
+            <input type="number" id="in-sleep-score" placeholder="f.eks. 78" min="0" max="100">
+          </div>
+          <div class="field">
+            <label>Stress niveau (Zepp)</label>
+            <input type="number" id="in-stress" placeholder="f.eks. 35" min="0" max="100">
+          </div>
+        </div>
+
+        <button class="btn-log" onclick="logEntry()">+ Log måling</button>
+        <div id="log-feedback" style="font-size: 11px; color: var(--muted); font-family: var(--mono); min-height: 16px;"></div>
+      </div>
+    </div>
+
+    <!-- GKI BEREGNER -->
+    <div class="card">
+      <div class="card-title">GKI — Glukose Keton Indeks</div>
+      <p style="font-size: 11px; color: var(--muted); font-family: var(--mono); margin-bottom: 1rem; line-height: 1.6;">
+        Glukose (mmol/L) ÷ Ketoner (mmol/L)<br>
+        Beregnes automatisk fra dine målinger.
+      </p>
+
+      <div class="gki-result" id="gki-result">
+        <div class="gki-number" id="gki-number">—</div>
+        <div>
+          <div class="gki-info-label">GKI Zone</div>
+          <div class="gki-zone" id="gki-zone"></div>
+          <div class="gki-msg" id="gki-msg"></div>
+          <div class="gki-scale">
+            <div class="gki-pointer" id="gki-pointer" style="left:85%"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="background:var(--surface2);border-radius:6px;padding:10px 12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-family:var(--mono);font-weight:700;color:#70ffb0;">&lt; 3</div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em;">Terapeutisk</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:10px 12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-family:var(--mono);font-weight:700;color:#c8f560;">3–9</div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em;">Metabolisk fleksibel</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:10px 12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-family:var(--mono);font-weight:700;color:#ffd060;">9–16</div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em;">Bevidst zone</div>
+        </div>
+        <div style="background:var(--surface2);border-radius:6px;padding:10px 12px;border:1px solid var(--border);">
+          <div style="font-size:13px;font-family:var(--mono);font-weight:700;color:#ff7070;">&gt; 16</div>
+          <div style="font-size:10px;color:var(--muted);font-family:var(--mono);margin-top:3px;text-transform:uppercase;letter-spacing:0.05em;">Opmærksomhed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRENDS -->
+  <div class="card full-card">
+    <div class="card-title">Trends</div>
+    <div class="tab-row">
+      <button class="tab active" onclick="switchTab('glucose', this)">Glukose & Ketoner</button>
+      <button class="tab" onclick="switchTab('gki', this)">GKI</button>
+      <button class="tab" onclick="switchTab('sleepstress', this)">Søvn & Stress</button>
+    </div>
+    <div id="tab-glucose"><div class="chart-wrap"><canvas id="c-glucose"></canvas></div></div>
+    <div id="tab-gki" style="display:none"><div class="chart-wrap"><canvas id="c-gki"></canvas></div></div>
+    <div id="tab-sleepstress" style="display:none"><div class="chart-wrap"><canvas id="c-sleepstress"></canvas></div></div>
+  </div>
+
+  <!-- LOG HISTORY -->
+  <div class="card full-card">
+    <div class="card-title">Log historik</div>
+    <div style="overflow-x: auto;">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Dato</th>
+            <th>Tidspunkt</th>
+            <th>Måling</th>
+            <th>Glukose</th>
+            <th>Ketoner</th>
+            <th>GKI</th>
+            <th>Søvn</th>
+            <th>Stress</th>
+          </tr>
+        </thead>
+        <tbody id="log-tbody">
+          <tr><td colspan="8" style="color: var(--muted); text-align: center; padding: 2rem;">Ingen målinger endnu — log din første måling ovenfor</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DATA BACKUP -->
+  <div class="card full-card">
+    <div class="card-title">Data backup</div>
+    <div class="backup-row">
+      <button class="btn-export" onclick="exportData()">↓ Eksporter JSON</button>
+      <label class="btn-import" style="cursor:pointer;">
+        ↑ Importer JSON
+        <input type="file" id="data-import" accept=".json" style="display:none" onchange="importData(this)">
+      </label>
+      <div class="backup-note">Dine data gemmes lokalt på din enhed. Eksporter for at tage backup eller flytte til en anden enhed.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html">SmartBalanz</a> · Metabolisk Tracker · Data gemmes lokalt — aldrig hos os · n=1 eksperiment
+</footer>
+
+<script>
+document.getElementById('current-date').textContent = new Date().toLocaleDateString('da-DK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+// Sæt dato-felt til i dag ved sideload
+const todayStr = new Date().toISOString().split('T')[0];
+document.getElementById('in-date').value = todayStr;
+
+const STORAGE_KEY = 'smartbalanz-logs-v1';
+let logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let charts = {};
+
+function saveLogs() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+}
+
+// ─── PEAK MÅLER ──────────────────────────────────────────────────────────────
+const peakZones = [
+  {
+    id: 0,
+    range: [4.5, 6.5],
+    lightClass: 'on-green',
+    color: '#4ade80',
+    pctText: '0% overtryk — optimal baseline',
+    pctBg: 'rgba(74,222,128,0.12)',
+    zoneName: '🟢 Det grønne felt — Optimal baseline',
+    headline: 'Pejsen brænder roligt med bøgetræ',
+    desc: 'Systemet kører rent. Bemærk: 6.0–6.5 om morgenen er normalt og forventeligt — kortisol skubber glukosen op ved opvågning (dawn phenomenon). Det er biologi, ikke fejl. En metabolisk fleksibel person lander her fastende om eftermiddagen.'
+  },
+  {
+    id: 1,
+    range: [6.6, 8.5],
+    lightClass: 'on-yellow',
+    color: '#fbbf24',
+    pctText: '+25% til +40% overtryk — moderat overstyring',
+    pctBg: 'rgba(251,191,36,0.12)',
+    zoneName: '🟡 Det gule felt — Advarsel',
+    headline: 'Musikken begynder at forvrænge',
+    desc: 'Insulin-brandvæsenet er rykket ud. Ikke alarm — men et signal om at du kan justere. Typisk efter et kulhydrat-tungt måltid eller ved vedvarende stress. Brug GI-tricks: fedt og syre til maden, rækkefølge på tallerkenen.'
+  },
+  {
+    id: 2,
+    range: [8.6, 11.0],
+    lightClass: 'on-red',
+    color: '#ef4444',
+    pctText: '+50% til +80% overtryk — hård forvrængning',
+    pctBg: 'rgba(239,68,68,0.12)',
+    zoneName: '🔴 Det røde felt — Akut overstyring',
+    headline: 'Signalet klipper — forstærkeren er på max',
+    desc: 'Sukkerkoncentrationen belaster karvæggene og kroppen pumper kraftigt insulin ud for at beskytte dig. Sker typisk efter hvide ris, hvid pasta, juice eller søde drikke på tom mave. Undgå hurtige kulhydrater alene fremover.'
+  },
+  {
+    id: 3,
+    range: [11.1, 99],
+    lightClass: 'on-dark',
+    color: '#991b1b',
+    pctText: '100%+ overtryk — System Failure',
+    pctBg: 'rgba(153,27,27,0.15)',
+    zoneName: '🚨 System Failure — Windows Safe Mode',
+    headline: 'Forstærkeren brænder af',
+    desc: 'Hjernen går i Windows Safe Mode — slukker for hukommelse, overskud og de mest strømslugende områder for at beskytte sig selv. Vedvarende niveauer her driver amyloid-dannelse over tid. Tal med din læge og start med madplanen.'
+  }
+];
+
+function updatePeakMeter(glucose) {
+  // Reset all
+  for (let z = 0; z < 4; z++) {
+    document.getElementById('peak-led-' + z).classList.remove('active');
+    const lights = document.querySelectorAll(`[id^="pl-${z}-"]`);
+    lights.forEach(l => { l.className = 'peak-light'; });
+  }
+
+  if (!glucose || isNaN(glucose)) {
+    document.getElementById('peak-idle').style.display = 'block';
+    document.getElementById('peak-content').style.display = 'none';
+    return;
+  }
+
+  const zone = peakZones.find(z => glucose >= z.range[0] && glucose <= z.range[1]);
+  if (!zone) return;
+
+  // Activate zone LED row
+  document.getElementById('peak-led-' + zone.id).classList.add('active');
+
+  // Light up all lights in this zone
+  const lights = document.querySelectorAll(`[id^="pl-${zone.id}-"]`);
+  lights.forEach(l => { l.classList.add(zone.lightClass); });
+
+  // Update info
+  document.getElementById('peak-idle').style.display = 'none';
+  document.getElementById('peak-content').style.display = 'block';
+  document.getElementById('peak-zone-name').textContent = zone.zoneName;
+  document.getElementById('peak-zone-name').style.color = zone.color;
+  document.getElementById('peak-headline').textContent = zone.headline;
+  document.getElementById('peak-headline').style.color = zone.color;
+  document.getElementById('peak-desc').textContent = zone.desc;
+  document.getElementById('peak-pct').textContent = zone.pctText;
+  document.getElementById('peak-pct').style.background = zone.pctBg;
+  document.getElementById('peak-pct').style.color = zone.color;
+}
+
+
+function calcGKI(g, k) {
+  if (!g || !k || k === 0) return null;
+  return Math.round((g / k) * 10) / 10;
+}
+
+function gkiZone(gki) {
+  if (gki <= 3)  return { zone: 'Terapeutisk ketose',       color: '#70ffb0', msg: 'Hjernen får betydelig energi fra ketoner. Kræver tæt opfølgning.', pct: Math.max(2, (gki/20)*100) };
+  if (gki <= 9)  return { zone: 'Metabolisk fleksibel ✓',   color: '#c8f560', msg: 'God balance — hjernen har adgang til backup-brændstof. Du er i god retning.', pct: (gki/20)*100 };
+  if (gki <= 16) return { zone: 'Bevidst zone',             color: '#ffd060', msg: 'Typisk for en metabolisk bevidst dansker. Bevæg dig gradvist mod GKI under 9.', pct: (gki/20)*100 };
+  if (gki <= 25) return { zone: 'Opmærksomhedszone',        color: '#f5a260', msg: 'Hjernen kører primært på glukose. Små justeringer i kost og timing kan gøre en stor forskel.', pct: Math.min(88, (gki/20)*100) };
+  return { zone: 'Høj glukosebelastning',                   color: '#ff7070', msg: 'Systemet er under pres. Start med madplanen og GI-tricks — ingen store spring nødvendige.', pct: Math.min(96, (gki/20)*100) };
+}
+
+function calcGKILive() {
+  const g = parseFloat(document.getElementById('in-glucose').value);
+  updatePeakMeter(g);
+  const k = parseFloat(document.getElementById('in-ketones').value);
+  const gki = calcGKI(g, k);
+  const result = document.getElementById('gki-result');
+
+  if (!gki) { result.style.display = 'none'; return; }
+
+  const zone = gkiZone(gki);
+  result.style.display = 'flex';
+  document.getElementById('gki-number').textContent = gki.toFixed(1);
+  document.getElementById('gki-number').style.color = zone.color;
+  document.getElementById('gki-zone').textContent = zone.zone;
+  document.getElementById('gki-zone').style.color = zone.color;
+  document.getElementById('gki-msg').textContent = zone.msg;
+  document.getElementById('gki-pointer').style.left = zone.pct + '%';
+}
+
+function toggleMorningFields() {
+  const val = document.getElementById('in-timeofday').value;
+  const fields = document.getElementById('morning-only-fields');
+  fields.style.display = val === 'Morgen' ? 'grid' : 'none';
+  if (val !== 'Morgen') {
+    document.getElementById('in-sleep-score').value = '';
+    document.getElementById('in-stress').value = '';
+  }
+}
+
+function logEntry() {
+  const g = parseFloat(document.getElementById('in-glucose').value);
+  const k = parseFloat(document.getElementById('in-ketones').value);
+  const sleepScore = parseInt(document.getElementById('in-sleep-score').value);
+  const stress = parseInt(document.getElementById('in-stress').value);
+  const timeofday = document.getElementById('in-timeofday').value;
+  const gki = calcGKI(g, k);
+
+  const dateInput = document.getElementById('in-date').value;
+  const selectedDate = dateInput ? new Date(dateInput + 'T12:00:00') : new Date();
+  const today = selectedDate.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
+  const timestamp = new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+
+  const entry = {
+    date: today,
+    timestamp,
+    timeofday,
+    glucose: isNaN(g) ? null : g,
+    ketones: isNaN(k) ? null : k,
+    gki,
+    sleepScore: isNaN(sleepScore) ? null : sleepScore,
+    stress: isNaN(stress) ? null : stress
+  };
+
+  logs.push(entry);
+  saveLogs();
+
+  // Update metrics
+  if (entry.glucose) {
+    document.getElementById('m-glucose').innerHTML = entry.glucose.toFixed(1) + '<span class="metric-unit"> mmol/L</span>';
+    const gs = entry.glucose < 5.6 ? 'optimal' : entry.glucose < 7.0 ? 'grænseværdi' : 'forhøjet';
+    const gc = entry.glucose < 5.6 ? 'var(--good)' : entry.glucose < 7.0 ? 'var(--warn)' : 'var(--danger)';
+    document.getElementById('s-glucose').textContent = gs;
+    document.getElementById('s-glucose').style.color = gc;
+  }
+  if (entry.ketones) {
+    document.getElementById('m-ketones').innerHTML = entry.ketones.toFixed(1) + '<span class="metric-unit"> mmol/L</span>';
+    const ks = entry.ketones < 0.5 ? 'under ketose' : entry.ketones < 3.0 ? 'ernæringsketose' : 'dyb ketose';
+    const kc = entry.ketones < 0.5 ? 'var(--muted)' : 'var(--accent2)';
+    document.getElementById('s-ketones').textContent = ks;
+    document.getElementById('s-ketones').style.color = kc;
+  }
+  if (gki) {
+    const zone = gkiZone(gki);
+    document.getElementById('m-gki').textContent = gki.toFixed(1);
+    document.getElementById('m-gki').style.color = zone.color;
+    document.getElementById('s-gki').textContent = zone.zone;
+    document.getElementById('s-gki').style.color = zone.color;
+  }
+  if (entry.sleepScore) {
+    document.getElementById('m-sleep').textContent = entry.sleepScore;
+    const sc = entry.sleepScore >= 80 ? 'var(--good)' : entry.sleepScore >= 60 ? 'var(--warn)' : 'var(--danger)';
+    document.getElementById('s-sleep').textContent = entry.sleepScore >= 80 ? 'god søvn' : entry.sleepScore >= 60 ? 'moderat' : 'lav søvnkvalitet';
+    document.getElementById('s-sleep').style.color = sc;
+    document.getElementById('m-sleep').style.color = sc;
+  }
+  if (entry.stress) {
+    document.getElementById('m-stress').textContent = entry.stress;
+    const stc = entry.stress <= 30 ? 'var(--good)' : entry.stress <= 60 ? 'var(--warn)' : 'var(--danger)';
+    document.getElementById('s-stress').textContent = entry.stress <= 30 ? 'lavt' : entry.stress <= 60 ? 'moderat' : 'højt';
+    document.getElementById('s-stress').style.color = stc;
+    document.getElementById('m-stress').style.color = stc;
+  }
+
+  document.getElementById('m-days').textContent = logs.length;
+  document.getElementById('log-feedback').textContent = `✓ Logget ${timeofday.toLowerCase()}måling ${today} kl. ${timestamp}`;
+
+  // Clear form
+  ['in-glucose','in-ketones','in-sleep-score','in-stress'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('gki-result').style.display = 'none';
+  document.getElementById('in-date').valueAsDate = new Date();
+
+  renderTable();
+  updateCharts();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('log-tbody');
+  if (logs.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color: var(--muted); text-align: center; padding: 2rem;">Ingen målinger endnu</td></tr>';
+    return;
+  }
+  tbody.innerHTML = [...logs].reverse().map(l => {
+    const gkiColor = l.gki ? gkiZone(l.gki).color : 'var(--muted)';
+    const sleepColor = l.sleepScore ? (l.sleepScore >= 80 ? '#70ffb0' : l.sleepScore >= 60 ? '#ffd060' : '#ff7070') : 'var(--muted)';
+    const stressColor = l.stress ? (l.stress <= 30 ? '#70ffb0' : l.stress <= 60 ? '#ffd060' : '#ff7070') : 'var(--muted)';
+    return `
+      <tr>
+        <td>${l.date}</td>
+        <td style="color:var(--muted)">${l.timestamp || '—'}</td>
+        <td><span style="padding:2px 7px;border-radius:4px;background:${l.timeofday === 'Morgen' ? 'rgba(184,149,90,0.15)' : 'rgba(96,200,245,0.15)'};color:${l.timeofday === 'Morgen' ? 'var(--gold)' : 'var(--accent2)'};font-size:10px;font-weight:700;">${l.timeofday || '—'}</span></td>
+        <td style="color:${l.glucose ? (l.glucose < 5.6 ? '#70ffb0' : l.glucose < 7 ? '#ffd060' : '#ff7070') : 'var(--muted)'}">${l.glucose ? l.glucose.toFixed(1) : '—'}</td>
+        <td style="color:${l.ketones ? (l.ketones >= 0.5 ? '#60c8f5' : 'var(--muted)') : 'var(--muted)'}">${l.ketones ? l.ketones.toFixed(1) : '—'}</td>
+        <td style="color:${gkiColor}">${l.gki ? l.gki.toFixed(1) : '—'}</td>
+        <td style="color:${sleepColor}">${l.sleepScore || '—'}</td>
+        <td style="color:${stressColor}">${l.stress || '—'}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['glucose','gki','sleepstress'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === name ? 'block' : 'none';
+  });
+}
+
+function updateCharts() {
+  const labels = logs.map(l => l.date);
+  const morningLogs = logs.filter(l => l.timeofday === 'Morgen');
+  const morningLabels = morningLogs.map(l => l.date);
+
+  if (charts.glucose) charts.glucose.destroy();
+  charts.glucose = new Chart(document.getElementById('c-glucose'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Glukose mmol/L', data: logs.map(l => l.glucose), borderColor: '#ff7070', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#ff7070', spanGaps: true },
+        { label: 'Ketoner mmol/L', data: logs.map(l => l.ketones), borderColor: '#60c8f5', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, pointBackgroundColor: '#60c8f5', spanGaps: true }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#888884', font: { family: 'DM Mono', size: 11 } } } }, scales: { y: { beginAtZero: true, ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } }, x: { ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } } } }
+  });
+
+  if (charts.gki) charts.gki.destroy();
+  charts.gki = new Chart(document.getElementById('c-gki'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'GKI',
+        data: logs.map(l => l.gki),
+        borderColor: '#b8955a',
+        backgroundColor: 'transparent',
+        tension: 0.3,
+        pointRadius: 5,
+        pointBackgroundColor: logs.map(l => l.gki ? gkiZone(l.gki).color : '#444'),
+        pointBorderColor: logs.map(l => l.gki ? gkiZone(l.gki).color : '#444'),
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        annotation: { annotations: {
+          line1: { type: 'line', yMin: 9, yMax: 9, borderColor: 'rgba(255,112,112,0.4)', borderWidth: 1, borderDash: [4,4] },
+          line2: { type: 'line', yMin: 3, yMax: 3, borderColor: 'rgba(112,255,176,0.4)', borderWidth: 1, borderDash: [4,4] }
+        }}
+      },
+      scales: { y: { beginAtZero: true, ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } }, x: { ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } } }
+    }
+  });
+
+  if (charts.sleepstress) charts.sleepstress.destroy();
+  charts.sleepstress = new Chart(document.getElementById('c-sleepstress'), {
+    type: 'line',
+    data: {
+      labels: morningLabels,
+      datasets: [
+        { label: 'Søvn score', data: morningLogs.map(l => l.sleepScore), borderColor: '#60c8f5', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, spanGaps: true },
+        { label: 'Stress niveau', data: morningLogs.map(l => l.stress), borderColor: '#f5a260', backgroundColor: 'transparent', tension: 0.3, pointRadius: 4, spanGaps: true }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#888884', font: { family: 'DM Mono', size: 11 } } } }, scales: { y: { min: 0, max: 100, ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } }, x: { ticks: { color: '#888884', font: { family: 'DM Mono', size: 10 } } } } }
+  });
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `smartbalanz-data-${new Date().toISOString().split('T')[0]}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!Array.isArray(imported)) { alert('⚠️ Ugyldigt filformat'); return; }
+      logs = imported;
+      saveLogs();
+      renderTable();
+      updateCharts();
+      document.getElementById('m-days').textContent = logs.length;
+      alert('✓ Data importeret — ' + imported.length + ' målinger indlæst');
+    } catch (err) {
+      alert('⚠️ Fejl ved import: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Init
+document.getElementById('in-date').valueAsDate = new Date();
+toggleMorningFields();
+renderTable();
+document.getElementById('m-days').textContent = logs.length;
+if (logs.length > 0) {
+  const last = logs[logs.length - 1];
+  if (last.glucose) document.getElementById('m-glucose').innerHTML = last.glucose.toFixed(1) + '<span class="metric-unit"> mmol/L</span>';
+  if (last.ketones) document.getElementById('m-ketones').innerHTML = last.ketones.toFixed(1) + '<span class="metric-unit"> mmol/L</span>';
+  if (last.gki) {
+    const zone = gkiZone(last.gki);
+    document.getElementById('m-gki').textContent = last.gki.toFixed(1);
+    document.getElementById('m-gki').style.color = zone.color;
+    document.getElementById('s-gki').textContent = zone.zone;
+    document.getElementById('s-gki').style.color = zone.color;
+  }
+  updateCharts();
+}
+</script>
+</body>
+</html>
