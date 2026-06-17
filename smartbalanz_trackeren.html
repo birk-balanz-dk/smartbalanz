@@ -595,11 +595,8 @@
             <input type="date" id="in-date">
           </div>
           <div class="field">
-            <label>Tidspunkt</label>
-            <select id="in-timeofday" onchange="toggleMorningFields()">
-              <option value="Morgen">Morgenmåling</option>
-              <option value="Aften">Aftenmåling</option>
-            </select>
+            <label>Klokkeslet</label>
+            <input type="time" id="in-time" style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:var(--mono);font-size:15px;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
 
@@ -614,14 +611,48 @@
           </div>
         </div>
 
-        <div class="form-row" id="morning-only-fields">
+        <div class="form-row">
           <div class="field">
-            <label>Søvn score (Zepp)</label>
-            <input type="number" id="in-sleep-score" placeholder="f.eks. 78" min="0" max="100">
+            <label>Timer siden sidste måltid</label>
+            <select id="in-hours-since-meal">
+              <option value="">— vælg —</option>
+              <option value="1">1 time</option>
+              <option value="2">2 timer</option>
+              <option value="3">3 timer</option>
+              <option value="4">4 timer</option>
+              <option value="6">6 timer</option>
+              <option value="8">8 timer</option>
+              <option value="10">10 timer</option>
+              <option value="12">12 timer (faste)</option>
+              <option value="14">14+ timer (dyb faste)</option>
+            </select>
           </div>
           <div class="field">
-            <label>Stress niveau (Zepp)</label>
-            <input type="number" id="in-stress" placeholder="f.eks. 35" min="0" max="100">
+            <label>Aktivitet siden måltid</label>
+            <select id="in-activity">
+              <option value="">— vælg —</option>
+              <option value="Ingen">Ingen aktivitet</option>
+              <option value="Gåtur">Gåtur / let bevægelse</option>
+              <option value="Let motion">Let motion</option>
+              <option value="Intens træning">Intens træning</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label>Glykemisk load — sidste måltid</label>
+            <select id="in-gl-level">
+              <option value="">— vælg —</option>
+              <option value="Lav">🟢 Lav — grøntsager, æg, nødder, fedt</option>
+              <option value="Middel">🟡 Middel — havregryn, rugbrød, bælgfrugter</option>
+              <option value="Høj">🟠 Høj — ris, pasta, kartofler, brød</option>
+              <option value="Meget høj">🔴 Meget høj — slik, juice, sodavand, wienerbrød</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Noter</label>
+            <input type="text" id="in-notes" placeholder="f.eks. squash 45 min">
           </div>
         </div>
 
@@ -692,13 +723,13 @@
         <thead>
           <tr>
             <th>Dato</th>
-            <th>Tidspunkt</th>
-            <th>Måling</th>
+            <th>Kl.</th>
             <th>Glukose</th>
             <th>Ketoner</th>
             <th>GKI</th>
-            <th>Søvn</th>
-            <th>Stress</th>
+            <th>Timer siden måltid</th>
+            <th>Aktivitet</th>
+            <th>GL niveau</th>
           </tr>
         </thead>
         <tbody id="log-tbody">
@@ -733,6 +764,8 @@ document.getElementById('current-date').textContent = new Date().toLocaleDateStr
 // Sæt dato-felt til i dag ved sideload
 const todayStr = new Date().toISOString().split('T')[0];
 document.getElementById('in-date').value = todayStr;
+const nowTime = new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+document.getElementById('in-time').value = nowTime;
 
 const STORAGE_KEY = 'smartbalanz-logs-v1';
 let logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
@@ -860,38 +893,31 @@ function calcGKILive() {
   document.getElementById('gki-pointer').style.left = zone.pct + '%';
 }
 
-function toggleMorningFields() {
-  const val = document.getElementById('in-timeofday').value;
-  const fields = document.getElementById('morning-only-fields');
-  fields.style.display = val === 'Morgen' ? 'grid' : 'none';
-  if (val !== 'Morgen') {
-    document.getElementById('in-sleep-score').value = '';
-    document.getElementById('in-stress').value = '';
-  }
-}
-
 function logEntry() {
   const g = parseFloat(document.getElementById('in-glucose').value);
   const k = parseFloat(document.getElementById('in-ketones').value);
-  const sleepScore = parseInt(document.getElementById('in-sleep-score').value);
-  const stress = parseInt(document.getElementById('in-stress').value);
-  const timeofday = document.getElementById('in-timeofday').value;
+  const hoursSinceMeal = document.getElementById('in-hours-since-meal').value;
+  const activity = document.getElementById('in-activity').value;
+  const glLevel = document.getElementById('in-gl-level').value;
+  const notes = document.getElementById('in-notes').value;
   const gki = calcGKI(g, k);
 
   const dateInput = document.getElementById('in-date').value;
+  const timeInput = document.getElementById('in-time').value;
   const selectedDate = dateInput ? new Date(dateInput + 'T12:00:00') : new Date();
   const today = selectedDate.toLocaleDateString('da-DK', { day: 'numeric', month: 'short' });
-  const timestamp = new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
+  const timestamp = timeInput || new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' });
 
   const entry = {
     date: today,
     timestamp,
-    timeofday,
     glucose: isNaN(g) ? null : g,
     ketones: isNaN(k) ? null : k,
     gki,
-    sleepScore: isNaN(sleepScore) ? null : sleepScore,
-    stress: isNaN(stress) ? null : stress
+    hoursSinceMeal: hoursSinceMeal || null,
+    activity: activity || null,
+    glLevel: glLevel || null,
+    notes: notes || null
   };
 
   logs.push(entry);
@@ -900,8 +926,8 @@ function logEntry() {
   // Update metrics
   if (entry.glucose) {
     document.getElementById('m-glucose').innerHTML = entry.glucose.toFixed(1) + '<span class="metric-unit"> mmol/L</span>';
-    const gs = entry.glucose < 5.6 ? 'optimal' : entry.glucose < 7.0 ? 'grænseværdi' : 'forhøjet';
-    const gc = entry.glucose < 5.6 ? 'var(--good)' : entry.glucose < 7.0 ? 'var(--warn)' : 'var(--danger)';
+    const gs = entry.glucose < 6.5 ? 'grøn zone' : entry.glucose < 8.5 ? 'gul zone' : 'rød zone';
+    const gc = entry.glucose < 6.5 ? 'var(--good)' : entry.glucose < 8.5 ? 'var(--warn)' : 'var(--danger)';
     document.getElementById('s-glucose').textContent = gs;
     document.getElementById('s-glucose').style.color = gc;
   }
@@ -919,31 +945,20 @@ function logEntry() {
     document.getElementById('s-gki').textContent = zone.zone;
     document.getElementById('s-gki').style.color = zone.color;
   }
-  if (entry.sleepScore) {
-    document.getElementById('m-sleep').textContent = entry.sleepScore;
-    const sc = entry.sleepScore >= 80 ? 'var(--good)' : entry.sleepScore >= 60 ? 'var(--warn)' : 'var(--danger)';
-    document.getElementById('s-sleep').textContent = entry.sleepScore >= 80 ? 'god søvn' : entry.sleepScore >= 60 ? 'moderat' : 'lav søvnkvalitet';
-    document.getElementById('s-sleep').style.color = sc;
-    document.getElementById('m-sleep').style.color = sc;
-  }
-  if (entry.stress) {
-    document.getElementById('m-stress').textContent = entry.stress;
-    const stc = entry.stress <= 30 ? 'var(--good)' : entry.stress <= 60 ? 'var(--warn)' : 'var(--danger)';
-    document.getElementById('s-stress').textContent = entry.stress <= 30 ? 'lavt' : entry.stress <= 60 ? 'moderat' : 'højt';
-    document.getElementById('s-stress').style.color = stc;
-    document.getElementById('m-stress').style.color = stc;
-  }
 
   document.getElementById('m-days').textContent = logs.length;
-  document.getElementById('log-feedback').textContent = `✓ Logget ${timeofday.toLowerCase()}måling ${today} kl. ${timestamp}`;
+  document.getElementById('log-feedback').textContent = `✓ Logget ${today} kl. ${timestamp}`;
 
   // Clear form
-  ['in-glucose','in-ketones','in-sleep-score','in-stress'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+  ['in-glucose','in-ketones','in-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  ['in-hours-since-meal','in-activity','in-gl-level'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('gki-result').style.display = 'none';
-  document.getElementById('in-date').valueAsDate = new Date();
+  document.getElementById('in-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('in-time').value = new Date().toLocaleTimeString('da-DK', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
 
   renderTable();
   updateCharts();
@@ -957,18 +972,18 @@ function renderTable() {
   }
   tbody.innerHTML = [...logs].reverse().map(l => {
     const gkiColor = l.gki ? gkiZone(l.gki).color : 'var(--muted)';
-    const sleepColor = l.sleepScore ? (l.sleepScore >= 80 ? '#70ffb0' : l.sleepScore >= 60 ? '#ffd060' : '#ff7070') : 'var(--muted)';
-    const stressColor = l.stress ? (l.stress <= 30 ? '#70ffb0' : l.stress <= 60 ? '#ffd060' : '#ff7070') : 'var(--muted)';
+    const glColors = { 'Lav':'#70ffb0', 'Middel':'#ffd060', 'Høj':'#f5a260', 'Meget høj':'#ff7070' };
+    const glColor = l.glLevel ? (glColors[l.glLevel] || 'var(--muted)') : 'var(--muted)';
     return `
       <tr>
         <td>${l.date}</td>
         <td style="color:var(--muted)">${l.timestamp || '—'}</td>
-        <td><span style="padding:2px 7px;border-radius:4px;background:${l.timeofday === 'Morgen' ? 'rgba(184,149,90,0.15)' : 'rgba(96,200,245,0.15)'};color:${l.timeofday === 'Morgen' ? 'var(--gold)' : 'var(--accent2)'};font-size:10px;font-weight:700;">${l.timeofday || '—'}</span></td>
-        <td style="color:${l.glucose ? (l.glucose < 5.6 ? '#70ffb0' : l.glucose < 7 ? '#ffd060' : '#ff7070') : 'var(--muted)'}">${l.glucose ? l.glucose.toFixed(1) : '—'}</td>
+        <td style="color:${l.glucose ? (l.glucose < 6.5 ? '#70ffb0' : l.glucose < 8.5 ? '#ffd060' : '#ff7070') : 'var(--muted)'}">${l.glucose ? l.glucose.toFixed(1) : '—'}</td>
         <td style="color:${l.ketones ? (l.ketones >= 0.5 ? '#60c8f5' : 'var(--muted)') : 'var(--muted)'}">${l.ketones ? l.ketones.toFixed(1) : '—'}</td>
         <td style="color:${gkiColor}">${l.gki ? l.gki.toFixed(1) : '—'}</td>
-        <td style="color:${sleepColor}">${l.sleepScore || '—'}</td>
-        <td style="color:${stressColor}">${l.stress || '—'}</td>
+        <td style="color:var(--muted)">${l.hoursSinceMeal ? l.hoursSinceMeal + 't' : '—'}</td>
+        <td style="color:var(--muted);font-size:10px;">${l.activity || '—'}</td>
+        <td style="color:${glColor};font-size:10px;">${l.glLevel || '—'}</td>
       </tr>
     `;
   }).join('');
@@ -1077,8 +1092,7 @@ function importData(input) {
 }
 
 // Init
-document.getElementById('in-date').valueAsDate = new Date();
-toggleMorningFields();
+document.getElementById('in-date').value = new Date().toISOString().split('T')[0];
 renderTable();
 document.getElementById('m-days').textContent = logs.length;
 if (logs.length > 0) {
