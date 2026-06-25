@@ -555,15 +555,6 @@
     <p>Du føler at noget er ud af spor. Træthed, stress og søvn. Vægt, indre balance eller glemsomhed — uden forklaring.</p>
     <p class="sub">Og vi ved at det ikke er nemt. Derfor kortlægger vi det med dig. Uden forbud. Uden at du mister dig selv og din identitet.</p>
   </div>
-
-  <div style="max-width:520px;margin-bottom:2.5rem;padding:1.25rem 1.5rem;border:1px solid rgba(200,169,110,0.25);border-radius:4px;background:rgba(200,169,110,0.05);animation:fadeDown 0.8s ease 0.25s both;">
-    <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.18em;color:var(--gold);margin-bottom:0.6rem;">Inden du starter</div>
-    <p style="font-size:0.88rem;line-height:1.7;color:var(--muted);">
-      Svar så ærligt som muligt — ikke som du gerne vil have det til at være, men som det faktisk er.<br>
-      <span style="color:var(--text);font-style:italic;">Den eneste du snyder, er dig selv.</span>
-    </p>
-  </div>
-
   <div class="intro-meta">
     <div class="intro-meta-item">
       <div class="intro-meta-num">33</div>
@@ -581,7 +572,8 @@
     </div>
   </div>
   <button class="btn-start" onclick="startQuiz()">Start assessment</button>
-  <div class="intro-note">Ingen login. Ingen data gemt hos os. Du ejer dine svar.</div>
+  <div class="intro-note">Ingen login. Ingen data gemt hos os. Du ejer dine svar.<br>
+  <span style="color:var(--gold);font-style:italic;">Svar så ærligt som muligt — den eneste du snyder, er dig selv.</span></div>
 </div>
 
 <!-- PART INTRO SCREEN -->
@@ -619,7 +611,7 @@
   <div class="result-logo">SmartBalanz</div>
   <div class="result-score-wrap">
     <div class="result-score" id="res-score">0</div>
-    <div class="result-score-label">Point ud af 132</div>
+    <div class="result-score-label">Point ud af 276</div>
   </div>
   <div class="score-badge" id="res-badge"></div>
   <div class="result-profile" id="res-profile"></div>
@@ -640,25 +632,25 @@
 <script>
 const questions = [
   // BLOK 1 — SELVERKENDELSEN (Q1-3)
-  { cat:"Selverkendelsen", label:"Det ærlige spejlbillede", q:"Hvis du skal give din nuværende livsstil og sundhed en overordnet karakter, hvor føler du så, du reelt lander?", opts:["Helt i top. Jeg gør en aktiv indsats, spiser fornuftigt, rører mig og føler, jeg har styr på min sundhed.","Okay fornuftigt. I en travl hverdag gør jeg mit bedste, men der er plads til forbedringer.","Det halter. Jeg ved godt, det er lidt usundt, men jeg mangler energien til at vende skuden.","Det sejler fuldstændig. Kroppen brokker sig konstant, og mit overskud er helt væk."] },
-  { cat:"Selverkendelsen", label:"Kost-illusionen", q:"Når du står i supermarkedet, hvad styrer så dine valg, for at du føler, du køber 'sundt' ind?", opts:["Jeg går konsekvent udenom ultra-forarbejdet mad, sukker og raffinerede frøolier. Jeg køber rene, uforarbejdede råvarer og rigtigt fedt.","Jeg tænker ikke så meget over det. Jeg køber bare det, jeg plejer, og hvad der smager godt.","Jeg prøver at skære ned på sukker og hvidt brød, men spiser masser af rugbrød, havregryn, frugt og pasta.","Jeg iagttager de officielle råd: Går efter fuldkornsmærket, nøglehulsmærket, fedtfattige light-produkter og flydende planteolier."] },
-  { cat:"Selverkendelsen", label:"Symptom-blændingen", q:"Hvis du mærker træthed, hjernetåge eller uro i kroppen i løbet af ugen, hvad tænker du så selv er den dybere årsag?", opts:["Jeg er helt bevidst om, at det er min kost og min metaboliske motor, der hakker.","Jeg tænker, at min krop forsøger at råbe mig op, men jeg ved ikke helt, hvor jeg skal sætte ind.","Det skyldes nok bare, at jeg har sovet lidt dårligt på det seneste eller mangler vitaminer.","Det er vel bare alderen, genetikken, eller fordi jeg har haft travlt. Det er vel helt normalt."] },
+  { cat:"Selverkendelsen", label:"Det ærlige spejlbillede", q:"Hvis du skal give din nuværende livsstil og sundhed en overordnet karakter, hvor føler du så, du reelt lander?", opts:["Helt i top. Jeg gør en aktiv indsats, spiser fornuftigt, rører mig og føler, jeg har styr på min sundhed.","Okay fornuftigt. Tror egentlig, jeg lever ret sundt — men det er mest baseret på min egen fornemmelse.","Det halter. Jeg ved godt, det er lidt usundt, men jeg mangler energien til at vende skuden.","Det sejler fuldstændig. Kroppen brokker sig konstant, og mit overskud er helt væk."] },
+  { cat:"Selverkendelsen", label:"Kost-illusionen", q:"Når du står i supermarkedet, hvad styrer så dine valg, for at du føler, du køber \'sundt\' ind?", opts:["Jeg går konsekvent udenom ultra-forarbejdet fødevarer, sukker og raffinerede frøolier. Jeg køber rene, uforarbejdede råvarer og de gode fedtstoffer.","Jeg tænker ikke så meget over det. Jeg køber bare det, jeg plejer, og hvad der smager godt.","Jeg prøver at skære ned på sukker og hvidt brød, men spiser rugbrød, havregryn, frugt og pasta.","Jeg iagttager de officielle råd: Går efter fuldkornsmærket, nøglehulsmærket, fedtfattige light-produkter og flydende planteolier.","Jeg føler, jeg køber sundt, når jeg vælger ting med ord som \'fuldkorn, protein, light, plantebaseret\' eller \'uden tilsat sukker\'."] },
+  { cat:"Selverkendelsen", label:"Symptom-blændingen", q:"Hvis du mærker træthed, hjernetåge (brainfog) eller uro i kroppen i løbet af ugen, hvad tænker du så selv er den dybere årsag?", opts:["Jeg er helt bevidst om, at det er min kost og min metaboliske motor, der hakker.","Jeg tænker, at min krop forsøger at råbe mig op, men jeg ved ikke helt, hvor jeg skal sætte ind.","Det skyldes nok bare, at jeg har sovet lidt dårligt på det seneste eller mangler nogle vitaminer.","Det er vel bare alderen, genetikken, eller fordi jeg har haft travlt. Det er vel helt normalt.","Jeg tænker ikke så meget over det — det går nok over af sig selv."] },
 
   // BLOK 2 — KOST, KØKKEN & TÆRSKLEN (Q4-14)
-  { cat:"Kost & Køkken", label:"Morgenmaden & Aktivitetsniveauet", q:"Hvis du spiser traditionelle morgenmadsprodukter (havregryn, rugbrød, bagerbolle eller juice), hvad gør du så i timerne efter?", opts:["Jeg springer morgenmaden helt over (faste) og kører udelukkende på vand eller sort kaffe indtil middag.","Jeg har et fysisk aktivt arbejde eller dyrker intensiv motion lige efter.","Jeg spiser min morgenmad, men mærker hurtigt en tunghed eller sløvhed i kroppen bagefter.","Jeg sætter mig direkte i bilen eller på kontorstolen og sidder stort set stille indtil frokost."] },
-  { cat:"Kost & Køkken", label:"Brændstofs-kvaliteten om morgenen", q:"Hvad kaster du helt konkret i gabet, hvis du spiser morgenmad?", opts:["Æg, bacon, smør, avokado eller fuldfed skyr uden sukker — rent fedt, protein og nul sukkerchok.","Havregryn med sødmælk, groft rugbrød med ost eller ægte råvarer uden tilsat sukker.","En grøn smoothie, frugt, juice eller en '0% fedt' frugtyoghurt.","Franskbrød med marmelade/Nutella, cornflakes, muesli eller en hurtig bagerbolle på farten."] },
-  { cat:"Kost & Køkken", label:"Frokost-mønsteret", q:"Hvad sker der, når din motor har kørt indtil midt på dagen — hvad spiser du til frokost?", opts:["Rigtige, uforarbejdede råvarer, kød/fisk og masser af grøntsager — uden brød, pasta, ris og færdiglavede dressinger.","Den klassiske madpakke: Groft rugbrød med traditionelt pålæg (æg, kød) og lidt gnavegrønt.","Kantineordningen eller salatbaren, men der ryger tit pasta, kartofler, hvide ris eller brød på tallerkenen.","Det der er nemt: En sandwich fra tanken, en fransk hotdog, fastfood eller en mikrobølge-færdigret."] },
-  { cat:"Kost & Køkken", label:"Eftermiddags-fælden (kl. 15)", q:"Når trætheden eller den lille sult melder sig sidst på dagen, hvad snacker du så for at holde pæren i gang?", opts:["Intet. Min motor kører rent på reservetanken indtil aftensmaden uden problemer.","En håndfuld mandler/valnødder eller et par stykker mørk chokolade (min. 85%).","En kop kaffe med mælk/sukker, en riskage, et stykke frugt eller en grovkiks for at overleve.","Sukker- og kagefælden klapper i. Der ryger wienerbrød, slik, chips eller en energidrik indenbords."] },
+  { cat:"Kost & Køkken", label:"Morgenmaden", q:"Hvis du spiser morgenmad, hvad ligner den så mest?", opts:["Protein/fedt-baseret morgenmad (æg, bacon, ost, avokado, fuldfed yoghurt/skyr uden sukker, rester fra aftensmad).","Naturlig kulhydrat-morgenmad (rugbrød, havregryn, frugt, smoothies, skyr med topping, proteinshake med banan).","Standard morgenmad (franskbrød, bagerbolle, toast, cornflakes, muesli, juice, frugtyoghurt, energibar).","Jeg spiser ikke morgenmad — men jeg drikker kaffe/energidrik for at komme i gang."] },
+  { cat:"Kost & Køkken", label:"Brændstofs-kvaliteten om morgenen", q:"Hvordan reagerer din krop typisk de første 2–3 timer efter du har stået op?", opts:["Stabil energi. Klar, vågen, ingen cravings.","Let svingende. Lidt sult/sløvhed, men fungerer.","Tydeligt dyk. Træt, irritabel, sulten, brug for kaffe/snacks.","Krise. Rystende, uoplagt, afhængig af koffein for at fungere."] },
+  { cat:"Kost & Køkken", label:"Frokost-mønsteret", q:"Hvad sker der, når din motor har kørt indtil midt på dagen — hvad spiser du til frokost?", opts:["Rigtige, uforarbejdede råvarer, kød/fisk og masser af grøntsager — uden brød, pasta, ris og færdiglavede dressinger.","Den klassiske madpakke: Groft rugbrød med traditionelt pålæg (æg, kød) og lidt gnavegrønt.","Kantineordningen eller salatbaren, men der ryger tit pasta, kartofler, hvide ris eller brød med på tallerkenen.","Det der er nemt: En sandwich fra tanken, en fransk hotdog, fastfood eller en mikrobølge-færdigret."] },
+  { cat:"Kost & Køkken", label:"Eftermiddags-fælden (kl. 15)", q:"Når trætheden eller den lille sult melder sig sidst på dagen, hvad snacker du så for at holde pæren i gang?", opts:["Intet. Min motor kører rent på reservetanken indtil aftensmaden uden problemer.","En håndfuld mandler/valnødder eller et par stykker mørk chokolade (min. 85%).","En kop kaffe med mælk/sukker, en riskage, et stykke frugt (banan/æble) eller en grovkiks for at overleve indtil aftensmad.","Sukker- og kagefælden klapper i. Der ryger wienerbrød, slik, chips eller en energidrik indenbords."] },
   { cat:"Kost & Køkken", label:"Det skjulte olie-bombardement", q:"Hvor ofte spiser du mad, der ikke er lavet helt fra bunden i dit eget køkken? (Færdigretter, købe-brød, færdige dressinger, mayonnaise, chips eller take-away)", opts:["Næsten aldrig. Jeg laver stort set alt selv af rene råvarer og styrer mine egne fedtstoffer.","Et par gange om ugen, når det skal gå stærkt, eller når jeg spiser ude i weekenden.","Flere gange om ugen tyr jeg til færdigløsninger, købepålæg og færdigbagt brød for at spare tid.","Dagligt. Jeg spiser kantineordning, færdigretter eller take-away næsten hver eneste dag."] },
-  { cat:"Kost & Køkken", label:"Stegepanden og salatskålen", q:"Hvilket fedtstof dominerer i dit køkken, når der skal steges kød eller vendes en salat?", opts:["Rigtigt smør (økologisk), hjemmelavet ghee, kokosolie eller koldpresset jomfruolivenolie.","En god, økologisk koldpresset rapsolie til salaten, men jeg steger i almindelig stegeolie.","Almindelig olivenolie til stegning, men jeg bruger færdigkøbte dressinger og saucer på flaske.","Kærgården, flydende margarine, Becel, solsikkeolie eller almindelig billig rapsolie."] },
-  { cat:"Kost & Køkken", label:"Røntgensyn af dit køleskab", q:"Hvis jeg åbner din køleskabsdør lige nu, hvad vil mine øjne så primært møde?", opts:["Ægte råvarer: Smør, æg, uforarbejdet kød, fed fisk, hele overjordiske grøntsager og fuldfede mejeriprodukter.","En helt klassisk blanding: Mælk, leverpostej, pålægspakker, rugbrød, ost og rester fra i går.","Masser af light-produkter, fedtfattig skyr, flydende margarine og flasker med færdige dressinger.","Stort set tomt, præget af sodavand, energidrikke, færdigretter og bægre med højtforarbejdede madvarer."] },
-  { cat:"Kost & Køkken", label:"Jagten i køkkenskabene", q:"Hvad gemmer der sig på hylderne i dine tørre skabe, når du kigger efter?", opts:["Kokosolie, nødder, frø, kerner, rene krydderier og måske lidt mørk chokolade.","Dåsetomater, almindeligt hvedemel, havregryn, ris, pasta og rapsolie.","Kiks, knækbrød, morgenmadsprodukter, pulversupper og færdige krydderiblandinger.","Chips, slik, ultra-forarbejdede snacks, hvidt sukker og kager med lang holdbarhed."] },
-  { cat:"Kost & Køkken", label:"Glycemic Load ved aftensmaden", q:"Hvad fylder absolut mest på din tallerken til aftensmaden ved siden af dit kød eller din fisk?", opts:["En stor portion overjordiske grøntsager (broccoli, blomkål, kål, asparges) overhældt med smør eller olivenolie.","En god blanding af grøntsager samt mindre mængder kartofler eller grove ris.","'Sundere' kulhydrater i store mængder: Fuldkornspasta, brune ris, quinoa eller søde kartofler.","Det hvide læs: Store mængder kartofler (eller mos), hvide ris, traditionel hvid pasta eller hvidt brød."] },
-  { cat:"Kost & Køkken", label:"Energi efter maden", q:"Hvordan har din krop og dit hoved det typisk den første time efter, du har spist et stort måltid?", opts:["Fuldstændig stabil. Min energi fortsætter uforandret, og jeg føler mig bare mæt og klar i hovedet.","Jeg er mæt, men kan godt mærke en mild, naturlig afslapning i kroppen.","Jeg bliver hurtigt sulten eller lækkersulten igen efter kun 1-2 timer.","Trash Metal-kollaps! Jeg bliver ekstremt træt, tung i kroppen, og min hjerne tåger fuldstændig ud."] },
-  { cat:"Kost & Køkken", label:"Det flydende sukkerchok", q:"Hvad drikker du i løbet af en helt almindelig hverdag for at slukke tørsten?", opts:["Rent postevand, mineralvand eller sort kaffe/te uden noget i.","Vand, men der ryger også et par glas mælk, kaffe med en tår mælk eller en enkelt danskvand med smag ned.","Light-sodavand, saftevand uden sukker eller store mængder frugtjuice/smoothies (som du tror er sunde).","Almindelig sodavand, energidrikke, iste med sukker eller kaffe spækket med mælk og sukker/sirup."] },
+  { cat:"Kost & Køkken", label:"Stegepanden og salatskålen", q:"Hvilket fedtstof dominerer i dit køkken, når der skal steges eller vendes en salat?", opts:["Rigtigt smør (økologisk), hjemmelavet ghee, kokosolie eller koldpresset jomfruolivenolie.","En god, økologisk koldpresset rapsolie til salaten, men jeg steger i almindelig stegeolie.","Jeg steger i almindelig olie (fx raps-, solsikke- eller blandingsolie) og bruger færdigkøbte dressinger og saucer på flaske.","Kærgården, flydende margarine (AMA), Becel, solsikkeolie eller almindelig olie."] },
+  { cat:"Kost & Køkken", label:"Røntgensyn af dit køleskab", q:"Hvis jeg åbner din køleskabsdør lige nu, hvad vil mine øjne så primært møde?", opts:["Mest råvarer: Smør, æg, uforarbejdet kød, fed fisk, hele overjordiske grøntsager og fuldfede mejeriprodukter.","En helt klassisk blanding: Mælk, leverpostej, pålægspakker, rugbrød, ost og rester fra i går.","Praktiske løsninger: Light-produkter, fedtfattig skyr, smørbare blandingsprodukter og et par færdige dressinger eller saucer.","Det hurtige køleskab: Drikkevarer, nemme færdigretter, snacks og madvarer med lang holdbarhed."] },
+  { cat:"Kost & Køkken", label:"Jagten i køkkenskabene", q:"Hvad gemmer der sig på hylderne i dine tørre skabe, når du kigger efter?", opts:["Råvarer og basisvarer: Kokosolie, nødder, frø, kerner, rene krydderier og måske lidt mørk chokolade.","Helt almindelige basisvarer: Dåsetomater, hvedemel, havregryn, ris, pasta og en flaske rapsolie.","Praktiske hverdagsprodukter: Kiks, knækbrød, morgenmadsprodukter, pulversupper og færdige krydderiblandinger.","Det hurtige snack-skab: Chips, slik, snacks, sukker, bageblandinger og madvarer med lang holdbarhed."] },
+  { cat:"Kost & Køkken", label:"Glycemic Load ved aftensmaden", q:"Hvad fylder absolut mest på din tallerken til aftensmaden ved siden af dit kød eller din fisk?", opts:["Mest grøntsager: Broccoli, blomkål, kål, salat, asparges eller andre grøntsager — ofte med lidt smør eller olivenolie.","En blanding: Grøntsager som hoveddel, men også lidt kartofler, ris eller lignende.","De sunde fyld-ting: Fuldkornspasta, brune ris, quinoa eller søde kartofler i gode portioner.","De klassiske fyld-ting: Kartofler (eller mos), ris, pasta eller brød som den største del af tallerkenen."] },
+  { cat:"Kost & Køkken", label:"Energi efter maden", q:"Hvordan har din krop og dit hoved det typisk den første time efter, du har spist et stort måltid?", opts:["Helt stabil: Jeg føler mig mæt, klar i hovedet og fortsætter bare dagen som normalt.","Rolig og afslappet: Jeg er mæt og kan mærke en mild, naturlig ro i kroppen.","Lidt åh, jeg kunne godt lige: Jeg bliver småsulten eller lækkersulten igen efter 1-2 timer.","Madkoma-mode: Jeg bliver tung i kroppen, træt i hovedet og har svært ved at holde fokus."] },
+  { cat:"Kost & Køkken", label:"Det flydende sukkerchok", q:"Hvad drikker du i løbet af en helt almindelig hverdag for at slukke tørsten?", opts:["Mest vand: Postevand, mineralvand eller sort kaffe/te uden noget i.","Primært vand — men også lidt andet: Et par glas mælk, kaffe med en smule mælk eller en danskvand med smag.","De sukkerfri eller frugtige valg: Light-sodavand, saftevand uden sukker eller juice/smoothies.","De søde eller energifyldte drikke: Almindelig sodavand, energidrikke, iste med sukker eller kaffe med mælk og sukker/sirup."] },
 
   // BLOK 3 — RYTME, SØVN & VASKEMASKINEN (Q15-22)
-  { cat:"Søvn & Rytme", label:"Det natlige vaskeprogram", q:"Hvordan ser din nat reelt ud — får du lukket et øje, så hjernen kan vaske affaldsstofferne ud?", opts:["Jeg sover for det meste som en sten. Ubevægelig og tungt indtil vækkeuret ringer.","Det er her-og-der okay, men det kunne godt være dybere og mere stabilt.","Rendyrket rutsjebane. Jeg roterer, vågner i ét væk og har mange opvågninger.","Fuldstændig radbrækket. Jeg vågner stort set aldrig og tænker: 'Hold kæft, jeg er frisk!'"] },
+  { cat:"Søvn & Rytme", label:"Det natlige vaskeprogram", q:"Hvordan ser din nat reelt ud — får du lukket et øje, så hjernen kan vaske affaldsstofferne ud?", opts:["Jeg sover for det meste som en sten. Ubevægelig og tungt indtil vækkeuret ringer.","Det er her-og-der okay, men det kunne godt være dybere og mere stabilt.","Rendyrket rutsjebane. Jeg roterer, vågner i ét væk og har mange opvågninger.","Fuldstændig radbrækket. Jeg vågner stort set aldrig og tænker: Hold kæft, jeg er frisk!"] },
   { cat:"Søvn & Rytme", label:"Morgentilstanden efter opvågning", q:"Hvordan har din krop og dit sind det det allerførste kvarter efter, du er stået ud af sengen?", opts:["Klar og parat med det samme. Motoren spinder, og jeg behøver intet for at komme i gang.","Lidt sløv i koderne, men efter et bad eller en tår vand kører systemet fornuftigt.","Skal satme lige chokes i gang først! Kaffen skal have sat sig i systemet, før jeg er menneske.","Helt fladt batteri. Min krop og mit hoved føles tunge som bly, uanset hvor længe jeg har ligget der."] },
   { cat:"Søvn & Rytme", label:"Det indre tempo og stress-niveauet", q:"Hvordan vil du beskrive din indre motor, når du sidder i sofaen eller skal slappe af en aften?", opts:["Fuldstændig ro. Jeg kan sidde uden rastløshed og mærke, at systemet gearer helt ned.","En smule rastløs i ny og næ, men jeg kan godt finde ud af at koble af.","Der kører konstante tankecirkler i baggrunden. Min hjerne nægter at stoppe med at planlægge.","Konstant alarmtilstand. Jeg har en indre dirren, uro i benene eller hjertebanken, selvom jeg sidder stille."] },
   { cat:"Søvn & Rytme", label:"Nedsmeltningen efter pres", q:"Hvordan reagerer din krop og din modstandskraft, når din hverdag i en periode bliver mere krævende end normalt?", opts:["Jeg holder mig nogenlunde stabil og kører jævnt igennem stormen uden det store bøvl.","Jeg bliver en smule mere sårbar og irritabel undervejs, men holder balancen.","Jeg bliver hurtigt træt, tåget i hovedet eller småsløj, når presset stiger.","Jeg falder fuldstændig sammen og bliver akut syg eller totalt udmattet, lige så snart presset letter."] },
@@ -676,9 +668,9 @@ const questions = [
   { cat:"Hjerne & Klarhed", label:"Retningssansen og det rumlige overblik", q:"Hvordan fungerer din indre GPS, når du bevæger dig rundt i områder, du ikke besøger hver dag?", opts:["Perfekt. Jeg har en god rumlig forståelse og finder nemt vej uden det store besvær.","Okay, men jeg støtter mig gerne til min telefons GPS for en sikkerheds skyld.","Jeg bliver markant hurtigere desorienteret end før i tiden, og skal tænke mig godt om for at finde bilen.","Det sejler. Jeg mister fuldstændig overblikket i kendte stormagasiner eller vejkryds og føler en snigende angst."] },
   { cat:"Hjerne & Klarhed", label:"Det fysiske syn og spejlbilledet", q:"Hvad lægger du mærke til, når du ser dig i spejlet en almindelig morgen eller mærker efter i ansigtet/huden?", opts:["Intet usædvanligt. Min hud, mit hår og mine øjne ser friske og vitale ud.","Min hud er måske en smule tør, eller jeg har lidt mørke rande under øjnene i perioder.","Jeg ser træt ud, huden virker slap, og jeg har mistet gløden i ansigtet, uanset hvad jeg gør.","Min krop opmagasinerer tydeligt visceral fedt, min hud er ekstremt tør, og mit udtryk bærer præg af kronisk stress."] },
   { cat:"Hjerne & Klarhed", label:"Koordinationen og balancen i hverdagen", q:"Hvordan reagerer din krop, hvis du pludselig skal lave en uventet motorisk bevægelse — gribe noget du taber, eller træde udenom et hul i asfalten?", opts:["Lynhurtig reaktion. Min krop og min hjerne samarbejder fejlfrit i perfekt koordination.","Jeg griber tingen, men føler mig måske en smule mere klodset eller stiv i bevægelserne end før.","Jeg taber ofte ting, støder ind i dørkarme eller mister balancen en smule, hvis underlaget er ujævnt.","Min motorik hakker voldsomt. Mine fødder lystrer ikke hurtigt nok, og jeg føler mig usikker på mine egne ben."] },
-  { cat:"Hjerne & Klarhed", label:"Det sanselige overskud", q:"Hvordan reagerer din hjerne, hvis du befinder dig i et rum med mange mennesker, baggrundsstøj eller musik (fx en familiefest eller et supermarked)?", opts:["Intet problem. Min hjerne formår at sortere støjen fra og fokusere på den samtale, jeg er i.","Jeg bliver hurtigere træt i hovedet af larm end før, men jeg kan godt holde det ud.","Støjen skærer igennem min hjerne. Jeg mister fuldstændig tråden i samtaler, fordi hjernes ikke kan sortere lydene.","Total oversvømmelse. Det føles som om, min hjerne eksploderer af sanseindtryk. Jeg vil desperat ud i stilheden."] },
-  { cat:"Hjerne & Klarhed", label:"Dual-Tasking", q:"Hvordan reagerer dit system, hvis du skal udføre fysisk arbejde (fx gå en hurtig tur) og samtidig føre en kompleks samtale?", opts:["Det kører som smurt. Min krop bevæger sig rytmisk, mens min hjerne tænker og taler skarpt.","Jeg kan godt mærke, at jeg skal koncentrere mig en smule mere, men jeg holder tempoet.","Jeg er enten nødt til at sætte farten voldsomt ned eller holde helt op med at tale, fordi hjerne ikke kan rumme begge dele.","Totalt systemstop. Min koordination falder fuldstændig fra hinanden, hvis jeg tvinges til at koordinere krop og tanke."] },
-  { cat:"Hjerne & Klarhed", label:"Den indre baseline og sandhedens time", q:"Når du nu har svaret på alle disse spørgsmål, og du mærker helt efter i din dybeste kerne — hvordan har dit system det så reelt?", opts:["Stabil, stærk og i balance. Min biologiske motor spinder, og jeg har det rigtige brændstof på tanken.","Det svinger lidt her og der, og jeg kan mærke, at min krop forsøger at kompensere for hverdagens pres.","Min baseline er rutsjet nedad. Jeg lever i en konstant tilstand af at være 'halv-sløj', tåget eller uoplagt.","Akut metabolisk energikrise. Mit system skriger på hjælp. Låsene er rustet fast, og mit batteri er fuldstændig fladt."] }
+  { cat:"Hjerne & Klarhed", label:"Det sanselige overskud", q:"Hvordan reagerer din hjerne, hvis du befinder dig i et rum med mange mennesker, baggrundsstøj eller musik (fx en familiefest eller et supermarked)?", opts:["Intet problem. Min hjerne formår at sortere støjen fra og fokusere på den samtale, jeg er i.","Jeg bliver hurtigere træt i hovedet af larm end før, men jeg kan godt holde det ud.","Støjen skærer igennem min hjerne. Jeg mister fuldstændig tråden i samtaler, fordi hjernen ikke kan sortere lydene.","Total oversvømmelse. Det føles som om, min hjerne eksploderer af sanseindtryk. Jeg vil desperat ud i stilheden."] },
+  { cat:"Hjerne & Klarhed", label:"Dual-Tasking", q:"Hvordan reagerer dit system, hvis du skal udføre fysisk arbejde (fx gå en hurtig tur) og samtidig føre en kompleks samtale?", opts:["Det kører som smurt. Min krop bevæger sig rytmisk, mens min hjerne tænker og taler skarpt.","Jeg kan godt mærke, at jeg skal koncentrere mig en smule mere, men jeg holder tempoet.","Jeg er enten nødt til at sætte farten voldsomt ned eller holde helt op med at tale, fordi hjernen ikke kan rumme begge dele.","Totalt systemstop. Min koordination falder fuldstændig fra hinanden, hvis jeg tvinges til at koordinere krop og tanke."] },
+  { cat:"Hjerne & Klarhed", label:"Den indre baseline og sandhedens time", q:"Når du nu har svaret på alle disse spørgsmål, og du mærker helt efter i din dybeste kerne — hvordan har dit system det så reelt?", opts:["Stabil, stærk og i balance. Min biologiske motor spinder, og jeg har det rigtige brændstof på tanken.","Det svinger lidt her og der, og jeg kan mærke, at min krop forsøger at kompensere for hverdagens pres.","Min baseline er rutsjet nedad. Jeg lever i en konstant tilstand af at være halv-sløj, tåget eller uoplagt.","Akut metabolisk energikrise. Mit system skriger på hjælp. Låsene er rustet fast, og mit batteri er fuldstændig fladt."] }
 ]
 
 const catRanges = [
@@ -702,7 +694,7 @@ const profiles = [
     range: [51, 85],
     label: "Læsset vipper ved tærsklen",
     badge: "score-attention",
-    desc: "Pas på. Din krop forsøger at kompensere, og du lever måske i den tro, at du gør det hele 'sundt'. Men din sande biologi viser, at du er ved at overskride tærsklen. Din Glycemic Load er for høj i hverdagen, og Trash Metal-larmen er begyndt at spille i baggrunden.",
+    desc: "Pas på. Din krop forsøger at kompensere, og du lever måske i den tro, at du gør det hele sundt. Men din sande biologi viser, at du er ved at overskride tærsklen. Din Glycemic Load er for høj i hverdagen, og Trash Metal-larmen er begyndt at spille i baggrunden.",
     next: "Det er nu, du skal handle, før låsene ruster fast. Start med SmartBalanz madplan og GKI-beregner — de giver dig et konkret billede inden for ugen."
   },
   {
@@ -720,8 +712,8 @@ let answers = new Array(questions.length).fill(null);
 let shuffledOrders = [];
 
 function initShuffledOrders() {
-  shuffledOrders = questions.map((q, qi) => {
-    const order = [0,1,2,3];
+  shuffledOrders = questions.map((q) => {
+    const order = q.opts.map((_, i) => i);
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [order[i], order[j]] = [order[j], order[i]];
@@ -733,8 +725,13 @@ function initShuffledOrders() {
 function startQuiz() {
   initShuffledOrders();
   document.getElementById('intro').style.display = 'none';
-  document.getElementById('quiz').style.display = 'flex';
-  renderQuestion();
+  showPartIntro(
+    "Inden vi går i dybden — lad os lige få et hurtigt overblik over hvordan motoren kører. Ingen dikkedarer, ingen fælder.",
+    function() {
+      document.getElementById('quiz').style.display = 'flex';
+      renderQuestion();
+    }
+  );
 }
 
 function showPartIntro(text, callback) {
@@ -761,13 +758,15 @@ function renderQuestion() {
 
   const opts = document.getElementById('options');
   opts.innerHTML = '';
-  const order = shuffledOrders[current] || [0,1,2,3];
-  order.forEach((origIdx, displayPos) => {
+  const order = shuffledOrders[current] || [0,1,2,3,4].slice(0, q.opts.length);
+  order.forEach((origIdx) => {
     const btn = document.createElement('button');
-    const score = origIdx + 1; // original score 1-4
-    btn.className = 'option' + (answers[current] === score ? ' selected' : '');
+    // Score: index 0=1p, 1=2p, 2=3p, 3+=4p (cap at 4)
+    const score = Math.min(origIdx + 1, 4);
+    btn.className = 'option' + (answers[current] === origIdx ? ' selected' : '');
+    btn.dataset.score = origIdx;
     btn.textContent = q.opts[origIdx];
-    btn.onclick = () => selectOption(score);
+    btn.onclick = () => selectOption(origIdx);
     opts.appendChild(btn);
   });
 
@@ -785,10 +784,10 @@ function renderQuestion() {
   }
 }
 
-function selectOption(score) {
-  answers[current] = score;
-  document.querySelectorAll('.option').forEach((btn, i) => {
-    btn.classList.toggle('selected', i + 1 === score);
+function selectOption(origIdx) {
+  answers[current] = origIdx;
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.classList.toggle('selected', parseInt(btn.dataset.score) === origIdx);
   });
   const nextBtn = document.getElementById('btn-next');
   nextBtn.classList.add('active');
@@ -798,6 +797,24 @@ function selectOption(score) {
 function nextQuestion() {
   if (answers[current] === null) return;
   if (current === questions.length - 1) { showResult(); return; }
+
+  // Show transition after question 8 (index 7 — last warmup)
+  if (current === 7) {
+    const wrap = document.getElementById('question-wrap');
+    wrap.className = 'question-wrap fade-out';
+    setTimeout(() => {
+      document.getElementById('quiz').style.display = 'none';
+      showPartIntro(
+        "Godt kørt. Vi mangler bare et par stykker mere — så har vi det hele.",
+        function() {
+          current++;
+          document.getElementById('quiz').style.display = 'flex';
+          renderQuestion();
+        }
+      );
+    }, 200);
+    return;
+  }
 
   const wrap = document.getElementById('question-wrap');
   wrap.className = 'question-wrap fade-out';
@@ -816,7 +833,7 @@ function showResult() {
   const res = document.getElementById('result');
   res.style.display = 'flex';
 
-  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const total = answers.reduce((sum, a) => sum + Math.min((a !== null ? a : 0) + 1, 4), 0);
   document.getElementById('res-score').textContent = total;
 
   const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
@@ -851,7 +868,7 @@ function showResult() {
 }
 
 function downloadJSON() {
-  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const total = answers.reduce((sum, a) => sum + Math.min((a !== null ? a : 0) + 1, 4), 0);
   const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
 
   const catScores = {};
@@ -901,7 +918,7 @@ function restartQuiz() {
 }
 
 function printResult() {
-  const total = answers.reduce((sum, a) => sum + (a || 1), 0);
+  const total = answers.reduce((sum, a) => sum + Math.min((a !== null ? a : 0) + 1, 4), 0);
   const profile = profiles.find(p => total >= p.range[0] && total <= p.range[1]) || profiles[3];
   const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -920,9 +937,10 @@ function printResult() {
       </tr>`;
   }).join('');
 
-  // Alle svar
-  const svarRows = questions.map((q, i) => {
-    const score = answers[i] || 1;
+  // Alle svar (spring opvarmning over)
+  const svarRows = questions.slice(8).map((q, i) => {
+    const ai = i + 8;
+    const score = answers[ai] || 1;
     const svar = q.opts[(score - 1)] || '—';
     const col = score === 1 ? '#16a34a' : score === 2 ? '#92650a' : score === 3 ? '#c2410c' : '#dc2626';
     return `
